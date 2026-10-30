@@ -1,0 +1,28 @@
+<!-- @dsCard group="Signature" height=440 subtitle="Floating glass panel, concentric rows" -->
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><link rel="stylesheet" href="../../tokens.css"><link rel="stylesheet" href="../bundle.css"><title>Command Palette</title></head>
+<body>
+<div class="cz-stage" style="display:grid;place-items:center">
+  <div class="cz-palette cz-glass" data-refract role="dialog" aria-label="Command palette">
+    <div class="cz-palette__search">
+      <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true"><circle cx="8" cy="8" r="5.5" stroke="var(--fg-300)" stroke-width="1.5"/><path d="M12 12l4 4" stroke="var(--fg-300)" stroke-width="1.5" stroke-linecap="round"/></svg>
+      <input id="q" type="text" placeholder="Search for apps and commands…" aria-label="Search">
+    </div>
+    <div class="cz-palette__list" role="listbox">
+      <div class="cz-palette__section">Suggestions</div>
+      <div class="cz-palette__item" role="option" aria-selected="true"><span class="cz-palette__icon" style="background:var(--brand-red)"></span>Clipboard History <span class="cz-palette__sub">Clipboard</span><span class="cz-palette__meta">Command</span></div>
+      <div class="cz-palette__item" role="option"><span class="cz-palette__icon" style="background:var(--blue)"></span>Search Files <span class="cz-palette__sub">File Search</span><span class="cz-palette__meta">Command</span></div>
+      <div class="cz-palette__item" role="option"><span class="cz-palette__icon" style="background:var(--purple)"></span>Ask AI <span class="cz-palette__sub">AI</span><span class="cz-palette__meta">Command</span></div>
+      <div class="cz-palette__section">Commands</div>
+      <div class="cz-palette__item" role="option"><span class="cz-palette__icon" style="background:var(--green)"></span>Left Half <span class="cz-palette__sub">Window Management</span><span class="cz-palette__meta"><span class="cz-keys"><kbd class="cz-kbd">⌃</kbd><kbd class="cz-kbd">⌥</kbd><kbd class="cz-kbd">←</kbd></span></span></div>
+    </div>
+    <div class="cz-palette__bar">
+      <span>Colonaiz</span>
+      <div class="cz-palette__actions"><span>Open Command <kbd class="cz-kbd">↵</kbd></span><span>Actions <span class="cz-keys"><kbd class="cz-kbd">⌘</kbd><kbd class="cz-kbd">K</kbd></span></span></div>
+    </div>
+  </div>
+</div>
+<script src="../glass.js"></script>
+</body>
+</html>

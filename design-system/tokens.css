@@ -1,0 +1,125 @@
+/* Colonaiz — generated from tokens.json */
+:root {
+  color-scheme: dark;
+  --grey-50: #e6e6e6;
+  --grey-100: #cdcece;
+  --grey-200: #9c9c9d;
+  --grey-300: #6a6b6c;
+  --grey-400: #434345;
+  --grey-500: #2f3031;
+  --grey-600: #1b1c1e;
+  --grey-700: #111214;
+  --grey-800: #0c0d0f;
+  --grey-900: #07080a;
+  --bg: var(--grey-900);
+  --bg-100: #101111;
+  --bg-200: #18191a;
+  --bg-300: #313133;
+  --bg-400: #494b4d;
+  --fg: #f4f4f6;
+  --fg-200: #c2c7ca;
+  --fg-300: #78787c;
+  --fg-400: #5e6366;
+  --border: #242728;
+  --white: #ffffff;
+  --black: #000000;
+  --button-bg: #ffffffd0;
+  --button-fg: #18191a;
+  --button-hover-bg: #ffffff1a;
+  --brand-red: #ff6363;
+  --red: #ff6161;
+  --red-subtle: #ff616126;
+  --yellow: #ffc533;
+  --yellow-subtle: #ffc53326;
+  --green: #59d499;
+  --green-subtle: #59d49926;
+  --blue: #57c1ff;
+  --blue-subtle: #57c1ff26;
+  --purple: #d3b2ff;
+  --window-bg: #111217;
+  --glass-fill: #ffffff0a;
+  --glass-fill-hover: #ffffff17;
+  --glass-fill-clear: #ffffff03;
+  --glass-fill-prominent: #ffffffd9;
+  --glass-fill-tint: #ff636340;
+  --glass-specular: #ffffff4d;
+  --glass-rim: #ffffff14;
+  --glass-sheen: #ffffff1f;
+  --glass-shade: #00000059;
+  --glass-dim: #0000004d;
+  --glass-solid: #1f2023;
+  --space-0-5: 4px;
+  --space-1: 8px;
+  --space-1-5: 12px;
+  --space-2: 16px;
+  --space-2-5: 20px;
+  --space-3: 24px;
+  --space-4: 32px;
+  --space-5: 40px;
+  --space-6: 48px;
+  --space-7: 56px;
+  --space-8: 64px;
+  --space-9: 80px;
+  --space-10: 96px;
+  --space-11: 112px;
+  --space-12: 168px;
+  --space-13: 224px;
+  --radius-xs: 4px;
+  --radius-sm: 6px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  --radius-2xl: 20px;
+  --radius-3xl: 24px;
+  --radius-window: 26px;
+  --radius-full: 9999px;
+  --shadow-highlight: inset 0 1px 0 #ffffff1a;
+  --shadow-highlight-soft: inset 0 1px 0 #ffffff0d;
+  --shadow-button: inset 0 1px 0 #ffffff0d, 0 0 0 1px #ffffff40, inset 0 -1px 0 #00000033;
+  --shadow-key: inset 0 0 0 1px #ffffff33;
+  --shadow-card-glow: 0 1px 40px #9aaaff0d, 0 0 16px -7px #9aaaff0d, 0 2px 40px 10px #9aaaff0d, inset 0 1px 1px #ffffff1a;
+  --shadow-window: 0 4px 40px 8px #00000066, 0 0 0 0.5px #000000cc, inset 0 0.5px 0 #ffffff4d;
+  --shadow-focus: 0 0 0 2px #ffffff80;
+  --shadow-glass: 0 8px 32px #00000059, 0 1px 2px #00000040, inset 0 1px 0 #ffffff14, inset 0 -1px 0 #0000001a, inset 0 0 0 0.5px #ffffff12, inset 0 0 18px #ffffff0d;
+  --shadow-glass-pressed: 0 4px 16px #00000059, inset 0 1px 0 #ffffff1f, inset 0 -1px 0 #0000001a;
+  --shadow-glass-contrast: 0 0 0 1.5px #c2c7ca, 0 8px 32px #00000059;
+  --blur-sm: 2px;
+  --blur-md: 10px;
+  --blur-lg: 36px;
+  --blur-xl: 48px;
+  --glass-blur: 8px;
+  --glass-blur-clear: 2px;
+  --container-xs: 746px;
+  --container-sm: 1064px;
+  --container: 1204px;
+  --container-lg: 1280px;
+  --navbar-height: 58px;
+  --glass-saturate: 200%;
+  --glass-brightness: 1.08;
+  --glass-refraction: 56;
+  --glass-bezel: 26;
+  --glass-press-scale: 0.96;
+  --glass-dispersion: 0.12;
+  --font-sans: Inter, "Inter Fallback", system-ui, -apple-system, sans-serif;
+  --font-mono: "JetBrains Mono", Menlo, Monaco, Courier, monospace;
+  --font-display-mono: "Geist Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  --font-serif: "Instrument Serif", Georgia, serif;
+  --font-pixel: VT323, ui-monospace, monospace;
+}
+.display-xl { font-family: var(--font-sans); font-size: 72px; line-height: 84px; font-weight: 600; letter-spacing: 0px; }
+.display-lg { font-family: var(--font-sans); font-size: 64px; line-height: 1.1; font-weight: 600; }
+.display-md { font-family: var(--font-sans); font-size: 48px; line-height: 1.0625; font-weight: 600; }
+.heading-lg { font-family: var(--font-sans); font-size: 36px; line-height: 40px; font-weight: 600; }
+.heading-md { font-family: var(--font-sans); font-size: 32px; line-height: 1.3; font-weight: 600; }
+.heading-sm { font-family: var(--font-sans); font-size: 24px; line-height: 36px; font-weight: 600; }
+.title { font-family: var(--font-sans); font-size: 20px; line-height: 30px; font-weight: 500; }
+.body-lg { font-family: var(--font-sans); font-size: 18px; line-height: 28px; font-weight: 400; letter-spacing: 0.2px; }
+.body { font-family: var(--font-sans); font-size: 16px; line-height: 24px; font-weight: 400; letter-spacing: 0.2px; }
+.body-sm { font-family: var(--font-sans); font-size: 14px; line-height: 1.6; font-weight: 500; letter-spacing: 0.2px; }
+.button { font-family: var(--font-sans); font-size: 15px; line-height: 1; font-weight: 500; }
+.caption { font-family: var(--font-sans); font-size: 13px; line-height: 20px; font-weight: 500; letter-spacing: 0.1px; }
+.label { font-family: var(--font-sans); font-size: 12px; line-height: 16px; font-weight: 500; letter-spacing: 0.3px; }
+.micro { font-family: var(--font-sans); font-size: 11px; line-height: 16px; font-weight: 500; }
+.code { font-family: var(--font-mono); font-size: 14px; line-height: 20px; font-weight: 400; }
+.numeral-mono { font-family: var(--font-display-mono); font-size: 56px; line-height: 1; font-weight: 700; letter-spacing: 0.2px; }
+.serif-accent { font-family: var(--font-serif); font-size: 48px; line-height: 1.1; font-weight: 400; font-style: italic; }

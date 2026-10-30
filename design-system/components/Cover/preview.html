@@ -1,0 +1,72 @@
+<!-- @dsCard height=288 -->
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><link rel="stylesheet" href="../../tokens.css"><link rel="stylesheet" href="../bundle.css">
+<title>Colonaiz</title>
+<style>
+  html, body { margin:0; padding:0; height:100%; }
+  body { background:var(--bg); color:var(--fg); font-family:var(--font-sans); overflow:hidden; }
+  .cover { position:relative; width:960px; height:288px; overflow:hidden; }
+  .art { position:absolute; top:0; left:480px; width:480px; height:288px; overflow:hidden; }
+  .art svg { display:block; }
+  .red { fill:var(--brand-red); }
+  .deep { fill:var(--bg-300); }
+  .raised { fill:var(--bg-200); }
+  .purple { fill:var(--purple); }
+  .yellow { fill:var(--yellow); }
+  .blue { fill:var(--blue); }
+  .key { fill:var(--bg-200); stroke:var(--grey-500); stroke-width:1; }
+  .key.lit { fill:var(--bg-300); }
+  .key.hot { fill:var(--brand-red); stroke:none; }
+  .words { position:absolute; left:var(--space-6); bottom:var(--space-6); max-width:440px; }
+  .name { margin:0; font-size:88px; line-height:.92; font-weight:600; letter-spacing:-.02em; color:var(--fg); font-feature-settings:"ss02" on, "ss08" on; }
+  .tag { margin:var(--space-2) 0 0 4px; font-size:14px; line-height:20px; color:var(--fg-300); }
+</style>
+</head>
+<body>
+<div class="cover">
+<div class="art" aria-hidden="true">
+<svg viewBox="0 0 480 288" width="480" height="288">
+<!--
+  blocks      brand-red 160×232 slab bled off the top (the identity hue, largest) · bg-300 deep window 208×168 bleeding off the right · purple 96×24 · yellow 48×24 and blue 24×24 kept small (they mean states) — about a third of 960×288
+  arrangement one tall red slab with a dark window beside it and small satellites, bottoms on one line space-6 above the edge, space-2 gutters
+  pattern     keycaps, from "Keycaps are the product's most recognisable motif": 32px radius-sm caps at a 40px pitch (space-4 + space-1) on the dark window, one ⌘-wide pair merged two-wide, one cap lit in brand-red
+  scales      sides in space-1 multiples; gutters space-2; slab corners radius-lg; window radius-xl; caps radius-sm
+-->
+<rect class="red" x="16" y="-24" width="160" height="256" rx="12"/>
+<rect class="purple" x="16" y="240" width="96" height="24" rx="4"/>
+<rect class="yellow" x="128" y="240" width="48" height="24" rx="4"/>
+<rect class="deep" x="192" y="64" width="304" height="176" rx="16"/>
+<rect class="blue" x="192" y="24" width="24" height="24" rx="6"/>
+<!-- keycap grid on the window: rows at y 80, 120, 160, 200; columns from x 208 at 40px pitch -->
+<rect class="key" x="208" y="80" width="32" height="32" rx="6"/>
+<rect class="key" x="248" y="80" width="32" height="32" rx="6"/>
+<rect class="key lit" x="288" y="80" width="32" height="32" rx="6"/>
+<rect class="key" x="328" y="80" width="32" height="32" rx="6"/>
+<rect class="key" x="368" y="80" width="32" height="32" rx="6"/>
+<rect class="key" x="408" y="80" width="32" height="32" rx="6"/>
+<rect class="key" x="448" y="80" width="32" height="32" rx="6"/>
+<rect class="key" x="208" y="120" width="72" height="32" rx="6"/>
+<rect class="key" x="288" y="120" width="32" height="32" rx="6"/>
+<rect class="key hot" x="328" y="120" width="32" height="32" rx="6"/>
+<rect class="key" x="368" y="120" width="32" height="32" rx="6"/>
+<rect class="key" x="408" y="120" width="32" height="32" rx="6"/>
+<rect class="key" x="448" y="120" width="32" height="32" rx="6"/>
+<rect class="key" x="208" y="160" width="32" height="32" rx="6"/>
+<rect class="key" x="248" y="160" width="32" height="32" rx="6"/>
+<rect class="key" x="288" y="160" width="32" height="32" rx="6"/>
+<rect class="key lit" x="328" y="160" width="112" height="32" rx="6"/>
+<rect class="key" x="448" y="160" width="32" height="32" rx="6"/>
+<rect class="key" x="208" y="200" width="32" height="32" rx="6"/>
+<rect class="key" x="248" y="200" width="32" height="32" rx="6"/>
+<rect class="key" x="288" y="200" width="32" height="32" rx="6"/>
+</svg>
+</div>
+<div class="words">
+  <h1 class="name">Colonaiz</h1>
+  <p class="tag">Near-black, keyboard-first and lit from the top edge.</p>
+</div>
+</div>
+</body>
+</html>
