@@ -1,4 +1,4 @@
-/* Colonaiz Liquid Glass runtime.
+/* colonAIz Liquid Glass runtime.
    1. Edge refraction: Chromium can run an SVG filter as a backdrop-filter, so each [data-refract] glass
       surface gets a displacement map that bends the backdrop along its rounded edge. Other browsers keep
       the CSS blur + saturate material from bundle.css.

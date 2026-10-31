@@ -88,28 +88,118 @@ function main() {
       pointer.ty = (e.clientY / innerHeight) * 2 - 1;
     }, { passive: true });
   }
+  // Scroll story: as the page scrolls toward the command bar, the camera drifts in and the ring speeds up
+  const focus = document.querySelector('[data-planet-focus]');
+  const scroll = { p: 0 };
+  const scrollTarget = () => {
+    if (reduceMotion) return 0;
+    const end = focus ? Math.max(focus.offsetTop - innerHeight * 0.4, 1) : innerHeight;
+    return THREE.MathUtils.clamp(scrollY / end, 0, 1);
+  };
+  const ease = (x) => x * x * (3 - 2 * x);
+
   const placeCamera = () => {
-    camera.position.set(pointer.x * 0.09 * distance, -pointer.y * 0.06 * distance, distance);
+    const d = distance * (1 - 0.28 * ease(scroll.p));
+    camera.position.set(pointer.x * 0.09 * d, -pointer.y * 0.06 * d, d);
     camera.lookAt(0, system.position.y, 0);
   };
 
   const clock = new THREE.Clock();
+
+  // Hit-test the pointer against the planet: returns the planet-space direction, or null
+  const raycaster = new THREE.Raycaster();
+  const ndc = new THREE.Vector2();
+  const planetSphere = new THREE.Sphere(new THREE.Vector3(), 1);
+  const hitPoint = new THREE.Vector3();
+  const hitPlanet = (clientX, clientY) => {
+    ndc.set((clientX / innerWidth) * 2 - 1, -(clientY / innerHeight) * 2 + 1);
+    raycaster.setFromCamera(ndc, camera);
+    planetSphere.center.copy(system.position);
+    if (!raycaster.ray.intersectSphere(planetSphere, hitPoint)) return null;
+    planet.group.updateMatrixWorld();
+    return planet.group.worldToLocal(hitPoint.clone()).normalize();
+  };
+  // Pointer over a control (nav, buttons, links, the palette) belongs to the page, not the planet
+  const overPage = (el) => !!(el && el.closest && el.closest('a, button, input, nav, .cz-glass'));
+
+  const hover = { x: 0, y: 0, inside: false, value: 0 };
+  let shockStart = -Infinity;
+  // Shockwave timing: the first wave fires 3s after load, then every 30s; a click fires one and restarts the 30s
+  const AUTO_FIRST = 3, AUTO_EVERY = 30;
+  let autoNext = Infinity;
+  let shockRingAngle = 0;
+  const fireShock = (dir, t) => {
+    planet.uniforms.uShockOrigin.value.copy(dir);
+    shockStart = t;
+    autoNext = t + AUTO_EVERY;
+    // Convert planet-local impact direction to system-space ring-plane angle
+    const rot = t * PLANET_SPEED;
+    shockRingAngle = Math.atan2(
+      dir.x * Math.sin(rot) + dir.z * Math.cos(rot),
+      dir.x * Math.cos(rot) - dir.z * Math.sin(rot)
+    );
+  };
+  // Auto waves start on the lit face turned toward the viewer, a little above centre
+  const autoOrigin = new THREE.Vector3();
+  const facingPoint = () => {
+    planet.group.updateMatrixWorld();
+    planet.group.worldToLocal(autoOrigin.copy(camera.position));
+    autoOrigin.normalize();
+    autoOrigin.y += 0.35;
+    return autoOrigin.normalize();
+  };
+  if (!reduceMotion) {
+    addEventListener('pointermove', (e) => {
+      if (e.pointerType !== 'mouse') return;
+      hover.x = e.clientX; hover.y = e.clientY;
+      hover.inside = !overPage(e.target);
+    }, { passive: true });
+    document.addEventListener('pointerleave', () => { hover.inside = false; });
+    addEventListener('pointerdown', (e) => {
+      if (overPage(e.target)) return;
+      const dir = hitPlanet(e.clientX, e.clientY);
+      if (!dir) return;
+      fireShock(dir, clock.getElapsedTime());
+    });
+  }
+
+  let ringTime = 12, last = 0;
   const render = () => {
     const t = reduceMotion ? 12 : clock.getElapsedTime();
+    const dt = Math.min(t - last, 0.1); last = t;
     pointer.x += (pointer.tx - pointer.x) * 0.04;
     pointer.y += (pointer.ty - pointer.y) * 0.04;
+    scroll.p += (scrollTarget() - scroll.p) * 0.08;
     placeCamera();
+    camera.updateMatrixWorld();
     planet.group.rotation.y = t * PLANET_SPEED;
     planet.uniforms.uTime.value = t;
-    camera.updateMatrixWorld();
+
+    // Hover: follow the point under the cursor (it moves as the planet turns), ease the pulse in and out
+    const dir = hover.inside ? hitPlanet(hover.x, hover.y) : null;
+    if (dir) {
+      const p = planet.uniforms.uPointer.value.lerp(dir, 0.25);
+      if (p.lengthSq() < 1e-6) p.copy(dir); else p.normalize();
+    }
+    hover.value += ((dir ? 1 : 0) - hover.value) * 0.08;
+    planet.uniforms.uHover.value = hover.value;
+    document.documentElement.style.cursor = dir ? 'pointer' : '';
+    if (!reduceMotion && t >= autoNext) fireShock(facingPoint(), t);
+    planet.uniforms.uShockAge.value = t - shockStart;
+
+    // The ring runs on its own clock so scrolling can speed it up
+    ringTime += dt * (1 + 2.5 * ease(scroll.p));
     ring.uniforms.uPlanet.value.copy(system.position).applyMatrix4(camera.matrixWorldInverse);
-    ring.uniforms.uTime.value = t;
+    ring.uniforms.uTime.value = reduceMotion ? 12 : ringTime;
+    ring.uniforms.uShockAge.value = t - shockStart;
+    ring.uniforms.uShockAngle.value = shockRingAngle;
     composer.render();
   };
 
   layout();
   render();
   canvas.classList.add('is-ready');
+  autoNext = clock.getElapsedTime() + AUTO_FIRST;
   addEventListener('resize', () => { layout(); if (reduceMotion) render(); });
 
   if (!reduceMotion) {
@@ -175,6 +265,24 @@ const LEAK_GLSL = /* glsl */`
 `;
 const LEAK_COLOR = '#2f6bff'; // space blue
 
+// Shared GLSL: how strongly a point on the sphere reacts to the pointer (hover) and to a click (shockwave)
+const REACT_GLSL = /* glsl */`
+  uniform vec3 uPointer;      // planet-space direction under the pointer
+  uniform float uHover;       // 0..1, eased in while the pointer is over the planet
+  uniform vec3 uShockOrigin;  // planet-space direction of the last click
+  uniform float uShockAge;    // seconds since that click (large when idle)
+  float hoverAt(vec3 dir) {
+    return uHover * (1.0 - smoothstep(0.0, 0.32, distance(dir, uPointer)));
+  }
+  float shockAt(vec3 dir) {
+    float ang = acos(clamp(dot(dir, uShockOrigin), -1.0, 1.0));
+    float front = uShockAge * 1.4;                       // radians per second across the sphere
+    float x = (ang - front) / 0.14;
+    float band = exp(-x * x);  // x*x, not pow(): pow() is undefined for a negative base in GLSL
+    return band * (1.0 - smoothstep(1.2, 2.6, uShockAge));
+  }
+`;
+
 function buildPlanet(detail) {
   const cells = goldbergCells(detail);
   const positions = [], normals = [], edges = [], seeds = [], cellDirs = [], tops = [], lifts = [], moves = [];
@@ -239,6 +347,10 @@ function buildPlanet(detail) {
     uDust: { value: new THREE.Color('#34332f') },                  // dim grey dust settled on the caps
     uLight: { value: new THREE.Vector3(0.15, 1.0, 0.1).normalize() }, // the one light: overhead, a touch right and forward
     uLeak: { value: new THREE.Color(LEAK_COLOR) },
+    uPointer: { value: new THREE.Vector3(0, 0, 1) },
+    uHover: { value: 0 },
+    uShockOrigin: { value: new THREE.Vector3(0, 0, 1) },
+    uShockAge: { value: 99 },
   };
 
   const material = new THREE.ShaderMaterial({
@@ -257,14 +369,23 @@ function buildPlanet(detail) {
       varying float vEdge;
       varying float vTop;
       varying float vRise;
+      varying float vReact;
       varying vec3 vLPos;
       varying float vSeed;
+      ${REACT_GLSL}
       void main() {
         // Rising panels: ease out, hold, ease back, each on its own slow cycle
         float cycle = 0.5 + 0.5 * sin(uTime * 0.45 + aSeed * 50.0);
         float rise = smoothstep(0.15, 0.85, cycle);
         float lift = aLift + aMove * rise;
         vRise = aMove > 0.0 ? rise : 0.0;  // 0 at rest, 1 fully out (moving panels only)
+
+        // The surface senses the pointer and rings with a click
+        float hover = hoverAt(aCell);
+        float shock = shockAt(aCell);
+        lift += hover * 0.022 + shock * 0.035;
+        vReact = hover * 0.8 + shock * 1.2;
+
         vec3 p = position + aCell * lift * aTop;
         vLPos = position;  // object space, so the texture turns with the planet
         vSeed = aSeed;
@@ -290,6 +411,7 @@ function buildPlanet(detail) {
       varying float vEdge;
       varying float vTop;
       varying float vRise;
+      varying float vReact;
       void main() {
         vec3 N = normalize(vN);
         vec3 C = normalize(vCellN);
@@ -317,11 +439,13 @@ function buildPlanet(detail) {
         // core and barely touches the bevels. Emissive, so it shows faintly even on the shadowed side.
         // Leaks on the shadowed side are kept softer so they don't float in the dark without context
         float leak = leakMask(normalize(vLPos)) * mix(0.45, 1.0, smoothstep(-0.2, 0.3, dot(C, uLight)));
-        float fromGap = pow(1.0 - vTop, 1.6) * (1.0 - vEdge) + vEdge * 0.1;  // glow climbs the walls and spills onto the bevels
+        float fromGap = pow(clamp(1.0 - vTop, 0.0, 1.0), 1.6) * (1.0 - vEdge) + vEdge * 0.1;  // glow climbs the walls and spills onto the bevels
         // A panel rising out opens its gap: the light swells with the rise and settles back as it returns
-        float glow = leak + vRise * 1.6;
-        col += uLeak * glow * (fromGap + vRise * vEdge * 0.12) * 2.3;
+        float glow = leak + vRise * 1.6 + vReact * 1.4;
+        col += uLeak * glow * (fromGap + (vRise + vReact) * vEdge * 0.12) * 2.3;
 
+        // Safety net: a NaN pixel would be smeared by the bloom pass into a black block. NaN fails every comparison.
+        if (!(col.r >= 0.0 && col.g >= 0.0 && col.b >= 0.0)) col = vec3(0.0);
         gl_FragColor = vec4(col, 1.0);
       }`,
   });
@@ -330,7 +454,11 @@ function buildPlanet(detail) {
   group.add(new THREE.Mesh(geo, material));
   // Core seen through the gaps: black, glowing a soft space blue where the leak mask is open
   const core = new THREE.ShaderMaterial({
-    uniforms: { uTime: uniforms.uTime, uLeak: uniforms.uLeak },
+    uniforms: {
+      uTime: uniforms.uTime, uLeak: uniforms.uLeak,
+      uPointer: uniforms.uPointer, uHover: uniforms.uHover,
+      uShockOrigin: uniforms.uShockOrigin, uShockAge: uniforms.uShockAge,
+    },
     vertexShader: /* glsl */`
       varying vec3 vDir;
       void main() {
@@ -339,9 +467,12 @@ function buildPlanet(detail) {
       }`,
     fragmentShader: /* glsl */`
       ${LEAK_GLSL}
+      ${REACT_GLSL}
       varying vec3 vDir;
       void main() {
-        gl_FragColor = vec4(uLeak * leakMask(vDir) * 2.8, 1.0);
+        float glow = leakMask(vDir) + hoverAt(vDir) * 0.6 + shockAt(vDir) * 1.2;
+        if (!(glow >= 0.0)) glow = 0.0;  // NaN guard (see the panels shader)
+        gl_FragColor = vec4(uLeak * glow * 2.8, 1.0);
       }`,
   });
   group.add(new THREE.Mesh(new THREE.SphereGeometry(0.94, 64, 48), core));
@@ -409,6 +540,8 @@ function buildRing(laneCount, color) {
     uCyan: { value: color(PALETTE.cyan) },
     uBlue: { value: color(PALETTE.blue) },
     uViolet: { value: color(PALETTE.violet) },
+    uShockAge: { value: 99 },
+    uShockAngle: { value: 0 },
   };
 
   const material = new THREE.ShaderMaterial({
@@ -420,12 +553,15 @@ function buildRing(laneCount, color) {
     vertexShader: /* glsl */`
       attribute float aAngle, aRadius, aHeight, aSpeed, aPhase, aSize, aLane;
       uniform float uTime, uScale;
+      uniform float uShockAge, uShockAngle;
       uniform vec3 uPlanet;
       uniform vec3 uCyan, uBlue, uViolet;
       varying vec3 vColor;
       varying float vDigit;
       varying float vAlpha;
       float hash(float n) { return fract(sin(n * 12.9898) * 43758.5453); }
+      // Shortest angular distance, result in [0, PI]
+      float angDist(float a, float b) { return abs(mod(a - b + 9.42478, 6.28318) - 3.14159); }
       void main() {
         float a = aAngle + uTime * aSpeed;
         vec3 p = vec3(cos(a) * aRadius, aHeight, sin(a) * aRadius);
@@ -433,16 +569,39 @@ function buildRing(laneCount, color) {
         gl_Position = projectionMatrix * mv;
         gl_PointSize = aSize * uScale / -mv.z;
 
-        // Each digit flips between 0 and 1 now and then
-        vDigit = step(0.5, hash(aPhase * 91.7 + floor(uTime * 0.45 + aPhase * 13.0)));
+        // Scanner beam: rotating bright line that sweeps the ring
+        float scanAngle = mod(uTime * 0.28, 6.28318);
+        float dScan = angDist(a, scanAngle);
+        float scan = exp(-dScan * dScan * 22.0);
+
+        // Aurora: a wide slow colour band drifting around the ring independently
+        float auroraAngle = mod(uTime * 0.09, 6.28318);
+        float dAurora = angDist(a, auroraAngle);
+        float aurora = exp(-dAurora * dAurora * 0.55);
+
+        // Shockwave ring pulse: radiates from impact angle in real time
+        float dShock = angDist(a, uShockAngle);
+        float shockFront = uShockAge * 2.2;
+        float xSh = (dShock - shockFront) / 0.28;
+        float shock = exp(-xSh * xSh) * max(0.0, 1.0 - uShockAge * 0.26);
+
+        // Digits under the scanner flip rapidly — looks like live data reading
+        float flipRate = 0.45 + scan * 7.0;
+        vDigit = step(0.5, hash(aPhase * 91.7 + floor(uTime * flipRate + aPhase * 13.0)));
 
         vec3 c = mix(uCyan, uBlue, smoothstep(0.0, 0.7, hash(aLane + 3.1)));
         c = mix(c, uViolet, smoothstep(0.55, 1.0, hash(aPhase * 7.0 + aLane)));
-        float front = smoothstep(-0.3, 1.0, sin(a));  // the near side of the ring burns brighter
+        float front = smoothstep(-0.3, 1.0, sin(a));
         float twinkle = 0.65 + 0.35 * sin(uTime * 2.2 + aPhase * 60.0);
-        vColor = c;
-        // Soft occlusion: a digit behind the planet fades out as its line of sight crosses the limb,
-        // instead of being sliced by the depth buffer along an edge you can't see
+
+        // Scanner lifts digits toward white-cyan
+        c = mix(c, vec3(0.75, 1.0, 1.0), scan * 0.8);
+        // Aurora tints toward violet-magenta
+        c = mix(c, uViolet * 1.6, aurora * 0.55);
+        // Shock pulse saturates to bright cyan
+        c = mix(c, uCyan * 2.2, shock * 0.9);
+
+        // Soft occlusion: digits behind the planet fade instead of hard-clipping
         vec3 toPoint = mv.xyz;
         float pointDist = length(toPoint);
         vec3 ray = toPoint / pointDist;
@@ -451,7 +610,9 @@ function buildRing(laneCount, color) {
         float behind = smoothstep(-0.15, 0.15, pointDist - along);
         float visible = 1.0 - behind * (1.0 - smoothstep(0.92, 1.12, miss));
 
-        vAlpha = (0.3 + 0.7 * front) * twinkle * (0.55 + 0.45 * hash(aLane * 1.7)) * visible;
+        vColor = c;
+        float baseAlpha = (0.3 + 0.7 * front) * twinkle * (0.55 + 0.45 * hash(aLane * 1.7)) * visible;
+        vAlpha = baseAlpha * (1.0 + scan * 1.8 + aurora * 0.45) + shock * 1.1 * visible;
       }`,
     fragmentShader: /* glsl */`
       uniform sampler2D uAtlas;

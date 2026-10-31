@@ -1,6 +1,6 @@
-# Colonaiz
+# colonAIz
 
-A dark, keyboard-first interface language for the Colonaiz website. Every value here was extracted from the production CSS of [raycast.com](https://www.raycast.com/) on 30 October 2026: colours, spacing, radii, type sizes, shadows and blur radii are exact. Line heights and letter-spacing are the most common pairings found for each size. The control layer follows Apple's [Liquid Glass](https://developer.apple.com/documentation/technologyoverviews/liquid-glass) material. There is no logo yet; use the wordmark set in `sans` 600 until one exists.
+A dark, keyboard-first interface language for the colonAIz website. Every value here was extracted from the production CSS of [raycast.com](https://www.raycast.com/) on 30 October 2026: colours, spacing, radii, type sizes, shadows and blur radii are exact. Line heights and letter-spacing are the most common pairings found for each size. The control layer follows Apple's [Liquid Glass](https://developer.apple.com/documentation/technologyoverviews/liquid-glass) material. The mark is the hexagon planet: `assets/Logos/logo.svg` (detailed, 512px, with a soft glow) and `assets/Logos/favicon.svg` (simplified for 16–64px: larger cells, wider gaps). Set it beside the wordmark in `sans` 600.
 
 ## Principles
 

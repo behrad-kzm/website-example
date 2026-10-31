@@ -95,7 +95,7 @@ body { background: var(--bg); color: var(--fg); font-family: var(--font-sans); f
 /* Navbar: one glass capsule; links share it, a glass lens slides under the hovered link */
 .cz-nav { display: flex; align-items: center; gap: var(--space-2); height: 60px; padding: 0 var(--space-1) 0 var(--space-2-5); box-sizing: border-box; border-radius: var(--radius-full); }
 .cz-nav__brand { font: 600 16px/1 var(--font-sans); color: var(--fg); display: flex; align-items: center; gap: var(--space-1); text-decoration: none; position: relative; z-index: 2; }
-.cz-nav__mark { width: 22px; height: 22px; border-radius: var(--radius-full); background: radial-gradient(circle at 30% 25%, #ffb3b3, var(--brand-red) 55%, #c23b3b); box-shadow: inset 0 1px 0 #ffffff80; }
+.cz-nav__mark { display: block; width: 24px; height: 24px; flex: none; }
 .cz-nav__links { position: relative; display: flex; gap: var(--space-0-5); flex: 1; justify-content: center; z-index: 2; }
 .cz-nav__link { position: relative; z-index: 1; display: inline-flex; align-items: center; height: 44px; padding: 0 var(--space-2); border-radius: var(--radius-full); font: 500 14px/1 var(--font-sans); color: var(--fg-200); text-decoration: none; transition: color .2s; }
 .cz-nav__link:hover, .cz-nav__link[aria-current="page"] { color: var(--fg); }
