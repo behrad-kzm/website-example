@@ -36,12 +36,20 @@ function main() {
 
   const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
   const compact = Math.min(innerWidth, innerHeight) < 700;
+
+  // Without a GPU (software WebGL: SwiftShader, llvmpipe, …) every frame blocks the main thread for
+  // hundreds of milliseconds, so the planet is drawn once, without bloom, and left as a still.
+  const gl = renderer.getContext();
+  const info = gl.getExtension('WEBGL_debug_renderer_info');
+  const gpuName = String(gl.getParameter(info ? info.UNMASKED_RENDERER_WEBGL : gl.RENDERER) || '');
+  const software = /swiftshader|llvmpipe|softpipe|software|basic render/i.test(gpuName);
+  let frozen = reduceMotion || software;  // true once the animation loop is off
   const color = (hex) => new THREE.Color(hex);
 
   renderer.setClearColor(0x000000, 1);
   renderer.toneMapping = THREE.ACESFilmicToneMapping; // compress highlights so edges glow without blowing out
   renderer.toneMappingExposure = 0.85;
-  renderer.setPixelRatio(Math.min(devicePixelRatio, compact ? 1.5 : 1.75));
+  renderer.setPixelRatio(Math.min(devicePixelRatio, software ? 1 : compact ? 1.5 : 1.75));
 
   const scene = new THREE.Scene();
   const camera = new THREE.PerspectiveCamera(32, 1, 0.1, 100);
@@ -61,6 +69,7 @@ function main() {
   const composer = new EffectComposer(renderer);
   composer.addPass(new RenderPass(scene, camera));
   const bloom = new UnrealBloomPass(new THREE.Vector2(1, 1), 0.55, 0.3, 0.28);
+  bloom.enabled = !software;
   composer.addPass(bloom);
   composer.addPass(new OutputPass());
 
@@ -176,7 +185,7 @@ function main() {
     planet.uniforms.uTime.value = t;
 
     // Hover: follow the point under the cursor (it moves as the planet turns), ease the pulse in and out
-    const dir = hover.inside ? hitPlanet(hover.x, hover.y) : null;
+    const dir = hover.inside && !frozen ? hitPlanet(hover.x, hover.y) : null;
     if (dir) {
       const p = planet.uniforms.uPointer.value.lerp(dir, 0.25);
       if (p.lengthSq() < 1e-6) p.copy(dir); else p.normalize();
@@ -200,10 +209,35 @@ function main() {
   render();
   canvas.classList.add('is-ready');
   autoNext = clock.getElapsedTime() + AUTO_FIRST;
-  addEventListener('resize', () => { layout(); if (reduceMotion) render(); });
+  addEventListener('resize', () => { layout(); if (frozen) render(); });
 
-  if (!reduceMotion) {
-    const loop = () => { render(); requestAnimationFrame(loop); };
+  if (!frozen) {
+    // Quality governor: watch the real frame rate and shed work on devices that can't keep up.
+    // Step 1 drops to 1x resolution, step 2 turns bloom off, step 3 stops animating and keeps a still.
+    const SLOW_MS = 40, HOPELESS_MS = 150, WARMUP = 2, WINDOW = 30;
+    let tier = 0, frames = -WARMUP, total = 0, prev = 0;
+    const degrade = (toStill) => {
+      tier = toStill ? 3 : tier + 1;
+      if (tier === 1) { renderer.setPixelRatio(1); composer.setPixelRatio(1); layout(); }
+      else if (tier === 2) bloom.enabled = false;
+      else { frozen = true; render(); }
+      frames = -2; total = 0;
+    };
+    const loop = (now) => {
+      if (frozen) return;
+      const delta = now - prev; prev = now;
+      render();
+      if (delta > 0 && delta < 1000) {  // skip the first frame and gaps from a hidden tab
+        if (frames >= 0) total += delta;
+        frames++;
+        if (frames >= 2 && total / frames > HOPELESS_MS) degrade(true);
+        else if (frames >= WINDOW) {
+          if (total / frames > SLOW_MS) degrade(false);
+          else { frames = 0; total = 0; }
+        }
+      }
+      if (!frozen) requestAnimationFrame(loop);
+    };
     requestAnimationFrame(loop);
   }
 }

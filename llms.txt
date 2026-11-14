@@ -1,0 +1,7 @@
+# colonAIz
+
+> colonAIz lets you ask anything about 200,000+ companies across 50 countries in plain English. It crawls the live web, including 1,500 VCs, accelerators, and incubators, so you can discover startups, validate ideas, and source deals.
+
+## Pages
+
+- [Home](https://colonaiz.com/): product overview and waitlist
