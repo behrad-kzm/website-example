@@ -1,4 +1,3 @@
-@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Geist+Mono:wght@500;700&family=Instrument+Serif:ital@0;1&display=swap");
 
 /* Base */
 body { background: var(--bg); color: var(--fg); font-family: var(--font-sans); font-feature-settings: "ss02" on, "ss08" on, "liga" off; -webkit-font-smoothing: antialiased; margin: 0; padding: 16px; }

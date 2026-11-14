@@ -6,6 +6,10 @@
   <title>colonAIz</title>
   <meta name="description" content="colonAIz: ask anything about 200,000+ companies across 50 countries. Discover startups, validate ideas, source deals.">
   <link rel="icon" href="assets/brand/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preconnect" href="https://cdn.jsdelivr.net">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Geist+Mono:wght@500;700&family=Instrument+Serif:ital@0;1&display=swap">
   <link rel="stylesheet" href="design-system/tokens.css">
   <link rel="stylesheet" href="design-system/components/bundle.css">
   <style>
@@ -72,9 +76,6 @@
     /* Product shot: the command palette floating on the wallpaper */
     .hero__shot { width: 100%; max-width: 750px; margin-top: var(--space-9); display: flex; justify-content: center; }
     .hero__shot .cz-palette { text-align: left; }
-    /* Search bar only: no results below, so no divider */
-    .hero__shot .cz-palette { border-radius: var(--radius-full); }
-    .hero__shot .cz-palette__search { border-bottom: 0; padding: 0 var(--space-3); }
 
     @media (prefers-reduced-motion: reduce) { .planet { transition: none; } }
   </style>
@@ -99,8 +100,8 @@
   <main>
     <section class="hero" aria-labelledby="hero-title">
       <div class="hero__text">
-        <h1 id="hero-title">Success is built<br>on knowledge.</h1>
-        <p class="hero__lead">Before you build it, see who already tried.</p>
+        <h1 id="hero-title">200,000 companies.<br>One question.</h1>
+        <p class="hero__lead">ColonAIz crawls the live web across 50 countries — including 1,500 VCs, accelerators, and incubators — and lets you ask anything about them in plain English. Discover startups, validate ideas, source deals.</p>
       </div>
 
       <div class="hero__cta">
@@ -108,20 +109,52 @@
           <a class="cz-btn cz-btn--primary cz-glass cz-glass--prominent cz-glass--interactive" href="#">Join the waitlist</a>
           <a class="cz-btn cz-glass cz-glass--interactive" href="#">See how it works</a>
         </div>
-        <p class="hero__sub">Early access opening soon</p>
+        <p class="hero__sub">50 countries · 200K+ companies · Free to explore</p>
       </div>
 
       <a class="announce cz-glass cz-glass--interactive" href="#">
         <span class="cz-badge cz-badge--blue cz-badge--pill">Live</span>
-        Explore the AI search engine for startups
+        Now indexing 1,500 accelerators and VCs worldwide
         <span class="announce__muted" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M5 3l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
       </a>
 
       <div class="hero__shot" data-planet-focus>
-        <div class="cz-palette cz-glass" data-refract role="img" aria-label="The colonAIz search bar with the question: AI-powered agricultural startups, UK, seed stage">
+        <div class="cz-palette cz-glass" data-refract role="img" aria-label="The colonAIz discovery engine showing results for AI-powered agricultural startups in the UK">
           <div class="cz-palette__search">
             <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true"><circle cx="8" cy="8" r="5.5" stroke="var(--fg-300)" stroke-width="1.5"/><path d="M12 12l4 4" stroke="var(--fg-300)" stroke-width="1.5" stroke-linecap="round"/></svg>
             <input id="hero-search" type="text" value="AI-powered agricultural startups, UK, seed stage" tabindex="-1" aria-hidden="true">
+          </div>
+          <div class="cz-palette__list">
+            <div class="cz-palette__section">3 results · UK · Agriculture · AI</div>
+            <div class="cz-palette__item" aria-selected="true">
+              <span class="cz-palette__icon" style="background:var(--blue)"></span>
+              CropMind AI
+              <span class="cz-palette__sub">Precision farming intelligence · London</span>
+              <span class="cz-palette__meta">Seed</span>
+            </div>
+            <div class="cz-palette__item">
+              <span class="cz-palette__icon" style="background:var(--green)"></span>
+              SoilSense Technologies
+              <span class="cz-palette__sub">Soil health monitoring SaaS · Manchester</span>
+              <span class="cz-palette__meta">12 employees</span>
+            </div>
+            <div class="cz-palette__item">
+              <span class="cz-palette__icon" style="background:var(--purple)"></span>
+              HarvestIQ
+              <span class="cz-palette__sub">Yield prediction & logistics · Bristol</span>
+              <span class="cz-palette__meta">Pre-revenue</span>
+            </div>
+            <div class="cz-palette__section">Related searches</div>
+            <div class="cz-palette__item">
+              <span class="cz-palette__icon" style="background:var(--yellow)"></span>
+              AgriTech investors in UK
+              <span class="cz-palette__sub">47 VCs and accelerators found</span>
+              <span class="cz-palette__meta">Search</span>
+            </div>
+          </div>
+          <div class="cz-palette__bar">
+            <span>colonAIz · 200K companies</span>
+            <div class="cz-palette__actions"><span>Open <kbd class="cz-kbd">↵</kbd></span><span>Ask more <span class="cz-keys"><kbd class="cz-kbd">⌘</kbd><kbd class="cz-kbd">K</kbd></span></span></div>
           </div>
         </div>
       </div>
@@ -136,6 +169,6 @@
     }
   </script>
   <script type="module" src="assets/planet.js"></script>
-  <script src="design-system/components/glass.js"></script>
+  <script src="design-system/components/glass.js" defer></script>
 </body>
 </html>

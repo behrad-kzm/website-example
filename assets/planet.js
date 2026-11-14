@@ -564,10 +564,21 @@ function buildRing(laneCount, color) {
       float angDist(float a, float b) { return abs(mod(a - b + 9.42478, 6.28318) - 3.14159); }
       void main() {
         float a = aAngle + uTime * aSpeed;
-        vec3 p = vec3(cos(a) * aRadius, aHeight, sin(a) * aRadius);
+
+        // Shockwave ring pulse: computed early so it can drive position
+        float dShock = angDist(a, uShockAngle);
+        float shockFront = uShockAge * 2.2;
+        float xSh = (dShock - shockFront) / 0.28;
+        float shock = exp(-xSh * xSh) * max(0.0, 1.0 - uShockAge * 0.26);
+
+        // Normal state is flat (Saturn). When the pulse fires the wave peak
+        // rides with the glow band — digits at the crest lift, then settle back.
+        float waveY = shock * 0.10;
+
+        vec3 p = vec3(cos(a) * aRadius, aHeight + waveY, sin(a) * aRadius);
         vec4 mv = modelViewMatrix * vec4(p, 1.0);
         gl_Position = projectionMatrix * mv;
-        gl_PointSize = aSize * uScale / -mv.z;
+        gl_PointSize = aSize * (1.0 + shock * 0.45) * uScale / -mv.z;
 
         // Scanner beam: rotating bright line that sweeps the ring
         float scanAngle = mod(uTime * 0.28, 6.28318);
@@ -578,12 +589,6 @@ function buildRing(laneCount, color) {
         float auroraAngle = mod(uTime * 0.09, 6.28318);
         float dAurora = angDist(a, auroraAngle);
         float aurora = exp(-dAurora * dAurora * 0.55);
-
-        // Shockwave ring pulse: radiates from impact angle in real time
-        float dShock = angDist(a, uShockAngle);
-        float shockFront = uShockAge * 2.2;
-        float xSh = (dShock - shockFront) / 0.28;
-        float shock = exp(-xSh * xSh) * max(0.0, 1.0 - uShockAge * 0.26);
 
         // Digits under the scanner flip rapidly — looks like live data reading
         float flipRate = 0.45 + scan * 7.0;
