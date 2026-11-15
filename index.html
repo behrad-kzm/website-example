@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>colonAIz</title>
-  <meta name="description" content="colonAIz: ask anything about 200,000+ companies across 50 countries. Discover startups, validate ideas, source deals.">
+  <meta name="description" content="colonAIz is business intelligence as a service for small and mid-size companies. Our analysts track your competitors, market, and industry continuously and report what changed.">
   <link rel="icon" href="assets/brand/favicon.svg" type="image/svg+xml">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -12,8 +12,8 @@
   <!-- Web fonts load without blocking first paint; text shows in the system fallback until they arrive -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" media="print" onload="this.media='all'">
   <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap"></noscript>
-  <link rel="stylesheet" href="design-system/tokens.css">
-  <link rel="stylesheet" href="design-system/components/bundle.css">
+  <link rel="stylesheet" href="docs/design-system/tokens.css">
+  <link rel="stylesheet" href="docs/design-system/components/bundle.css">
   <style>
     body { padding: 0; min-height: 100vh; overflow-x: hidden; background: #000; }
 
@@ -27,14 +27,30 @@
     @media (min-width: 720px) { .nav-login { display: inline-flex; } }
     @media (max-width: 719px) { .cz-nav__links { display: none; } .cz-nav { justify-content: space-between; } }
 
+    /* Every section is exactly one window tall: padding counts inside the height, and svh follows the
+       visible window on phones (browser bars excluded). It only grows if its content cannot fit. */
+    .section {
+      box-sizing: border-box;
+      min-height: 100vh; min-height: 100svh;
+      scroll-snap-align: start;
+    }
+
+    /* Magnetic sections: when a scroll comes to rest near the top of a section, the browser eases it the
+       rest of the way. "proximity" only acts as the scroll settles, so it never holds the page while the
+       visitor is still scrolling, and a section taller than the window can still be read through. */
+    html { scroll-snap-type: y proximity; }
+    .site-footer { scroll-snap-align: end; }
+
+    /* The page ends at the footer: no elastic overscroll, so the planet never shows underneath it */
+    html { overscroll-behavior-y: none; }
+
     /* Hero */
     .hero {
       position: relative; isolation: isolate;
       display: flex; flex-direction: column; align-items: center;
-      padding: 260px max(var(--space-2), env(safe-area-inset-right, 0px)) var(--space-10) max(var(--space-2), env(safe-area-inset-left, 0px));
+      padding: clamp(120px, 28vh, 320px) max(var(--space-2), env(safe-area-inset-right, 0px)) calc(var(--space-5) + env(safe-area-inset-bottom, 0px)) max(var(--space-2), env(safe-area-inset-left, 0px));
       text-align: center;
     }
-    @media (min-width: 1024px) { .hero { padding-top: 320px; } }
 
     /* Cybernetic planet: fixed WebGL backdrop in a pure black void (assets/planet.js) */
     .planet {
@@ -61,25 +77,104 @@
     }
     .hero__lead { margin: 0; max-width: 560px; font-size: 18px; line-height: 28px; letter-spacing: .2px; color: var(--fg-200); text-wrap: balance; }
 
-    .hero__cta { display: flex; flex-direction: column; align-items: center; gap: var(--space-1-5); margin-top: var(--space-6); }
-    .hero__cta .cz-btn { height: 52px; padding: 0 var(--space-3); font-size: 16px; }
-    .hero__actions { display: flex; flex-wrap: wrap; justify-content: center; gap: var(--space-1-5); }
-    .hero__sub { margin: 0; font-size: 13px; line-height: 20px; color: var(--fg-300); letter-spacing: .1px; }
-
-    .announce {
-      display: inline-flex; align-items: center; gap: var(--space-1);
-      margin-top: var(--space-5); padding: var(--space-1) var(--space-1-5) var(--space-1) var(--space-1);
-      border-radius: var(--radius-full);
-      font-size: 14px; font-weight: 500; color: var(--fg); text-decoration: none;
+    /* Scroll cue: a round glass button pinned to the bottom of the hero; the chevron bobs to invite scrolling */
+    .scroll-cue {
+      flex: none; display: grid; place-items: center;
+      width: 44px; height: 44px; margin-top: auto; padding: 0; border: 0;
+      border-radius: var(--radius-full); color: var(--fg);
     }
-    .announce:focus-visible { outline: none; box-shadow: var(--shadow-focus), var(--shadow-glass); }
-    .announce__muted { color: var(--fg-300); display: inline-flex; align-items: center; gap: 2px; }
+    .hero__text { margin-bottom: var(--space-5); }
+    .scroll-cue:focus-visible { outline: none; box-shadow: var(--shadow-focus), var(--shadow-glass); }
+    .scroll-cue svg { animation: scroll-cue-bob 1.8s ease-in-out infinite; }
+    @keyframes scroll-cue-bob {
+      0%, 100% { transform: translateY(-3px); opacity: .55; }
+      50% { transform: translateY(3px); opacity: 1; }
+    }
 
-    /* Product shot: the command palette floating on the wallpaper */
-    .hero__shot { width: 100%; max-width: 750px; margin-top: var(--space-9); display: flex; justify-content: center; }
-    .hero__shot .cz-palette { text-align: left; }
+    /* Content sections: a dark veil over the planet keeps copy legible; the first one fades in from the hero */
+    .block {
+      display: flex; flex-direction: column; justify-content: center;
+      padding: 120px max(var(--space-3), env(safe-area-inset-right, 0px)) var(--space-8) max(var(--space-3), env(safe-area-inset-left, 0px));
+      background: #07080ad9;
+    }
+    .hero + .block { background: linear-gradient(180deg, #07080a00, #07080ad9 240px); }
+    .block__inner { width: 100%; max-width: var(--container); margin: 0 auto; display: flex; flex-direction: column; gap: var(--space-6); }
+    .block__head { display: flex; flex-direction: column; gap: var(--space-2); max-width: var(--container-xs); }
+    .block--center .block__head { align-self: center; align-items: center; text-align: center; }
+    .eyebrow { margin: 0; font: 500 12px/16px var(--font-sans); letter-spacing: .3px; color: var(--fg-300); }
+    .block h2 { margin: 0; font-size: clamp(32px, 5vw, 48px); line-height: 1.15; font-weight: 600; letter-spacing: -.01em; text-wrap: balance; color: var(--fg); }
+    .block__lead { margin: 0; max-width: 640px; font-size: 18px; line-height: 28px; letter-spacing: .2px; color: var(--fg-200); text-wrap: pretty; }
+    .grid { display: grid; gap: var(--space-3); grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
+    .cz-card h3 { margin: 0 0 var(--space-1); font: 500 20px/30px var(--font-sans); color: var(--fg); }
+    .card__head { display: flex; align-items: center; justify-content: space-between; gap: var(--space-1-5); }
+    .card__link { display: inline-block; margin-top: var(--space-3); font: 500 14px/20px var(--font-sans); color: var(--fg); text-decoration: none; border-radius: var(--radius-sm); }
+    .card__link:hover { color: var(--white); }
+    .card__link:focus-visible { outline: none; box-shadow: var(--shadow-focus); }
+    .step__num { font: 500 15px/1 var(--font-mono); color: var(--fg-200); }
 
-    @media (prefers-reduced-motion: reduce) { .planet { transition: none; } }
+    /* Products: two cards; Flight Check is not out yet, so it sits back */
+    .products { grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); max-width: 900px; width: 100%; align-self: center; }
+    .product--soon { opacity: .6; }
+
+    /* Results: a drawn report page beside the chapter list */
+    .results { display: grid; gap: var(--space-6); grid-template-columns: minmax(0, 320px) minmax(0, 1fr); align-items: center; }
+    @media (max-width: 860px) { .results { grid-template-columns: minmax(0, 1fr); } .report { max-width: 320px; } }
+    .report { aspect-ratio: 3 / 4; display: flex; flex-direction: column; gap: var(--space-2); padding: var(--space-3); border-radius: var(--radius-xl); }
+    .report__title { margin: 0; font: 600 20px/26px var(--font-sans); color: var(--fg); }
+    .report__chart { flex: 1; display: flex; align-items: flex-end; gap: var(--space-1); padding-top: var(--space-2); border-bottom: 1px solid var(--border); }
+    .report__chart span { flex: 1; border-radius: var(--radius-xs) var(--radius-xs) 0 0; background: var(--grey-400); }
+    .report__chart span.is-you { background: var(--blue); }
+    .report__lines { display: grid; gap: var(--space-1); }
+    .report__lines span { height: 6px; border-radius: var(--radius-full); background: var(--grey-500); }
+    .chapters { display: grid; gap: var(--space-3) var(--space-4); grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); margin: 0; padding: 0; list-style: none; }
+    .chapters li { padding-top: var(--space-2); border-top: 1px solid var(--border); }
+    .chapters h3 { margin: 0 0 var(--space-0-5); font: 500 16px/24px var(--font-sans); color: var(--fg); }
+    .chapters p { margin: 0; font: 400 14px/22px var(--font-sans); letter-spacing: .1px; color: var(--fg-300); }
+
+    /* Placeholder slots: content the founder still has to supply */
+    .slots { display: grid; gap: var(--space-2); grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); }
+    .slot { display: grid; place-items: center; height: 72px; border-radius: var(--radius-lg); border: 1px dashed var(--grey-400); font: 500 13px/20px var(--font-sans); color: var(--fg-300); }
+    .group { display: flex; flex-direction: column; gap: var(--space-2); }
+    .group h3 { margin: 0; font: 500 16px/24px var(--font-sans); color: var(--fg-200); }
+
+    /* Pricing */
+    .plan { width: 100%; max-width: 440px; box-sizing: border-box; align-self: center; }
+    .plan__price { margin: var(--space-1) 0 var(--space-3); font: 600 32px/40px var(--font-sans); color: var(--fg); }
+    .plan ul { margin: 0 0 var(--space-4); padding: 0; list-style: none; display: grid; gap: var(--space-1-5); }
+    .plan li { position: relative; padding-left: var(--space-3); font: 400 15px/24px var(--font-sans); color: var(--fg-200); }
+    .plan li::before { content: ""; position: absolute; left: 4px; top: 9px; width: 6px; height: 6px; border-radius: 50%; background: var(--green); }
+
+    /* FAQ */
+    .faq { width: 100%; max-width: var(--container-xs); align-self: center; display: grid; }
+    .faq details { border-top: 1px solid var(--border); }
+    .faq details:last-child { border-bottom: 1px solid var(--border); }
+    .faq summary { display: flex; align-items: center; justify-content: space-between; gap: var(--space-2); padding: var(--space-2-5) 0; font: 500 17px/26px var(--font-sans); color: var(--fg); cursor: pointer; list-style: none; }
+    .faq summary::-webkit-details-marker { display: none; }
+    .faq summary::after { content: "+"; flex: none; font: 400 22px/1 var(--font-sans); color: var(--fg-300); }
+    .faq details[open] summary::after { content: "\2212"; }
+    .faq summary:focus-visible { outline: none; box-shadow: var(--shadow-focus); border-radius: var(--radius-sm); }
+    .faq p { margin: 0 0 var(--space-2-5); max-width: 640px; font: 400 15px/24px var(--font-sans); letter-spacing: .2px; color: var(--fg-200); }
+
+    /* Book a call */
+    .block--cta .cz-btn { height: 52px; padding: 0 var(--space-3); font-size: 16px; }
+
+    /* Footer */
+    /* Three times its first height (about 100px), with the content spread top to bottom */
+    .site-footer {
+      box-sizing: border-box; min-height: 304px; display: flex;
+      padding: var(--space-6) max(var(--space-3), env(safe-area-inset-right, 0px)) calc(var(--space-4) + env(safe-area-inset-bottom, 0px)) max(var(--space-3), env(safe-area-inset-left, 0px));
+      background: var(--bg); border-top: 1px solid var(--border);
+    }
+    .site-footer__inner { width: 100%; max-width: var(--container); margin: 0 auto; display: flex; flex-direction: column; justify-content: space-between; gap: var(--space-5); }
+    .site-footer__top { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--space-2) var(--space-4); }
+    .site-footer__bottom { padding-top: var(--space-3); border-top: 1px solid var(--border); }
+    .site-footer__links { display: flex; flex-wrap: wrap; gap: var(--space-0-5) var(--space-3); }
+    .site-footer a { font: 500 14px/20px var(--font-sans); color: var(--fg-200); text-decoration: none; }
+    .site-footer a:hover { color: var(--fg); }
+    .site-footer__brand { display: flex; align-items: center; gap: var(--space-1); font-weight: 600; color: var(--fg); }
+    .site-footer small { font: 400 13px/20px var(--font-sans); color: var(--fg-300); }
+
+    @media (prefers-reduced-motion: reduce) { .planet { transition: none; } .scroll-cue svg { animation: none; } }
   </style>
 </head>
 <body>
@@ -89,79 +184,292 @@
     <nav class="cz-nav cz-glass" data-refract aria-label="Main">
       <a class="cz-nav__brand" href="./"><img class="cz-nav__mark" src="assets/brand/favicon.svg" alt="" width="24" height="24">colonAIz</a>
       <div class="cz-nav__links" data-cz-lens>
-        <a class="cz-nav__link" href="#">How it works</a>
-        <a class="cz-nav__link" href="#">Use cases</a>
-        <a class="cz-nav__link" href="#">Pricing</a>
-        <a class="cz-nav__link" href="#">Blog</a>
+        <a class="cz-nav__link" href="#products">Products</a>
+        <a class="cz-nav__link" href="#how">How it works</a>
+        <a class="cz-nav__link" href="#pricing">Pricing</a>
+        <a class="cz-nav__link" href="#faq">FAQ</a>
       </div>
       <a class="cz-nav__link nav-login" href="#">Log in</a>
-      <a class="cz-btn cz-btn--sm cz-btn--primary cz-glass cz-glass--prominent cz-glass--interactive" href="#">Join the waitlist</a>
+      <a class="cz-btn cz-btn--sm cz-btn--primary cz-glass cz-glass--prominent cz-glass--interactive" href="#book-a-call">Book a call</a>
     </nav>
   </header>
 
   <main>
-    <section class="hero" aria-labelledby="hero-title">
+    <section class="section hero" aria-labelledby="hero-title">
       <div class="hero__text">
-        <h1 id="hero-title">200,000 companies.<br>One question.</h1>
-        <p class="hero__lead">ColonAIz crawls the live web across 50 countries — including 1,500 VCs, accelerators, and incubators — and lets you ask anything about them in plain English. Discover startups, validate ideas, source deals.</p>
+        <h1 id="hero-title">Business intelligence in your orbit.</h1>
+        <p class="hero__lead">Your competitors, your market, and your industry never stop moving. Our analysts track them continuously and report what changed, so you lead your company on evidence, not on guesses.</p>
       </div>
 
-      <div class="hero__cta">
-        <div class="hero__actions">
-          <a class="cz-btn cz-btn--primary cz-glass cz-glass--prominent cz-glass--interactive" href="#">Join the waitlist</a>
-          <a class="cz-btn cz-glass cz-glass--interactive" href="#">See how it works</a>
+      <button class="scroll-cue cz-glass cz-glass--interactive" type="button" data-scroll-cue aria-label="Scroll down">
+        <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true"><path d="M4.5 7l4.5 4.5L13.5 7" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+    </section>
+
+    <!-- What we do -->
+    <section class="section block" id="what-we-do" aria-labelledby="what-title">
+      <div class="block__inner">
+        <div class="block__head">
+          <p class="eyebrow">What we do</p>
+          <h2 id="what-title">Who's tracking your market while you build your business?</h2>
+          <p class="block__lead">colonAIz does. We provide continuous market research and business intelligence as a service, delivering actionable insights and ready-to-use reports. Your team stays focused on building your product while we keep you informed, one step ahead of the market.</p>
         </div>
-        <p class="hero__sub">50 countries · 200K+ companies · Free to explore</p>
+        <div class="grid">
+          <article class="cz-card">
+            <h3>If this is you</h3>
+            <p class="cz-card__body">You are deciding on pricing, features, and hiring without current data on your market, because nobody on your team has the time to gather it. Each month, the gap grows between the market you assume and the market that exists. Most small and mid-size companies are in this position.</p>
+          </article>
+          <article class="cz-card">
+            <h3>What we produce</h3>
+            <p class="cz-card__body">Imagine a business intelligence team working hard for your company: monitoring your market and handing you clean, summarized insights, so you always have the latest changes in the market you work in. We do this for you. It takes no effort on your side, and the reports go further than you expect.</p>
+          </article>
+          <article class="cz-card">
+            <h3>What you gain</h3>
+            <p class="cz-card__body">A clear understanding of your market, so you can lead your company better and make better decisions: when to build the next feature, and when to hold back. You stop spending time and money on moves the market did not ask for.</p>
+          </article>
+        </div>
       </div>
+    </section>
 
-      <a class="announce cz-glass cz-glass--interactive" href="#">
-        <span class="cz-badge cz-badge--blue cz-badge--pill">Live</span>
-        Now indexing 1,500 accelerators and VCs worldwide
-        <span class="announce__muted" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M5 3l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-      </a>
+    <!-- Products. The sections after this one all describe Star Track; the focus animation comes later. -->
+    <section class="section block block--center" id="products" aria-labelledby="products-title">
+      <div class="block__inner">
+        <div class="block__head">
+          <p class="eyebrow">Products</p>
+          <h2 id="products-title">Two products. One planet of data.</h2>
+        </div>
+        <div class="grid products">
+          <article class="cz-card cz-card--glow" data-product="star-track">
+            <h3>Star Track</h3>
+            <p class="cz-card__body">Regular reports on your competitors, your market, and your industry: what changed, and what it means for your business.</p>
+            <a class="card__link" href="#how">See how Star Track works ↓</a>
+          </article>
+          <article class="cz-card product--soon" data-product="flight-check">
+            <div class="card__head">
+              <h3>Flight Check</h3>
+              <span class="cz-badge cz-badge--pill">Soon</span>
+            </div>
+            <!-- TODO founder: one sentence on what Flight Check does -->
+            <p class="cz-card__body">Our next product, in preparation. Details soon.</p>
+          </article>
+        </div>
+      </div>
+    </section>
 
-      <div class="hero__shot" data-planet-focus>
-        <div class="cz-palette cz-glass" data-refract role="img" aria-label="The colonAIz discovery engine showing results for AI-powered agricultural startups in the UK">
-          <div class="cz-palette__search">
-            <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true"><circle cx="8" cy="8" r="5.5" stroke="var(--fg-300)" stroke-width="1.5"/><path d="M12 12l4 4" stroke="var(--fg-300)" stroke-width="1.5" stroke-linecap="round"/></svg>
-            <input id="hero-search" type="text" value="AI-powered agricultural startups, UK, seed stage" tabindex="-1" aria-hidden="true">
+    <!-- Star Track: how we make the reports -->
+    <section class="section block" id="how" aria-labelledby="how-title">
+      <div class="block__inner">
+        <div class="block__head">
+          <p class="eyebrow">Star Track · How it works</p>
+          <h2 id="how-title">How we make your report.</h2>
+        </div>
+        <div class="grid">
+          <article class="cz-card">
+            <div class="cz-card__icon step__num">01</div>
+            <h3>We find your competitors</h3>
+            <p class="cz-card__body">All over the internet: in your country, your continent, or the world, depending on your scale.</p>
+          </article>
+          <article class="cz-card">
+            <div class="cz-card__icon step__num">02</div>
+            <h3>We monitor them</h3>
+            <p class="cz-card__body">Prices, products, hiring, websites, social media, and the market around them.</p>
+          </article>
+          <article class="cz-card">
+            <div class="cz-card__icon step__num">03</div>
+            <h3>We investigate</h3>
+            <p class="cz-card__body">Our analysts use cutting-edge technology to dig into what changed and what it means.</p>
+          </article>
+          <article class="cz-card">
+            <div class="cz-card__icon step__num">04</div>
+            <h3>An analyst reviews it</h3>
+            <p class="cz-card__body">Our business analysts check the report before it reaches you.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- Star Track: what you get -->
+    <section class="section block" id="results" aria-labelledby="results-title">
+      <div class="block__inner">
+        <div class="block__head">
+          <p class="eyebrow">Star Track · What you get</p>
+          <h2 id="results-title">One document. The full picture.</h2>
+          <p class="block__lead">A PDF full of reports, charts, facts, and data on your competitors, your market, and your own company.</p>
+        </div>
+        <div class="results">
+          <div class="cz-card report" role="img" aria-label="Illustration of a Star Track report page with a bar chart">
+            <p class="eyebrow">Star Track report</p>
+            <p class="report__title">Your market, this period</p>
+            <div class="report__chart"><span style="height:38%"></span><span style="height:62%"></span><span class="is-you" style="height:78%"></span><span style="height:54%"></span><span style="height:91%"></span><span style="height:47%"></span></div>
+            <div class="report__lines"><span style="width:92%"></span><span style="width:76%"></span><span style="width:84%"></span></div>
           </div>
-          <div class="cz-palette__list">
-            <div class="cz-palette__section">3 results · UK · Agriculture · AI</div>
-            <div class="cz-palette__item is-selected">
-              <span class="cz-palette__icon" style="background:var(--blue)"></span>
-              CropMind AI
-              <span class="cz-palette__sub">Precision farming intelligence · London</span>
-              <span class="cz-palette__meta">Seed</span>
-            </div>
-            <div class="cz-palette__item">
-              <span class="cz-palette__icon" style="background:var(--green)"></span>
-              SoilSense Technologies
-              <span class="cz-palette__sub">Soil health monitoring SaaS · Manchester</span>
-              <span class="cz-palette__meta">12 employees</span>
-            </div>
-            <div class="cz-palette__item">
-              <span class="cz-palette__icon" style="background:var(--purple)"></span>
-              HarvestIQ
-              <span class="cz-palette__sub">Yield prediction & logistics · Bristol</span>
-              <span class="cz-palette__meta">Pre-revenue</span>
-            </div>
-            <div class="cz-palette__section">Related searches</div>
-            <div class="cz-palette__item">
-              <span class="cz-palette__icon" style="background:var(--yellow)"></span>
-              AgriTech investors in UK
-              <span class="cz-palette__sub">47 VCs and accelerators found</span>
-              <span class="cz-palette__meta">Search</span>
-            </div>
-          </div>
-          <div class="cz-palette__bar">
-            <span>colonAIz · 200K companies</span>
-            <div class="cz-palette__actions"><span>Open <kbd class="cz-kbd">↵</kbd></span><span>Ask more <span class="cz-keys"><kbd class="cz-kbd">⌘</kbd><kbd class="cz-kbd">K</kbd></span></span></div>
-          </div>
+          <ul class="chapters">
+            <li><h3>Products and pricing</h3><p>Prices, features, new products, and failed programs.</p></li>
+            <li><h3>Team and growth</h3><p>Job openings, team size and roles, cities, and fundraises.</p></li>
+            <li><h3>Visibility</h3><p>Website traffic, social followers and engagement, keyword rankings, backlinks, and ads on your company name.</p></li>
+            <li><h3>Reputation</h3><p>Mentions and unsatisfied users, for your company and for theirs.</p></li>
+            <li><h3>Your market</h3><p>Category trends, Google Trends, new and dead businesses, and platform trends.</p></li>
+            <li><h3>Opportunities and threats</h3><p>Investor and grant programs, regulation updates, and active threats.</p></li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- Star Track: why it is worth paying for -->
+    <section class="section block" id="worth" aria-labelledby="worth-title">
+      <div class="block__inner">
+        <div class="block__head">
+          <p class="eyebrow">Star Track · Why it is worth it</p>
+          <h2 id="worth-title">An analyst team, without the team.</h2>
+        </div>
+        <div class="grid">
+          <article class="cz-card">
+            <h3>Markets change fast</h3>
+            <p class="cz-card__body">Businesses, metrics, and prices shift constantly. You need clean data to find your path and keep pace.</p>
+          </article>
+          <article class="cz-card">
+            <h3>An analyst team is expensive</h3>
+            <p class="cz-card__body">For a small company, a team of business analysts costs too much. We are that team.</p>
+          </article>
+          <article class="cz-card">
+            <h3>Doing it yourself takes time</h3>
+            <p class="cz-card__body">Gathering all of this by hand takes hours your business needs. We do it for you.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- Star Track: how regularly the reports arrive -->
+    <section class="section block" id="delivery" aria-labelledby="delivery-title">
+      <div class="block__inner">
+        <div class="block__head">
+          <p class="eyebrow">Star Track · Delivery</p>
+          <h2 id="delivery-title">Reports that keep arriving.</h2>
+          <!-- TODO founder: the exact schedule, once decided -->
+          <p class="block__lead">Star Track is not a one-off. Reports arrive on a regular schedule, and each one shows what changed since the last.</p>
+        </div>
+        <div class="grid">
+          <article class="cz-card">
+            <div class="cz-card__icon step__num">01</div>
+            <h3>You start</h3>
+            <p class="cz-card__body">Tell us about your business. We find your competitors and begin monitoring.</p>
+          </article>
+          <article class="cz-card">
+            <div class="cz-card__icon step__num">02</div>
+            <h3>Your first report</h3>
+            <p class="cz-card__body">The full picture of your competitors, your market, and where you stand.</p>
+          </article>
+          <article class="cz-card">
+            <div class="cz-card__icon step__num">03</div>
+            <h3>Every report after</h3>
+            <p class="cz-card__body">What changed since the last report, so nothing reaches your business unnoticed.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- Are we legit: who trusts us and who has listed us -->
+    <section class="section block" id="trust" aria-labelledby="trust-title">
+      <div class="block__inner">
+        <div class="block__head">
+          <p class="eyebrow">Trust</p>
+          <h2 id="trust-title">Trusted and listed.</h2>
+        </div>
+        <!-- TODO founder: real names and logos. The dashed boxes are placeholders. -->
+        <div class="group">
+          <h3>Who trusts us</h3>
+          <div class="slots"><div class="slot">Logo</div><div class="slot">Logo</div><div class="slot">Logo</div><div class="slot">Logo</div></div>
+        </div>
+        <div class="group">
+          <h3>Where we are listed</h3>
+          <div class="slots"><div class="slot">Logo</div><div class="slot">Logo</div><div class="slot">Logo</div><div class="slot">Logo</div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Pricing -->
+    <section class="section block block--center" id="pricing" aria-labelledby="pricing-title">
+      <div class="block__inner">
+        <div class="block__head">
+          <p class="eyebrow">Pricing</p>
+          <h2 id="pricing-title">Star Track pricing.</h2>
+        </div>
+        <article class="cz-card cz-card--glow plan">
+          <h3>Star Track</h3>
+          <!-- TODO founder: the real price and billing period -->
+          <p class="plan__price">[Price]</p>
+          <ul>
+            <li>We find your competitors for you</li>
+            <li>Regular reports full of charts, facts, and data</li>
+            <li>Your competitors, your market, and your own company</li>
+            <li>Reviewed by our business analysts</li>
+          </ul>
+          <a class="cz-btn cz-btn--primary cz-glass cz-glass--prominent cz-glass--interactive" href="#book-a-call">Book a call</a>
+        </article>
+      </div>
+    </section>
+
+    <!-- FAQ -->
+    <section class="section block block--center" id="faq" aria-labelledby="faq-title">
+      <div class="block__inner">
+        <div class="block__head">
+          <p class="eyebrow">FAQ</p>
+          <h2 id="faq-title">Questions, answered.</h2>
+        </div>
+        <div class="faq">
+          <details>
+            <summary>How do you find my competitors?</summary>
+            <p>We search all over the internet: in your country, your continent, or the world, depending on the scale of your business. You do not need to give us a list.</p>
+          </details>
+          <details>
+            <summary>What is in a report?</summary>
+            <p>Reports, charts, facts, and data on your competitors' products, pricing, team, and visibility, on your market and category, and on your own company's mentions and reputation.</p>
+          </details>
+          <details>
+            <summary>Who makes the reports?</summary>
+            <p>Our business analysts, using cutting-edge technology to monitor and investigate. An analyst reviews the report before it reaches you.</p>
+          </details>
+          <details>
+            <summary>How often will I receive a report?</summary>
+            <p>On a regular schedule. Each report shows what changed since the last one.</p>
+          </details>
+          <details>
+            <summary>What is Flight Check?</summary>
+            <p>Our next product. It is in preparation, and we will share details soon.</p>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <!-- Book a call -->
+    <section class="section block block--center block--cta" id="book-a-call" aria-labelledby="call-title">
+      <div class="block__inner">
+        <div class="block__head">
+          <h2 id="call-title">See what is moving in your orbit.</h2>
+          <p class="block__lead">Book a call, and we will show you what Star Track can tell you about your competitors and your market.</p>
+          <!-- TODO founder: the booking link -->
+          <a class="cz-btn cz-btn--primary cz-glass cz-glass--prominent cz-glass--interactive" href="#book-a-call">Book a call</a>
         </div>
       </div>
     </section>
   </main>
+
+  <footer class="site-footer">
+    <div class="site-footer__inner">
+      <div class="site-footer__top">
+        <a class="site-footer__brand" href="./"><img src="assets/brand/favicon.svg" alt="" width="20" height="20">colonAIz</a>
+        <nav class="site-footer__links" aria-label="Footer">
+          <a href="#what-we-do">What we do</a>
+          <a href="#products">Products</a>
+          <a href="#how">How it works</a>
+          <a href="#pricing">Pricing</a>
+          <a href="#faq">FAQ</a>
+          <a href="#book-a-call">Book a call</a>
+        </nav>
+      </div>
+      <div class="site-footer__bottom"><small>© 2026 colonAIz</small></div>
+    </div>
+  </footer>
   <script type="importmap">
     {
       "imports": {
@@ -176,6 +484,14 @@
     const whenIdle = () => ('requestIdleCallback' in window ? requestIdleCallback(start, { timeout: 1500 }) : setTimeout(start, 200));
     if (document.readyState === 'complete') whenIdle(); else addEventListener('load', whenIdle, { once: true });
   </script>
-  <script src="design-system/components/glass.js" defer></script>
+  <script>
+    // Scroll cue: go to the section after the hero, or one screen down while the hero is the only section
+    document.querySelector('[data-scroll-cue]').addEventListener('click', (event) => {
+      const behavior = matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth';
+      const next = event.currentTarget.closest('section').nextElementSibling;
+      if (next) next.scrollIntoView({ behavior }); else scrollBy({ top: innerHeight, behavior });
+    });
+  </script>
+  <script src="docs/design-system/components/glass.js" defer></script>
 </body>
 </html>

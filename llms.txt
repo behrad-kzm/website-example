@@ -1,7 +1,7 @@
 # colonAIz
 
-> colonAIz lets you ask anything about 200,000+ companies across 50 countries in plain English. It crawls the live web, including 1,500 VCs, accelerators, and incubators, so you can discover startups, validate ideas, and source deals.
+> colonAIz is business intelligence as a service for small and mid-size companies. Its analysts track a company's competitors, market, and industry continuously and report what changed. Its first product, Star Track, delivers regular reports full of charts, facts, and data. A second product, Flight Check, is coming soon.
 
 ## Pages
 
-- [Home](https://colonaiz.com/): product overview and waitlist
+- [Home](https://colonaiz.com/): what we do, products, how Star Track reports are made, pricing, FAQ, and booking a call
