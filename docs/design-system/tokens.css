@@ -100,17 +100,15 @@
   --glass-bezel: 26;
   --glass-press-scale: 0.96;
   --glass-dispersion: 0.12;
-  --font-sans: Inter, "Inter Fallback", system-ui, -apple-system, sans-serif;
-  --font-mono: "JetBrains Mono", Menlo, Monaco, Courier, monospace;
-  --font-display-mono: "Geist Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
-  --font-serif: "Instrument Serif", Georgia, serif;
-  --font-pixel: VT323, ui-monospace, monospace;
+  /* Two typefaces only, never mixed within one sentence */
+  --font-headline: Inter, "Inter Fallback", system-ui, -apple-system, sans-serif;   /* primary: headlines */
+  --font-sans: "Inter Tight", Inter, system-ui, -apple-system, sans-serif;          /* secondary: all other text */
 }
-.display-xl { font-family: var(--font-sans); font-size: 72px; line-height: 84px; font-weight: 600; letter-spacing: 0px; }
-.display-lg { font-family: var(--font-sans); font-size: 64px; line-height: 1.1; font-weight: 600; }
-.display-md { font-family: var(--font-sans); font-size: 48px; line-height: 1.0625; font-weight: 600; }
-.heading-lg { font-family: var(--font-sans); font-size: 36px; line-height: 40px; font-weight: 600; }
-.heading-md { font-family: var(--font-sans); font-size: 32px; line-height: 1.3; font-weight: 600; }
+.display-xl { font-family: var(--font-headline); font-size: 72px; line-height: 84px; font-weight: 900; letter-spacing: 0px; }
+.display-lg { font-family: var(--font-headline); font-size: 64px; line-height: 1.1; font-weight: 900; }
+.display-md { font-family: var(--font-headline); font-size: 48px; line-height: 1.0625; font-weight: 900; }
+.heading-lg { font-family: var(--font-headline); font-size: 36px; line-height: 40px; font-weight: 900; }
+.heading-md { font-family: var(--font-headline); font-size: 32px; line-height: 1.3; font-weight: 900; }
 .heading-sm { font-family: var(--font-sans); font-size: 24px; line-height: 36px; font-weight: 600; }
 .title { font-family: var(--font-sans); font-size: 20px; line-height: 30px; font-weight: 500; }
 .body-lg { font-family: var(--font-sans); font-size: 18px; line-height: 28px; font-weight: 400; letter-spacing: 0.2px; }
@@ -120,6 +118,3 @@
 .caption { font-family: var(--font-sans); font-size: 13px; line-height: 20px; font-weight: 500; letter-spacing: 0.1px; }
 .label { font-family: var(--font-sans); font-size: 12px; line-height: 16px; font-weight: 500; letter-spacing: 0.3px; }
 .micro { font-family: var(--font-sans); font-size: 11px; line-height: 16px; font-weight: 500; }
-.code { font-family: var(--font-mono); font-size: 14px; line-height: 20px; font-weight: 400; }
-.numeral-mono { font-family: var(--font-display-mono); font-size: 56px; line-height: 1; font-weight: 700; letter-spacing: 0.2px; }
-.serif-accent { font-family: var(--font-serif); font-size: 48px; line-height: 1.1; font-weight: 400; font-style: italic; }

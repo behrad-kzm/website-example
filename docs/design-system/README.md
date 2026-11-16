@@ -18,7 +18,7 @@ A dark, keyboard-first interface language for the colonAIz website. Every value 
 - **Name the feature, then the benefit.** Card copy runs one sentence: "Snap windows to halves, thirds and corners with a shortcut."
 - **Buttons are verbs with an object:** "Download for Mac", "Install Extension", "Copy command".
 - **Eyebrows and list headers** use the `label` style (12/500, +0.3px tracking) in `fg-300`.
-- Emphasis inside a headline may switch one phrase to `serif-accent` (Instrument Serif italic). Use it once per page at most.
+- A headline is set in one typeface throughout. Never switch typeface for a phrase inside a sentence.
 
 ## Visual foundations
 
@@ -39,7 +39,7 @@ Marketing backdrops use two gradients from the source: the wallpaper `linear-gra
 
 ### Type
 
-Inter is the only UI face, with stylistic sets `ss02` and `ss08` on and ligatures off. Weight 500 is the default for UI text (it appears four times as often as 400 in the source); headings use 600. JetBrains Mono sets code; Geist Mono sets large numerals; Instrument Serif italic is the rare accent. Small text carries +0.1 to +0.3px tracking.
+The system uses two typefaces and no others, never mixed within one sentence. Inter (`--font-headline`), at weight 900 with tight tracking, sets the headline of the hero and of each section. Inter Tight (`--font-sans`) sets all other text: paragraphs, lists, small titles, navigation, buttons, and labels. Weight 500 is the default for UI text and 400 for running text. Small text carries +0.1 to +0.3px tracking. There is no monospace, serif, or pixel face; numerals that must line up use `font-variant-numeric: tabular-nums`.
 
 The scale: 72 / 64 / 48 / 36 / 32 / 24 / 20 / 18 / 16 / 15 / 14 / 13 / 12 / 11. `body-sm` (14/500) is the workhorse.
 

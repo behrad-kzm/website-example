@@ -522,12 +522,19 @@ export function digitAtlas() {
   ctx.fillStyle = '#fff';
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
-  ctx.font = '700 50px "JetBrains Mono", Menlo, monospace';
-  ctx.fillText('0', 32, 34);
-  ctx.fillText('1', 96, 34);
+  // The digits use the site's text face. Until it has loaded they are drawn in the fallback, then redrawn.
+  const FONT = '700 50px "Inter Tight", Inter, system-ui, sans-serif';
+  const draw = () => {
+    ctx.clearRect(0, 0, c.width, c.height);
+    ctx.font = FONT;
+    ctx.fillText('0', 32, 34);
+    ctx.fillText('1', 96, 34);
+  };
+  draw();
   const tex = new THREE.CanvasTexture(c);
   tex.minFilter = THREE.LinearMipmapLinearFilter;
   tex.anisotropy = 4;
+  if (document.fonts && document.fonts.load) document.fonts.load(FONT, '01').then(() => { draw(); tex.needsUpdate = true; }).catch(() => {});
   return tex;
 }
 
