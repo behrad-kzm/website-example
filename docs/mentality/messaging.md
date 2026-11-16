@@ -13,7 +13,8 @@ We are professional business analysts, and the page text should read like a busi
 - Hero headline: "Business intelligence in your orbit." It replaced "Track every company in your orbit." The founder wants the hero headline to trigger visitors to feel they need this.
 - Hero lead: "Your competitors, your market, and your industry never stop moving. Our analysts track them continuously and report what changed, so you lead your company on evidence, not on guesses." It replaced the founder's earlier lead ("We track your competitors, market, and industry to uncover meaningful insights, emerging opportunities, and potential threats before they impact your business."), which the founder asked to be rewritten after the later conversation. Not yet confirmed by the founder.
 - "What we do" headline: "Who's tracking your market while you build your business?" Earlier candidates the founder moved past: "You build the business. We do the analysis." (rejected as a cliché) and "Market research has to continue while you build. Do you have the team or the time to do it professionally?"
-- "What we do" paragraph: "colonAIz does. We provide continuous market research and business intelligence as a service, delivering actionable insights and ready-to-use reports. Your team stays focused on building your product while we keep you informed, one step ahead of the market."
+- "What we do" paragraph: "We do it for you. We provide continuous market research and business intelligence as a service, delivering actionable insights and ready-to-use reports. Your team stays focused on building your product while we keep you informed, one step ahead of the market." The opening was "colonAIz does." until the founder changed it on 16 November 2026.
+- "What we do", first point: the title is "Who are our clients?" (founder, 16 November 2026; it replaced "If this is you"), and the text answers that question: small and mid-size companies whose teams have no time to gather current market data.
 
 ## Wording rules
 
@@ -24,7 +25,7 @@ We are professional business analysts, and the page text should read like a busi
 - Do not commit to "every week". Use wording that suggests a regular rhythm without a seven-day promise.
 - Frame the outcome as competitors never getting one step ahead of the client, rather than the client being one step ahead.
 - Keep sentences short: use precise words that deliver the exact meaning with higher impact.
-- Copy that describes the visitor (such as the "If this is you" box) must sound professional and create a need in them. Write something every founder feels.
+- Copy that describes the visitor (such as the "Who are our clients?" point, formerly "If this is you") must sound professional and create a need in them. Write something every founder feels.
 
 ## What the client wants to know
 

@@ -3,6 +3,11 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "start": "npx serve . --listen 3000"
+    "start": "npx serve . --listen 3000",
+    "test": "playwright test"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.65.1",
+    "serve": "^14.2.8"
   }
 }

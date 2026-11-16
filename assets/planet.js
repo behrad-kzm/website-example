@@ -7,7 +7,7 @@ import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
 import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
 import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
 
-const PALETTE = {
+export const PALETTE = {
   base: '#050B19',
   dark: '#07172D',
   metal: '#102C59',
@@ -17,10 +17,10 @@ const PALETTE = {
   purple: '#351A75',
 };
 
-const PLANET_SPEED = 0.035; // rad/s around its own axis
+export const PLANET_SPEED = 0.035; // rad/s around its own axis
 const RING_SPEED = 0.06;    // rad/s, slightly faster than the planet
-const AXIAL_TILT = 0.2;     // ring and planet lean to the right
-const RING_INCLINE = 0.36;  // how far the ring plane tips toward the viewer
+export const AXIAL_TILT = 0.2;     // ring and planet lean to the right
+export const RING_INCLINE = 0.36;  // how far the ring plane tips toward the viewer
 
 function main() {
   const canvas = document.querySelector('[data-planet]');
@@ -317,7 +317,7 @@ const REACT_GLSL = /* glsl */`
   }
 `;
 
-function buildPlanet(detail) {
+export function buildPlanet(detail) {
   const cells = goldbergCells(detail);
   const positions = [], normals = [], edges = [], seeds = [], cellDirs = [], tops = [], lifts = [], moves = [];
   const tmpA = new THREE.Vector3(), tmpB = new THREE.Vector3(), nrm = new THREE.Vector3();
@@ -515,7 +515,7 @@ function buildPlanet(detail) {
 
 // ───────────── Binary ring ─────────────
 
-function digitAtlas() {
+export function digitAtlas() {
   const c = document.createElement('canvas');
   c.width = 128; c.height = 64;
   const ctx = c.getContext('2d');
@@ -531,18 +531,20 @@ function digitAtlas() {
   return tex;
 }
 
-function buildRing(laneCount, color) {
+// `coarse` (default 1) spaces the digits out and enlarges them by that factor, for a ring drawn small
+// (the miniature planet in "What we do", assets/what-we-do-sky.js)
+export function buildRing(laneCount, color, coarse = 1) {
   const angle = [], radius = [], height = [], speed = [], phase = [], size = [], lane = [];
   const inner = 1.3, outer = 2.08;
 
   for (let l = 0; l < laneCount; l++) {
     const r = inner + (l / (laneCount - 1)) * (outer - inner) + (Math.random() - 0.5) * 0.02;
-    const spacing = 0.026 + Math.random() * 0.012;
+    const spacing = (0.026 + Math.random() * 0.012) * coarse;
     const count = Math.floor((Math.PI * 2 * r) / spacing);
-    const run = 18 + Math.random() * 50;          // digits per dashed run
+    const run = (18 + Math.random() * 50) / coarse; // digits per dashed run
     const gap = 0.08 + Math.random() * 0.25;      // fraction of each run left empty
     const laneSpeed = RING_SPEED * (1.2 - (r - inner) * 0.35);
-    const laneSize = 0.028 + Math.random() * 0.012;
+    const laneSize = (0.028 + Math.random() * 0.012) * coarse;
     for (let i = 0; i < count; i++) {
       if ((i / run) % 1 < gap) continue;
       angle.push((i / count) * Math.PI * 2);

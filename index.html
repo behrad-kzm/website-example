@@ -12,6 +12,7 @@
   <!-- Web fonts load without blocking first paint; text shows in the system fallback until they arrive -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" media="print" onload="this.media='all'">
   <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap"></noscript>
+  <script>document.documentElement.classList.add('js');</script>
   <link rel="stylesheet" href="docs/design-system/tokens.css">
   <link rel="stylesheet" href="docs/design-system/components/bundle.css">
   <style>
@@ -112,6 +113,87 @@
     .card__link:focus-visible { outline: none; box-shadow: var(--shadow-focus); }
     .step__num { font: 500 15px/1 var(--font-mono); color: var(--fg-200); }
 
+    /* What we do. Without the script this is a plain list of three points. With it (html.js), the section is
+       several windows tall and its content is pinned. The headline stays. First the description shows beside
+       a single star. Scrolling replaces the description with the three points, one at a time; the other two
+       stars come out from behind the first as the view rises, and the star of the current point comes
+       forward (assets/what-we-do.js). The script adds
+       .is-static when the content cannot fit one window, which brings the plain list back. */
+    /* --wwd-dwell: how many windows of scroll room each step has. One scroll gesture moves one step however
+       far it travels (see the script); the room only has to be more than a single gesture covers. */
+    .wwd { --wwd-steps: 4; --wwd-dwell: 2; }
+    .wwd__copy { display: flex; flex-direction: column; gap: var(--space-2); }
+    .wwd__panels { display: grid; gap: var(--space-4); grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); margin-top: var(--space-4); }
+    .wwd__panel { padding-top: var(--space-2); border-top: 1px solid var(--border); }
+    .wwd__panel .step__num { margin: 0 0 var(--space-1-5); }
+    .wwd__panel h3 { margin: 0 0 var(--space-1); font: 500 20px/30px var(--font-sans); color: var(--fg); }
+    .wwd__panel p:last-child { margin: 0; font: 400 15px/24px var(--font-sans); letter-spacing: .2px; color: var(--fg-200); text-wrap: pretty; }
+    .wwd__rail, .wwd__sky { display: none; }
+
+    .js .wwd:not(.is-static) {
+      display: block; position: relative; padding: 0;
+      height: calc((var(--wwd-steps) * var(--wwd-dwell) + 1) * 100vh); height: calc((var(--wwd-steps) * var(--wwd-dwell) + 1) * 100svh);
+    }
+    .js .wwd:not(.is-static) .wwd__sticky {
+      position: sticky; top: 0; box-sizing: border-box;
+      height: 100vh; height: 100svh;
+      padding: clamp(92px, 12svh, 120px) max(var(--space-3), env(safe-area-inset-right, 0px)) clamp(20px, 5svh, 64px) max(var(--space-3), env(safe-area-inset-left, 0px));
+    }
+    .js .wwd:not(.is-static) .wwd__inner { height: 100%; display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); gap: var(--space-6); }
+    .js .wwd.no-sky:not(.is-static) .wwd__inner { grid-template-columns: minmax(0, 1fr); }
+    /* The description and the points share one cell: only one of them is on screen at a time */
+    .js .wwd:not(.is-static) .wwd__copy { display: grid; grid-template-columns: minmax(0, 1fr); align-content: center; gap: clamp(12px, 2.2svh, 20px); min-height: 0; }
+    .js .wwd:not(.is-static) .block__head { grid-area: 1 / 1; }
+    .js .wwd:not(.is-static) .wwd__panels { grid-area: 3 / 1; align-self: start; }
+    /* The description starts where the progress rail sits, which is hidden while the description shows */
+    .js .wwd:not(.is-static) .wwd__lead { grid-area: 2 / 1 / 4 / 2; align-self: start; }
+    .js .wwd:not(.is-static) h2 { font-size: clamp(28px, min(5vw, 6svh), 48px); }
+    .js .wwd:not(.is-static) .wwd__rail { grid-area: 2 / 1; display: flex; gap: 6px; margin-top: clamp(8px, 2.5svh, 28px); transition: opacity .6s ease; }
+    .js .wwd.is-intro:not(.is-static) .wwd__rail { opacity: 0; }
+    .wwd__rail span { width: 28px; height: 2px; border-radius: var(--radius-full); background: var(--grey-400); transition: background-color .6s ease, width .6s cubic-bezier(.22, 1, .36, 1); }
+    .wwd__rail span.is-active { width: 44px; background: var(--fg); }
+    .js .wwd:not(.is-static) .wwd__panels { display: grid; grid-template-columns: minmax(0, 1fr); gap: 0; margin-top: 0; }
+    .js .wwd:not(.is-static) .wwd__panel { grid-area: 1 / 1; max-width: 560px; padding: 0; border: 0; }
+    .js .wwd:not(.is-static) .wwd__panel h3 { font-size: clamp(22px, 3.4svh, 28px); line-height: 1.3; }
+    .js .wwd:not(.is-static) .wwd__panel p:last-child { font-size: 17px; line-height: 28px; }
+
+    /* Changing point: the old text lifts away and is gone before the new one settles in from the direction
+       of the scroll, so two texts are never readable at once. The new one arrives slowly and stops still. */
+    .js .wwd:not(.is-static) .wwd__step {
+      opacity: 0; transform: translate3d(0, 20px, 0); filter: blur(5px); pointer-events: none;
+      transition: opacity .28s ease, transform .45s cubic-bezier(.4, 0, .6, 1), filter .28s ease;
+    }
+    .js .wwd:not(.is-static) .wwd__step.is-before { transform: translate3d(0, -20px, 0); }
+    .js .wwd:not(.is-static) .wwd__step.is-active {
+      opacity: 1; transform: none; filter: none; pointer-events: auto;
+      transition: opacity .7s cubic-bezier(.22, 1, .36, 1) .16s, transform .9s cubic-bezier(.22, 1, .36, 1) .16s, filter .6s ease .16s;
+    }
+
+    /* The constellation, and a numbered button beside each star that scrolls to its point */
+    .js .wwd:not(.is-static):not(.no-sky) .wwd__sky { display: block; position: relative; min-height: 0; }
+    /* While only the description shows, one star is in view and the numbers are not */
+    .js .wwd.is-intro:not(.is-static) .wwd__star { opacity: 0; pointer-events: none; }
+    .wwd__sky canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+    .wwd__star {
+      position: absolute; left: 0; top: 0; padding: var(--space-1); border: 0; background: none; cursor: pointer;
+      font: 500 11px/1 var(--font-mono); letter-spacing: .5px; color: var(--fg-300);
+      border-radius: var(--radius-sm); transition: color .6s ease, opacity .8s ease .5s; will-change: transform;
+    }
+    .wwd__star:hover, .wwd__star[aria-current] { color: var(--fg); }
+    .wwd__star:focus-visible { outline: none; box-shadow: var(--shadow-focus); }
+
+    @media (min-width: 861px) and (max-height: 760px) {
+      .js .wwd:not(.is-static) .wwd__lead { font-size: 16px; line-height: 24px; }
+      .js .wwd:not(.is-static) .wwd__panel p:last-child { font-size: 16px; line-height: 24px; }
+    }
+    /* Narrow screens: one column; the sky takes whatever height is left under the text */
+    @media (max-width: 860px) {
+      .js .wwd:not(.is-static) .wwd__inner { grid-template-columns: minmax(0, 1fr); grid-template-rows: auto minmax(96px, 1fr); gap: var(--space-2); }
+      .js .wwd:not(.is-static) .wwd__copy { align-content: start; }
+      .js .wwd:not(.is-static) .wwd__lead { font-size: 16px; line-height: 24px; }
+      .js .wwd:not(.is-static) .wwd__panel p:last-child { font-size: 16px; line-height: 24px; }
+    }
+
     /* Products: two cards; Flight Check is not out yet, so it sits back */
     .products { grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); max-width: 900px; width: 100%; align-self: center; }
     .product--soon { opacity: .6; }
@@ -175,6 +257,10 @@
     .site-footer small { font: 400 13px/20px var(--font-sans); color: var(--fg-300); }
 
     @media (prefers-reduced-motion: reduce) { .planet { transition: none; } .scroll-cue svg { animation: none; } }
+    @media (prefers-reduced-motion: reduce) {
+      .js .wwd:not(.is-static) .wwd__step, .js .wwd:not(.is-static) .wwd__step.is-before, .js .wwd:not(.is-static) .wwd__step.is-active { transform: none; filter: none; transition: opacity .2s ease; }
+      .wwd__rail span, .wwd__star { transition: none; }
+    }
   </style>
 </head>
 <body>
@@ -206,27 +292,41 @@
       </button>
     </section>
 
-    <!-- What we do -->
-    <section class="section block" id="what-we-do" aria-labelledby="what-title">
-      <div class="block__inner">
-        <div class="block__head">
-          <p class="eyebrow">What we do</p>
-          <h2 id="what-title">Who's tracking your market while you build your business?</h2>
-          <p class="block__lead">colonAIz does. We provide continuous market research and business intelligence as a service, delivering actionable insights and ready-to-use reports. Your team stays focused on building your product while we keep you informed, one step ahead of the market.</p>
-        </div>
-        <div class="grid">
-          <article class="cz-card">
-            <h3>If this is you</h3>
-            <p class="cz-card__body">You are deciding on pricing, features, and hiring without current data on your market, because nobody on your team has the time to gather it. Each month, the gap grows between the market you assume and the market that exists. Most small and mid-size companies are in this position.</p>
-          </article>
-          <article class="cz-card">
-            <h3>What we produce</h3>
-            <p class="cz-card__body">Imagine a business intelligence team working hard for your company: monitoring your market and handing you clean, summarized insights, so you always have the latest changes in the market you work in. We do this for you. It takes no effort on your side, and the reports go further than you expect.</p>
-          </article>
-          <article class="cz-card">
-            <h3>What you gain</h3>
-            <p class="cz-card__body">A clear understanding of your market, so you can lead your company better and make better decisions: when to build the next feature, and when to hold back. You stop spending time and money on moves the market did not ask for.</p>
-          </article>
+    <!-- What we do: pinned while the visitor scrolls from the description through the three points (assets/what-we-do.js) -->
+    <section class="section block wwd is-intro" id="what-we-do" aria-labelledby="what-title" data-wwd>
+      <div class="wwd__sticky">
+        <div class="block__inner wwd__inner">
+          <div class="wwd__copy">
+            <div class="block__head">
+              <p class="eyebrow">What we do</p>
+              <h2 id="what-title">Who's tracking your market while you build your business?</h2>
+            </div>
+            <p class="block__lead wwd__lead wwd__step is-active">We do it for you. We provide continuous market research and business intelligence as a service, delivering actionable insights and ready-to-use reports. Your team stays focused on building your product while we keep you informed, one step ahead of the market.</p>
+            <div class="wwd__rail" aria-hidden="true"><span></span><span></span><span></span></div>
+            <div class="wwd__panels">
+              <article class="wwd__panel wwd__step">
+                <p class="step__num">01</p>
+                <h3>Who are our clients?</h3>
+                <p>Small and mid-size companies whose teams are fully occupied with building the product. They decide on pricing, features, and hiring without current data on their market, because nobody on the team has the time to gather it. Each month, the gap grows between the market they assume and the market that exists. If that sounds familiar, you are one of them.</p>
+              </article>
+              <article class="wwd__panel wwd__step">
+                <p class="step__num">02</p>
+                <h3>What we produce</h3>
+                <p>Imagine a business intelligence team working hard for your company: monitoring your market and handing you clean, summarized insights, so you always have the latest changes in the market you work in. We do this for you. It takes no effort on your side, and the reports go further than you expect.</p>
+              </article>
+              <article class="wwd__panel wwd__step">
+                <p class="step__num">03</p>
+                <h3>What you gain</h3>
+                <p>A clear understanding of your market, so you can lead your company better and make better decisions: when to build the next feature, and when to hold back. You stop spending time and money on moves the market did not ask for.</p>
+              </article>
+            </div>
+          </div>
+          <div class="wwd__sky">
+            <canvas aria-hidden="true"></canvas>
+            <button class="wwd__star" type="button" aria-label="Show point 1: Who are our clients?">01</button>
+            <button class="wwd__star" type="button" aria-label="Show point 2: What we produce">02</button>
+            <button class="wwd__star" type="button" aria-label="Show point 3: What you gain">03</button>
+          </div>
         </div>
       </div>
     </section>
@@ -492,6 +592,7 @@
       if (next) next.scrollIntoView({ behavior }); else scrollBy({ top: innerHeight, behavior });
     });
   </script>
+  <script type="module" src="assets/what-we-do.js"></script>
   <script src="docs/design-system/components/glass.js" defer></script>
 </body>
 </html>
