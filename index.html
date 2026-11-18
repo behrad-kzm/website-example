@@ -196,6 +196,18 @@
       transition: opacity .7s cubic-bezier(.22, 1, .36, 1) .16s, transform .9s cubic-bezier(.22, 1, .36, 1) .16s, filter .6s ease .16s;
     }
 
+    /* Within a point, its bullets light up one by one as the scroll crosses the point's band: the band is
+       split evenly between them. Bullets still ahead are dim, the current one is brightest and leans in
+       slightly, and the ones already read stay lit. */
+    .js .wwd:not(.is-static) .wwd__panel li {
+      opacity: .32; transform: none;
+      transition: opacity .5s cubic-bezier(.22, 1, .36, 1), color .5s ease, transform .6s cubic-bezier(.22, 1, .36, 1);
+    }
+    .js .wwd:not(.is-static) .wwd__panel li::before { transition: background-color .5s ease, transform .5s ease; }
+    .js .wwd:not(.is-static) .wwd__panel li.is-read { opacity: .75; }
+    .js .wwd:not(.is-static) .wwd__panel li.is-current { opacity: 1; color: var(--fg); transform: translate3d(6px, 0, 0); }
+    .js .wwd:not(.is-static) .wwd__panel li.is-current::before { background: var(--fg); transform: scale(1.4); }
+
     /* The constellation, and a numbered button beside each star that scrolls to its point */
     .js .wwd:not(.is-static):not(.no-sky) .wwd__sky { display: block; position: relative; min-height: 0; }
     /* While only the description shows, one star is in view and the numbers are not */
@@ -374,6 +386,8 @@
     @media (prefers-reduced-motion: reduce) {
       .js .wwd:not(.is-static) .wwd__step, .js .wwd:not(.is-static) .wwd__step.is-before, .js .wwd:not(.is-static) .wwd__step.is-active { transform: none; filter: none; transition: opacity .2s ease; }
       .wwd__rail span, .wwd__star { transition: none; }
+      .js .wwd:not(.is-static) .wwd__panel li, .js .wwd:not(.is-static) .wwd__panel li.is-current { transform: none; transition: opacity .2s ease, color .2s ease; }
+      .js .wwd:not(.is-static) .wwd__panel li::before { transition: none; transform: none; }
     }
   </style>
 </head>

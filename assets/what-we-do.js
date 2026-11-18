@@ -67,9 +67,24 @@ function init(root) {
     const through = span > 0 ? clamp(scrolled / span, 0, 1) * steps.length : 0;   // 0 to the number of steps
     show(clamp(Math.floor(through), 0, last));
     rail.forEach((el, k) => el.style.setProperty('--p', clamp(through - k, 0, 1).toFixed(4)));
+    lightBullets(through);
     if (scrolled > 0 && scrolled < span) setMagnet(false);
     clearTimeout(idleTimer);
     idleTimer = setTimeout(onRest, IDLE);
+  }
+
+  // Inside a point's band, its bullets take turns: the band is split evenly between them, and the bullet
+  // whose share the scroll is in is the current one. Bullets before it count as read.
+  const bullets = panels.map((panel) => [...panel.querySelectorAll('li')]);
+  function lightBullets(through) {
+    bullets.forEach((items, i) => {
+      const local = clamp(through - (i + offset), 0, 1);   // 0 to 1 through this point's band
+      const current = through < i + offset ? -1 : clamp(Math.floor(local * items.length), 0, items.length - 1);
+      items.forEach((li, j) => {
+        li.classList.toggle('is-current', j === current);
+        li.classList.toggle('is-read', j < current);
+      });
+    });
   }
 
   function onRest() {
