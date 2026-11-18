@@ -8,11 +8,21 @@ Headlines should sound like business, technology, AI and space technology.
 
 We are professional business analysts, and the page text should read like a business analyst talking to the visitor.
 
+## Why space
+
+The founder's explanation, 18 November 2026. The site shows spacecraft, stars and planets for a reason, and the copy should tell the visitor that reason.
+
+- The client's business is the body at the centre.
+- The data about that business (market, competitors, industry) must be gathered into a ring around it, an orbit of 1s and 0s.
+- With that ring in place the client is fully aware and builds the product with awareness.
+
+Copy should use space elements (orbit, navigation, spacecraft) with a touch of sarcasm, and map back to this idea rather than use space as decoration. The "What we do" headline carries it.
+
 ## Accepted copy
 
 - Hero headline: "Business intelligence in your orbit." It replaced "Track every company in your orbit." The founder wants the hero headline to trigger visitors to feel they need this.
 - Hero lead: "Your competitors, your market, and your industry never stop moving. Our analysts track them continuously and report what changed, so you lead your company on evidence, not on guesses." It replaced the founder's earlier lead ("We track your competitors, market, and industry to uncover meaningful insights, emerging opportunities, and potential threats before they impact your business."), which the founder asked to be rewritten after the later conversation. Not yet confirmed by the founder.
-- "What we do" headline: "Who's tracking your market while you build your business?" Earlier candidates the founder moved past: "You build the business. We do the analysis." (rejected as a cliché) and "Market research has to continue while you build. Do you have the team or the time to do it professionally?"
+- "What we do" headline: "Is market data orbiting your product, or drifting?" Chosen by the founder on 18 November 2026. Founder's criteria for it: a short question (under 9 words) that challenges the reader on whether they are actively observing the market while focused on product development, carrying both ideas (checking the market, building the product), and using the space idea described in "Why space". Earlier candidates the founder moved past: "Watching your market while you build your product?" (no space idea), "Who's tracking your market while you build your business?" (replaced by the shorter, product-focused version), "You build the business. We do the analysis." (rejected as a cliché) and "Market research has to continue while you build. Do you have the team or the time to do it professionally?"
 - "What we do" paragraph: "We do it for you. We provide continuous market research and business intelligence as a service, delivering actionable insights and ready-to-use reports. Your team stays focused on building your product while we keep you informed, one step ahead of the market." The opening was "colonAIz does." until the founder changed it on 16 November 2026.
 - "What we do", the three points: each explanation is a short bullet list, not a paragraph (founder, 16 November 2026).
 - "What we do", first point: the title is "Who are our clients?" (founder, 16 November 2026; it replaced "If this is you"), and the text answers that question: small and mid-size companies whose teams have no time to gather current market data.

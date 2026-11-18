@@ -1,11 +1,11 @@
 // The sky of "What we do": three bodies in front of a Milky Way, joined by thin lines.
 //   1. The hero planet without its ring: a company on its own.
 //   2. A gas planet made of drifting 1 and 0 digits: the planet of data that colonAIz produces.
-//   3. The hero planet with its ring of digits: the company, equipped with that data.
+//   3. The hero planet with its ring of digits and the scanner pod above it: the company, equipped with that data.
 // Bodies 1 and 3 are built by the hero's own code (assets/planet.js), so they match it exactly.
 // Each body is drawn in its own square viewport, which lets the page place and size it freely.
 import * as THREE from 'three';
-import { buildPlanet, buildRing, digitAtlas, PALETTE, PLANET_SPEED, AXIAL_TILT, RING_INCLINE } from './planet.js';
+import { buildPlanet, buildRing, buildSatellite, digitAtlas, PALETTE, PLANET_SPEED, AXIAL_TILT, RING_INCLINE } from './planet.js';
 
 // Positions as fractions of the half-width and half-height of the sky, for tall and for wide skies
 const LAYOUT_TALL = [[-0.42, 0.58], [0.42, 0.12], [-0.12, -0.42]];
@@ -76,7 +76,14 @@ export function createSky(host, buttons, focus, reduceMotion) {
   ring.uniforms.uPlanet.value.set(0, 0, -camera.position.z);
   toDisplay(ring.points.material, gain);
   system.add(ring.points);
+  // The hero's scanner pod, enlarged like the ring's digits so it still reads on a small planet
+  const satellite = buildSatellite(color, 2.2);
+  const orbit = new THREE.Group();   // the ring's plane
+  orbit.rotation.x = RING_INCLINE;
+  orbit.add(satellite.group);
+  system.add(orbit);
   scene.add(system);
+  const planetMaterials = planet.group.children.map((mesh) => mesh.material);
 
   const data = buildDataPlanet(color, gain);
   scene.add(data.group);
@@ -106,8 +113,21 @@ export function createSky(host, buttons, focus, reduceMotion) {
     ring.uniforms.uScale.value = pointScale;
     data.uniforms.uScale.value = pointScale;
     gain.value = 1.1 + 1.1 * current[i];   // the body in focus is lit; the others sit back
+    satellite.dim = 0.5 + 0.5 * current[i];
+    satellite.group.visible = i === 2;
+    satellite.body.visible = false;
     renderer.clearDepth();
     renderer.render(scene, camera);
+    if (i !== 2) return;
+    // The pod is drawn afterwards, on top of the ring's digits (which ignore depth). The planet is redrawn
+    // into the depth buffer only, so it still hides the pod when the pod passes behind it.
+    satellite.body.visible = true;
+    satellite.beams.visible = ring.points.visible = false;
+    for (const m of planetMaterials) m.colorWrite = false;
+    renderer.clearDepth();
+    renderer.render(scene, camera);
+    for (const m of planetMaterials) m.colorWrite = true;
+    satellite.beams.visible = true;
   }
 
   function draw(time) {
@@ -151,6 +171,8 @@ export function createSky(host, buttons, focus, reduceMotion) {
     planet.group.rotation.y = time * PLANET_SPEED * 2;
     planet.uniforms.uTime.value = time;
     ring.uniforms.uTime.value = 12 + time;
+    // The glow in the ring is the pod's scan: lit only while its beam is on
+    ring.uniforms.uScan.value = satellite.update(12 + time, time, software || reduceMotion.matches);
     data.uniforms.uTime.value = time;
 
     renderer.setScissorTest(false);

@@ -101,7 +101,7 @@
   --glass-press-scale: 0.96;
   --glass-dispersion: 0.12;
   /* Two typefaces only, never mixed within one sentence */
-  --font-headline: Inter, "Inter Fallback", system-ui, -apple-system, sans-serif;   /* primary: headlines */
+  --font-headline: "Druk Condensed Super", Inter, "Inter Fallback", system-ui, -apple-system, sans-serif;   /* primary: headlines; Inter until the Druk files are added */
   --font-sans: "Inter Tight", Inter, system-ui, -apple-system, sans-serif;          /* secondary: all other text */
 }
 .display-xl { font-family: var(--font-headline); font-size: 72px; line-height: 84px; font-weight: 900; letter-spacing: 0px; }

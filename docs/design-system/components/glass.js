@@ -55,7 +55,11 @@
     var apply = function (el) {
       var w = Math.round(el.offsetWidth), h = Math.round(el.offsetHeight);
       if (!w || !h) return;
-      var r = parseFloat(getComputedStyle(el).borderTopLeftRadius) || 0;
+      var style = getComputedStyle(el);
+      var r = parseFloat(style.borderTopLeftRadius) || 0;
+      // A surface may set its own --glass-blur (frostier or clearer than the default)
+      var own = parseFloat(style.getPropertyValue('--glass-blur'));
+      var soft = isNaN(own) ? blur : own / 2;
       var id = el.dataset.czFilter || (el.dataset.czFilter = 'cz-refract-' + (++count));
       var old = document.getElementById(id); if (old) old.remove();
       var f = document.createElementNS(NS, 'filter');
@@ -65,7 +69,7 @@
       f.setAttribute('color-interpolation-filters', 'sRGB');
       f.innerHTML =
         '<feImage href="' + buildMap(w, h, r) + '" x="0" y="0" width="' + w + '" height="' + h + '" preserveAspectRatio="none" result="map"/>' +
-        '<feGaussianBlur in="SourceGraphic" stdDeviation="' + blur + '" result="soft"/>' +
+        '<feGaussianBlur in="SourceGraphic" stdDeviation="' + soft + '" result="soft"/>' +
         // Dispersion: bend red, green and blue by slightly different amounts, then add them back together
         bend('r', scale * (1 + dispersion), '1 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 1 0') +
         bend('g', scale, '0 0 0 0 0  0 1 0 0 0  0 0 0 0 0  0 0 0 1 0') +

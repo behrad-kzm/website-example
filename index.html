@@ -16,6 +16,13 @@
   <link rel="stylesheet" href="docs/design-system/tokens.css">
   <link rel="stylesheet" href="docs/design-system/components/bundle.css">
   <style>
+    /* Headline face: Druk Condensed Super (Commercial Type, a licensed font). The files are not in the
+       repository yet: put the licensed web fonts at the paths below. Until then headlines fall back to Inter. */
+    @font-face {
+      font-family: "Druk Condensed Super";
+      src: url("assets/fonts/DrukCondensed-Super.woff2") format("woff2"), url("assets/fonts/DrukCondensed-Super.woff") format("woff");
+      font-weight: 900; font-style: normal; font-display: swap;
+    }
     body { padding: 0; min-height: 100vh; overflow-x: hidden; background: #000; }
 
     /* Navbar: floating capsule, pinned with the navbar inset */
@@ -221,6 +228,89 @@
     /* Products: two cards; Flight Check is not out yet, so it sits back */
     .products { grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); max-width: 900px; width: 100%; align-self: center; }
     .product--soon { opacity: .6; }
+    /* Star Track's world (.world): Products and every section after it. A field of the planet's hexagon
+       panels (assets/hex-field.js) stays in the window behind all of it. */
+    .world { position: relative; overflow: clip; --st-title-size: clamp(34px, 4.6vw, 60px); --st-title-top: 100px;
+      --st-dwell: 1; }  /* windows of scrolling that fill the progress bar around Star Track: half a "What we do" point */
+    /* The planet stops here: the world is opaque, and below its top the planet's canvas is hidden (assets/planet.js) */
+    [data-planet-end] { background: #060709; }
+    /* Layers that stay in the window while the world scrolls past: each is one window tall, sticks to the
+       top, and takes no room in the flow */
+    .hexfield, .st-stage, .st-top { position: sticky; top: 0; display: block; width: 100%;
+      height: 100vh; height: 100lvh; margin-bottom: -100vh; margin-bottom: -100lvh; }
+    .world::before { content: ""; position: absolute; inset: 0 0 auto; height: 22vh; z-index: 1; pointer-events: none;
+      background: linear-gradient(180deg, #060709, #06070900); }  /* the field fades in at the top of the world */
+    .world > section { position: relative; z-index: 2; }
+    /* A dark shadow behind the Products title and the label above it, so both read over the lit panels.
+       It fades out to nothing, so it has no visible edge. */
+    #products .block__head { position: relative; isolation: isolate; }
+    #products .block__head::before { content: ""; position: absolute; inset: -90px -200px; z-index: -1; pointer-events: none;
+      background: radial-gradient(closest-side, #030407f2, #030407d9 35%, #03040799 62%, #03040700); }
+    .products__pin { display: contents; }
+
+    /* The takeover (assets/star-track.js adds .is-live). Products is taller than the window and its content
+       is pinned while the visitor scrolls through the extra height. First a progress bar runs around the
+       Star Track card (--st-dwell windows of scrolling). Scrolling down past the full bar plays the opening
+       to its end: the Star Track pane grows from its card to the whole window, its name travels
+       to the top and becomes the title, Flight Check leaves to the right, and the rest of Products fades.
+       Scrolling up inside the stretch plays it backwards. Below, the pane and the title stay. */
+    .st-stage, .st-top { display: none; pointer-events: none; }
+    .world.is-live .st-stage, .world.is-live .st-top { display: block; }
+    .st-stage { z-index: 1; }
+    .st-top { z-index: 3; }
+    /* The pane: the same glass as a product card. The script sets its place and size. */
+    .st-glass { position: absolute; left: 0; top: 0; border-radius: var(--radius-3xl); --glass-blur: 17px;
+      transition: none;  /* it follows the scroll exactly; the glass component's springy transform would make it trail */
+      background: linear-gradient(180deg, #030408b3, #030408d9), var(--glass-fill);
+      box-shadow: var(--shadow-glass), 0 0 56px -6px #6a3dff52, 0 0 140px -30px #6a3dff40; }
+    /* The progress bar around the pane: a faint track and, over it, the bar the scroll draws on */
+    .st-ring { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; pointer-events: none; z-index: 1; }
+    .st-ring rect { fill: none; stroke-width: 2; }
+    .st-ring__track { stroke: #ffffff2e; }
+    .st-ring__bar { stroke: var(--fg); stroke-linecap: round; stroke-dasharray: 1; stroke-dashoffset: 1;
+      filter: drop-shadow(0 0 6px #8a5cffd9); }
+    /* A dark band under the title, so the sections scrolling up from below fade out before they reach it */
+    .st-band { position: absolute; inset: 0 0 auto; height: calc(var(--st-title-top) + var(--st-title-size) + 72px); opacity: 0;
+      background: linear-gradient(180deg, #05060b, #05060b calc(var(--st-title-top) + var(--st-title-size) + 8px), #05060b00); }
+    .st-title { position: absolute; left: 0; top: 0; margin: 0; transform-origin: 0 0; white-space: nowrap;
+      font: 900 var(--st-title-size)/1 var(--font-headline); text-transform: uppercase; letter-spacing: .02em; color: var(--fg); }
+    .world.is-live #products { display: block; height: calc((1 + var(--st-dwell)) * 100vh + 10vh); min-height: 0; padding-top: 0; padding-bottom: 0; background: none; }
+    .world.is-live .products__pin { position: sticky; top: 0; box-sizing: border-box; height: 100vh; height: 100svh;
+      display: flex; flex-direction: column; justify-content: center; padding: 120px 0 var(--space-8); }
+    /* While Products is near the window, everything the takeover moves is given its own layer ahead of time,
+       so the first frames of the animation do not pay for that set-up (assets/star-track.js sets .is-near) */
+    .world.is-near .st-title, .world.is-near .st-band, .world.is-near .st-ring,
+    .world.is-near .products .cz-card, .world.is-near #products .block__head { will-change: transform, opacity; }
+    /* The Star Track card keeps its place and its text; its glass is the pane, and its name is the title */
+    .world.is-live .products [data-product="star-track"] { background: none; box-shadow: none; -webkit-backdrop-filter: none; backdrop-filter: none; }
+    .world.is-live .products [data-product="star-track"]::before, .world.is-live .products [data-product="star-track"]::after { display: none; }
+    .world.is-live .products [data-product="star-track"] h3 { opacity: 0; }
+    /* Sections below sit on the pane, under the title */
+    .world.is-live > .block:not(#products) { background: none; justify-content: flex-start; padding-top: calc(var(--st-title-top) + var(--st-title-size) + 110px); }
+    @media (max-width: 640px) { .world { --st-title-top: 88px; } }
+
+    .products .cz-card { display: flex; flex-direction: column; justify-content: flex-start;
+      --glass-blur: 17px;  /* frostier than the default glass */
+      background: linear-gradient(180deg, #030408b3, #030408d9), var(--glass-fill);
+      box-shadow: var(--shadow-glass), 0 0 56px -6px #6a3dff52, 0 0 140px -30px #6a3dff40; }  /* the glass, with a soft violet glow behind the pane */
+    /* The product still to come: its text is dimmed, not the pane, so both panes are the same glass */
+    /* The two panes share their rows (name, description, link), so the names and the descriptions start on
+       the same lines in both, however long each description is. The text starts at the top of the pane, as
+       far from the top edge as it is from the leading edge (the inset rule, docs/mentality/website.md). */
+    @supports (grid-template-rows: subgrid) {
+      .products { grid-auto-rows: auto auto auto; }
+      .products .cz-card { grid-row: span 3; display: grid; grid-template-rows: subgrid; grid-template-columns: minmax(0, 1fr);
+        justify-content: normal; row-gap: 0; }
+      .products .cz-card > * { align-self: start; }
+      .products .cz-card > :first-child { grid-row: 1; }
+      .products .cz-card__body { grid-row: 2; }
+      .products .card__link { grid-row: 3; }
+      .products .cz-card > h3, .products .card__head { margin: 0 0 var(--space-1); }
+      .products .card__head h3 { margin: 0; }
+    }
+    .products .product--soon { opacity: 1; }
+    .products .product--soon > * { opacity: .55; }
+    .products .cz-card h3 { font-family: var(--font-headline); font-weight: 900; text-transform: uppercase; letter-spacing: .02em; }
 
     /* Results: a drawn report page beside the chapter list */
     .results { display: grid; gap: var(--space-6); grid-template-columns: minmax(0, 320px) minmax(0, 1fr); align-items: center; }
@@ -323,7 +413,7 @@
           <div class="wwd__copy">
             <div class="block__head">
               <p class="eyebrow">What we do</p>
-              <h2 id="what-title">Who's tracking your market while you build your business?</h2>
+              <h2 id="what-title">Is market data orbiting your product, or drifting?</h2>
             </div>
             <p class="block__lead wwd__lead wwd__step is-active">We do it for you. We provide continuous market research and business intelligence as a service, delivering actionable insights and ready-to-use reports. Your team stays focused on building your product while we keep you informed, one step ahead of the market.</p>
             <div class="wwd__rail" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
@@ -370,19 +460,24 @@
     </section>
 
     <!-- Products. The sections after this one all describe Star Track; the focus animation comes later. -->
+    <!-- Star Track's world: from Products to the end of the page. One field of hexagons stays behind all of
+         it, and as Products scrolls away the Star Track pane grows to fill the window and its name becomes
+         the title of everything below (assets/star-track.js). -->
+    <div class="world" data-star-world data-hexfield data-planet-end>
     <section class="section block block--center" id="products" aria-labelledby="products-title">
+      <div class="products__pin">
       <div class="block__inner">
         <div class="block__head">
           <p class="eyebrow">Products</p>
-          <h2 id="products-title">Two products. One planet of data.</h2>
+          <h2 id="products-title">Our Products</h2>
         </div>
         <div class="grid products">
-          <article class="cz-card cz-card--glow" data-product="star-track">
+          <article class="cz-card cz-glass" data-product="star-track">
             <h3>Star Track</h3>
             <p class="cz-card__body">Regular reports on your competitors, your market, and your industry: what changed, and what it means for your business.</p>
             <a class="card__link" href="#how">See how Star Track works ↓</a>
           </article>
-          <article class="cz-card product--soon" data-product="flight-check">
+          <article class="cz-card cz-glass product--soon" data-product="flight-check">
             <div class="card__head">
               <h3>Flight Check</h3>
               <span class="cz-badge cz-badge--pill">Soon</span>
@@ -391,6 +486,7 @@
             <p class="cz-card__body">Our next product, in preparation. Details soon.</p>
           </article>
         </div>
+      </div>
       </div>
     </section>
 
@@ -590,6 +686,7 @@
         </div>
       </div>
     </section>
+    </div>
   </main>
 
   <footer class="site-footer">
@@ -631,6 +728,8 @@
     });
   </script>
   <script type="module" src="assets/what-we-do.js"></script>
+  <script type="module" src="assets/hex-field.js"></script>
+  <script type="module" src="assets/star-track.js"></script>
   <script src="docs/design-system/components/glass.js" defer></script>
 </body>
 </html>
