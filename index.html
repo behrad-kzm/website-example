@@ -301,6 +301,157 @@
     .world.is-live > .block:not(#products) { background: none; justify-content: flex-start; padding-top: calc(var(--st-title-top) + var(--st-title-size) + 110px); }
     @media (max-width: 640px) { .world { --st-title-top: 88px; } }
 
+    /* How it works (assets/how-it-works.js): pinned like "What we do". The section is taller than the
+       window; its content sticks while the scroll crosses one band per step, and only the current step
+       shows. Under the headline the four steps sit in a row, each with a bar that fills as the scroll
+       crosses its band; each scrolls to its step. On the right a report builds up, one part per step.
+       --how-dwell: windows of scrolling per step. Without the script, or when it cannot fit, a grid of cards. */
+    .how { --how-steps: 4; --how-dwell: 1.25; }
+    .how__index, .how__doc { display: none; }
+    .js #how.how:not(.is-static) {
+      display: block; padding: 0;
+      height: calc((var(--how-steps) * var(--how-dwell) + 1) * 100vh); height: calc((var(--how-steps) * var(--how-dwell) + 1) * 100svh);
+    }
+    .js .how:not(.is-static) .how__sticky {
+      position: sticky; top: 0; box-sizing: border-box; height: 100vh; height: 100svh;
+      padding: calc(var(--st-title-top, 0px) + var(--st-title-size, 0px) + clamp(24px, 5svh, 56px)) max(var(--space-3), env(safe-area-inset-right, 0px)) clamp(20px, 5svh, 64px) max(var(--space-3), env(safe-area-inset-left, 0px));
+    }
+    .js .how:not(.is-static) .how__inner { height: 100%; display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); grid-template-rows: minmax(0, 1fr); gap: var(--space-6); align-items: center; }
+    .js .how:not(.is-static) .how__copy { display: grid; grid-template-columns: minmax(0, 1fr); gap: clamp(14px, 2.6svh, 24px); min-height: 0; }
+    .js .how:not(.is-static) .block__head { margin: 0; }
+    /* The row of steps: the current one lit, the ones done half lit, the ones ahead dim */
+    .js .how:not(.is-static) .how__index { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; margin: 0; padding: 0; list-style: none; max-width: 640px; }
+    .how__go {
+      display: grid; gap: 6px; align-content: start; width: 100%; padding: 0 0 6px; border: 0; border-radius: var(--radius-sm, 6px);
+      background: none; cursor: pointer; text-align: left; font: 500 14px/1.35 var(--font-sans); color: var(--fg-300); opacity: .5;
+      transition: opacity .5s cubic-bezier(.22, 1, .36, 1), color .5s ease;
+    }
+    .how__go .step__num { color: inherit; font-size: 13px; }
+    .how__bar { height: 2px; margin-bottom: 6px; border-radius: var(--radius-full);
+      background: linear-gradient(to right, var(--fg) calc(var(--p, 0) * 100%), var(--grey-400) 0); }
+    .how__go:hover { opacity: .9; }
+    .how__go.is-done { opacity: .75; }
+    .how__go[aria-current] { opacity: 1; color: var(--fg); }
+    .how__go:focus-visible { outline: none; box-shadow: var(--shadow-focus); }
+    /* The steps share one cell; each is plain text here rather than a card */
+    .js .how:not(.is-static) .how__steps { display: grid; grid-template-columns: minmax(0, 1fr); gap: 0; }
+    .js .how:not(.is-static) .how__step {
+      grid-area: 1 / 1; max-width: 560px; padding: 0; background: none; box-shadow: none;
+      opacity: 0; transform: translate3d(0, 20px, 0); filter: blur(5px); pointer-events: none;
+      transition: opacity .28s ease, transform .45s cubic-bezier(.4, 0, .6, 1), filter .28s ease;
+    }
+    .js .how:not(.is-static) .how__step.is-before { transform: translate3d(0, -20px, 0); }
+    .js .how:not(.is-static) .how__step.is-active {
+      opacity: 1; transform: none; filter: none; pointer-events: auto;
+      transition: opacity .7s cubic-bezier(.22, 1, .36, 1) .16s, transform .9s cubic-bezier(.22, 1, .36, 1) .16s, filter .6s ease .16s;
+    }
+    .js .how:not(.is-static) .how__step .cz-card__icon { display: none; }   /* the row above already shows the number */
+    .js .how:not(.is-static) .how__step h3 { margin: 0 0 var(--space-1); font: 500 clamp(22px, 3.4svh, 28px)/1.3 var(--font-sans); color: var(--fg); }
+    .js .how:not(.is-static) .how__step .cz-card__body { font-size: 17px; line-height: 28px; color: var(--fg-200); }
+
+    /* The report, drawn in CSS: a pile of pages leaning on a glowing panel, standing on a lit floor with
+       one tile per step (the script sets .is-on on the tiles reached and .is-now on the current one).
+       It is drawn at 420 x 480 and the script scales it (--doc-k) to the room it has. */
+    .js .how:not(.is-static) .how__doc { display: block; position: relative; align-self: stretch; min-height: 0; }
+    .doc { position: absolute; left: 50%; top: 50%; width: 420px; height: 480px; transform: translate(-50%, -50%) scale(var(--doc-k, 1));
+      opacity: 0; visibility: hidden; transition: opacity .6s ease, visibility 0s .6s; }
+    /* The report is not drawn until the section has reached the top of the window (.is-arrived, set by the
+       script), so drawing it for the first time does not cost frames while the section is scrolling in */
+    .how.is-arrived .doc { opacity: 1; visibility: visible; transition: opacity .6s ease; }
+    .how:not(.is-arrived) .doc__stack { animation-play-state: paused; }
+    .doc__floor { position: absolute; left: 0; bottom: 0; width: 100%; height: auto; overflow: visible; }
+    .doc__wire { fill: none; stroke: #57c1ff; stroke-width: 1.5; opacity: .55; filter: drop-shadow(0 0 4px #57c1ff); }
+    .doc__tile { opacity: .3; transition: opacity .6s ease; }
+    .doc__tile .doc__beam { opacity: 0; transition: opacity .6s ease; }
+    .doc__tile.is-on { opacity: 1; filter: drop-shadow(0 0 8px #57c1ffcc); }
+    .doc__tile.is-now .doc__beam { opacity: 1; }
+    .doc__stack { position: absolute; left: 50%; bottom: 74px; width: 250px; height: 350px; margin-left: -125px;
+      transform: perspective(1100px) rotateY(-20deg) rotateX(8deg) rotateZ(3deg);
+      animation: doc-float 6s ease-in-out infinite; }
+    @keyframes doc-float { 50% { translate: 0 -8px; } }
+    .doc__panel { position: absolute; right: -18px; top: 0; width: 200px; height: 350px; border-radius: 28px;
+      background: linear-gradient(165deg, #d9f1ff, #8fd4ff 30%, #57c1ff 60%, #6a3dff);
+      box-shadow: inset 0 0 0 3px #ffffff8c, 0 0 50px #57c1ff8c, 0 0 140px #6a3dff80; }
+    /* The report has four pages, one per step, in a pile. The script gives each its place in the pile
+       (--pos: 0 in front, 3 at the back). Going to the next step, the front page slides out and goes to
+       the back (.to-back); going to the previous one, the back page comes round to the front (.to-front). */
+    .doc__page { position: absolute; left: -14px; top: 26px; box-sizing: border-box; width: 214px; height: 292px; padding: 16px;
+      border-radius: 6px; background: linear-gradient(180deg, #ffffff, #eef2fa); color: #1b2233;
+      box-shadow: 0 0 0 1px #ffffff, 0 0 0 1.5px #1b223326;
+      display: grid; grid-template-rows: repeat(3, minmax(0, 1fr)); gap: 14px;
+      --pos: 0; z-index: calc(4 - var(--pos)); transform: translate(calc(var(--pos) * 10px), calc(var(--pos) * -10px));
+      transition: transform .7s cubic-bezier(.22, 1, .36, 1); }
+    /* Pages further back are darker: a shade over the page (cheaper to draw than a filter) */
+    .doc__page::after { content: ""; position: absolute; inset: 0; border-radius: inherit; background: #1b2233; pointer-events: none;
+      opacity: calc(var(--pos) * .09); transition: opacity .7s ease; }
+    /* One shadow for the whole pile, under the pages */
+    .doc__shadow { position: absolute; left: -14px; top: 26px; width: 214px; height: 292px; border-radius: 6px; box-shadow: 0 24px 50px -12px #000000b3; }
+    .doc__page.to-back { animation: doc-shuffle .85s cubic-bezier(.45, 0, .3, 1) both; }
+    .doc__page.to-front { animation: doc-shuffle .85s cubic-bezier(.45, 0, .3, 1) reverse both; }
+    @keyframes doc-shuffle {
+      0% { transform: translate(0, 0); z-index: 5; }
+      45% { transform: translate(-112%, -4%) rotate(-9deg); z-index: 5; }
+      55% { transform: translate(-112%, -4%) rotate(-9deg); z-index: 0; }
+      100% { transform: translate(30px, -30px); z-index: 0; }
+    }
+    /* Each page has three parts, top to bottom. They fill in one by one as the scroll crosses the step's
+       band (the script sets .is-on). Each part has a small title saying what it holds; everything else
+       written on a page is a grey bar standing in for text. */
+    .doc__sec { min-height: 0; display: grid; grid-template-rows: auto minmax(0, 1fr); gap: 7px; opacity: .1; transform: translateY(5px);
+      transition: opacity .6s ease, transform .7s cubic-bezier(.22, 1, .36, 1); }
+    .doc__sec.is-on { opacity: 1; transform: none; }
+    .doc__h { font: 700 7px/1 var(--font-sans); letter-spacing: .1em; text-transform: uppercase; white-space: nowrap; color: #55617a; }
+    .doc__body { min-height: 0; display: grid; align-content: space-between; gap: 5px; }
+    .doc__body--row { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+    .doc__body:has(> .doc__bars, > .doc__lines, > .doc__table) { align-content: stretch; }   /* a chart or a table takes all the room under its title */
+    .doc__body > .doc__lines, .doc__body > .doc__bars { min-height: 0; }
+    .doc__col { flex: 1; min-width: 0; display: grid; gap: 6px; }
+    .sk { display: block; height: 4px; border-radius: 2px; background: #c3cbda; width: var(--w, 100%);
+      transform-origin: 0 50%; transform: scaleX(.3); transition: transform .7s cubic-bezier(.22, 1, .36, 1); }
+    .sk--h { height: 5px; background: #7f8aa1; }
+    .doc__sec.is-on .sk { transform: none; }
+    .doc__item { display: flex; align-items: center; gap: 7px; }
+    .doc__item > i { flex: none; width: 5px; height: 5px; border-radius: 50%; background: var(--c, #7f8aa1); }
+    .doc__item--box > i { width: 9px; height: 9px; border-radius: 3px; }
+    .doc__bars { display: flex; align-items: flex-end; gap: 6px; height: 100%; box-sizing: border-box; border-bottom: 1px solid #c3cbda; }
+    .doc__bars i { flex: 1; height: var(--h); border-radius: 2px 2px 0 0; background: linear-gradient(180deg, #57c1ff, #2f7df6);
+      transform-origin: 50% 100%; transform: scaleY(.1); transition: transform .7s cubic-bezier(.22, 1, .36, 1); }
+    .doc__sec.is-on .doc__bars i { transform: none; }
+    .doc__bars i:nth-child(2) { transition-delay: .05s; } .doc__bars i:nth-child(3) { transition-delay: .1s; }
+    .doc__bars i:nth-child(4) { transition-delay: .15s; } .doc__bars i:nth-child(5) { transition-delay: .2s; }
+    .doc__bars i:nth-child(6) { transition-delay: .25s; } .doc__bars i:nth-child(7) { transition-delay: .3s; background: linear-gradient(180deg, #a98bff, #6a3dff); }
+    .doc__lines { display: block; width: 100%; height: 100%; overflow: visible; }
+    .doc__lines line { stroke: #dfe4ee; stroke-width: 1; vector-effect: non-scaling-stroke; }
+    .doc__lines polyline { fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; vector-effect: non-scaling-stroke;
+      stroke-dasharray: 1; stroke-dashoffset: 1; transition: stroke-dashoffset 1.1s ease; }
+    .doc__lines polyline:nth-of-type(2) { transition-delay: .1s; } .doc__lines polyline:nth-of-type(3) { transition-delay: .2s; } .doc__lines polyline:nth-of-type(4) { transition-delay: .3s; }
+    .doc__sec.is-on .doc__lines polyline { stroke-dashoffset: 0; }
+    .doc__table { display: grid; grid-template-columns: 1.5fr 1fr 1fr; align-content: space-between; height: 100%; }
+    .doc__table i { display: flex; align-items: center; height: 14px; border-bottom: 1px solid #dfe4ee; }
+    .doc__table i::before { content: ""; width: 68%; height: 4px; border-radius: 2px; background: #c3cbda; }
+    .doc__table i:nth-child(-n+3) { border-bottom-color: #aab3c5; }
+    .doc__table i:nth-child(-n+3)::before { background: #7f8aa1; width: 50%; }
+    .doc__table i:nth-child(3n+2)::before { width: 55%; }
+    .doc__person { display: grid; justify-items: center; gap: 5px; }
+    .doc__person svg { width: 28px; height: 28px; display: block; }
+    .doc__company { flex: none; width: 42px; height: 42px; display: block; }
+    .doc__pie { flex: none; width: 54px; height: 54px; border-radius: 50%;
+      background: conic-gradient(#2f7df6 0 42%, #6a3dff 0 68%, #57c1ff 0 86%, #e0457b 0);
+      transform: rotate(-120deg) scale(.5); transition: transform .9s cubic-bezier(.22, 1, .36, 1); }
+    .doc__sec.is-on .doc__pie { transform: none; }
+
+    @media (max-width: 900px) {
+      .js .how:not(.is-static) .how__inner { grid-template-columns: minmax(0, 1fr); }
+      .js .how:not(.is-static) .how__doc { display: none; }
+      .js .how:not(.is-static) .how__step .cz-card__body { font-size: 16px; line-height: 24px; }
+    }
+    @media (max-width: 640px) { .how__go { font-size: 12px; } }
+    @media (prefers-reduced-motion: reduce) {
+      .js .how:not(.is-static) .how__step, .js .how:not(.is-static) .how__step.is-before, .js .how:not(.is-static) .how__step.is-active { transform: none; filter: none; transition: opacity .2s ease; }
+      .how__go, .doc__tile, .doc__tile .doc__beam, .doc__page, .doc__page::after, .doc__sec, .sk, .doc__bars i, .doc__lines polyline, .doc__pie { transition: none; }
+      .doc__stack, .doc__page.to-back, .doc__page.to-front { animation: none; }
+    }
+
     .products .cz-card { display: flex; flex-direction: column; justify-content: flex-start;
       --glass-blur: 17px;  /* frostier than the default glass */
       background: linear-gradient(180deg, #030408b3, #030408d9), var(--glass-fill);
@@ -504,35 +655,85 @@
       </div>
     </section>
 
-    <!-- Star Track: how we make the reports -->
-    <section class="section block" id="how" aria-labelledby="how-title">
-      <div class="block__inner">
+    <!-- Star Track: how we make the reports. Pinned while the visitor scrolls through the four steps, one at
+         a time, like "What we do" (assets/how-it-works.js). Without the script, or when the content cannot
+         fit one window, the steps are a plain grid of cards. -->
+    <section class="section block how" id="how" aria-labelledby="how-title" data-how>
+      <div class="how__sticky">
+      <div class="block__inner how__inner">
+        <div class="how__copy">
         <div class="block__head">
           <p class="eyebrow">Star Track · How it works</p>
           <h2 id="how-title">How we make your report.</h2>
         </div>
-        <div class="grid">
-          <article class="cz-card">
+        <ol class="how__index">
+          <li><button class="how__go" type="button" aria-label="Show step 1: We find your competitors"><span class="how__bar"></span><span class="step__num">01</span><span>We find your competitors</span></button></li>
+          <li><button class="how__go" type="button" aria-label="Show step 2: We monitor them"><span class="how__bar"></span><span class="step__num">02</span><span>We monitor them</span></button></li>
+          <li><button class="how__go" type="button" aria-label="Show step 3: We investigate"><span class="how__bar"></span><span class="step__num">03</span><span>We investigate</span></button></li>
+          <li><button class="how__go" type="button" aria-label="Show step 4: An analyst reviews it"><span class="how__bar"></span><span class="step__num">04</span><span>An analyst reviews it</span></button></li>
+        </ol>
+        <div class="grid how__steps">
+          <article class="cz-card how__step">
             <div class="cz-card__icon step__num">01</div>
             <h3>We find your competitors</h3>
             <p class="cz-card__body">All over the internet: in your country, your continent, or the world, depending on your scale.</p>
           </article>
-          <article class="cz-card">
+          <article class="cz-card how__step">
             <div class="cz-card__icon step__num">02</div>
             <h3>We monitor them</h3>
             <p class="cz-card__body">Prices, products, hiring, websites, social media, and the market around them.</p>
           </article>
-          <article class="cz-card">
+          <article class="cz-card how__step">
             <div class="cz-card__icon step__num">03</div>
             <h3>We investigate</h3>
             <p class="cz-card__body">Our analysts use cutting-edge technology to dig into what changed and what it means.</p>
           </article>
-          <article class="cz-card">
+          <article class="cz-card how__step">
             <div class="cz-card__icon step__num">04</div>
             <h3>An analyst reviews it</h3>
             <p class="cz-card__body">Our business analysts check the report before it reaches you.</p>
           </article>
         </div>
+        </div>
+        <!-- The report the four steps produce, drawn in CSS and SVG: four pages, one per step. Each part of a page has a title; the rest of its "text" is grey bars -->
+        <div class="how__doc" aria-hidden="true">
+          <div class="doc">
+            <svg class="doc__floor" viewBox="0 0 420 190">
+              <defs><symbol id="doc-person" viewBox="0 0 30 30"><circle cx="15" cy="15" r="15" fill="#dfe4ee"/><circle cx="15" cy="11.5" r="5" fill="#aab3c5"/><path d="M5.5 26.6c1.3-5.2 5-7.6 9.5-7.6s8.2 2.4 9.5 7.6a15 15 0 0 1-19 0z" fill="#aab3c5"/></symbol><symbol id="doc-company" viewBox="0 0 46 46"><rect width="46" height="46" rx="9" fill="#dfe4ee"/><path d="M13 35V15l11-5v25zM24 35V19h9v16z" fill="#aab3c5"/><path d="M16.5 17h4v3h-4zM16.5 23h4v3h-4zM16.5 29h4v3h-4zM26.5 22.500h4v3h-4zM26.5 28.500h4v3h-4z" fill="#f4f6fb"/></symbol><linearGradient id="doc-beam" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#57c1ff" stop-opacity=".55"/><stop offset="1" stop-color="#57c1ff" stop-opacity="0"/></linearGradient></defs>
+              <path class="doc__wire" d="M50 105 L210 45 L370 105 L210 165 Z"/>
+              <g class="doc__tile" data-step="1"><polygon class="doc__beam" points="182,45 238,45 250,-45 170,-45" fill="url(#doc-beam)"/><polygon points="180,51 210,63 240,51 210,39" fill="#1c6fd6"/><polygon points="180,45 210,57 240,45 210,33" fill="#8fd4ff"/></g><g class="doc__tile" data-step="0"><polygon class="doc__beam" points="22,105 78,105 90,15 10,15" fill="url(#doc-beam)"/><polygon points="20,111 50,123 80,111 50,99" fill="#1c6fd6"/><polygon points="20,105 50,117 80,105 50,93" fill="#8fd4ff"/></g><g class="doc__tile" data-step="2"><polygon class="doc__beam" points="342,105 398,105 410,15 330,15" fill="url(#doc-beam)"/><polygon points="340,111 370,123 400,111 370,99" fill="#1c6fd6"/><polygon points="340,105 370,117 400,105 370,93" fill="#8fd4ff"/></g><g class="doc__tile" data-step="3"><polygon class="doc__beam" points="182,165 238,165 250,75 170,75" fill="url(#doc-beam)"/><polygon points="180,171 210,183 240,171 210,159" fill="#1c6fd6"/><polygon points="180,165 210,177 240,165 210,153" fill="#8fd4ff"/></g>
+            </svg>
+            <div class="doc__stack">
+              <div class="doc__panel"></div>
+              <div class="doc__shadow"></div>
+              <!-- Page 1. We find your competitors: a list, a bar chart, a paragraph -->
+              <div class="doc__page">
+                <div class="doc__sec"><span class="doc__h">Your competitors</span><span class="doc__body"><span class="doc__item doc__item--box"><i style="--c: #2f7df6"></i><span class="sk" style="--w: 72%"></span></span><span class="doc__item doc__item--box"><i style="--c: #6a3dff"></i><span class="sk" style="--w: 54%"></span></span><span class="doc__item doc__item--box"><i style="--c: #57c1ff"></i><span class="sk" style="--w: 64%"></span></span></span></div>
+                <div class="doc__sec"><span class="doc__h">Competitors by region</span><span class="doc__body"><span class="doc__bars"><i style="--h: 35%"></i><i style="--h: 52%"></i><i style="--h: 44%"></i><i style="--h: 68%"></i><i style="--h: 58%"></i><i style="--h: 82%"></i><i style="--h: 100%"></i></span></span></div>
+                <div class="doc__sec"><span class="doc__h">Market overview</span><span class="doc__body"><span class="sk" style="--w: 100%"></span><span class="sk" style="--w: 94%"></span><span class="sk" style="--w: 98%"></span><span class="sk" style="--w: 60%"></span></span></div>
+              </div>
+              <!-- Page 2. We monitor them: a line chart, bullets, a table -->
+              <div class="doc__page">
+                <div class="doc__sec"><span class="doc__h">Price changes</span><span class="doc__body"><svg class="doc__lines" viewBox="0 0 182 76" preserveAspectRatio="none"><line x1="0" y1="19" x2="182" y2="19"/><line x1="0" y1="38" x2="182" y2="38"/><line x1="0" y1="57" x2="182" y2="57"/><line x1="0" y1="75.5" x2="182" y2="75.5" style="stroke: #c3cbda"/><polyline pathLength="1" stroke="#2f7df6" points="0,62 26,50 52,54 78,36 104,40 130,22 156,26 182,8"/><polyline pathLength="1" stroke="#6a3dff" points="0,40 26,44 52,30 78,48 104,28 130,36 156,18 182,24"/><polyline pathLength="1" stroke="#57c1ff" points="0,70 26,64 52,66 78,58 104,60 130,50 156,46 182,40"/><polyline pathLength="1" stroke="#e0457b" points="0,24 26,30 52,44 78,26 104,52 130,58 156,62 182,56"/></svg></span></div>
+                <div class="doc__sec"><span class="doc__h">Products &amp; hiring</span><span class="doc__body"><span class="doc__item"><i></i><span class="sk" style="--w: 86%"></span></span><span class="doc__item"><i></i><span class="sk" style="--w: 70%"></span></span><span class="doc__item"><i></i><span class="sk" style="--w: 92%"></span></span><span class="doc__item"><i></i><span class="sk" style="--w: 60%"></span></span></span></div>
+                <div class="doc__sec"><span class="doc__h">Websites &amp; social media</span><span class="doc__body"><span class="doc__table"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span></span></div>
+              </div>
+              <!-- Page 3. We investigate: four people, then two companies -->
+              <div class="doc__page">
+                <div class="doc__sec"><span class="doc__h">Key people</span><span class="doc__body doc__body--row"><span class="doc__person"><svg viewBox="0 0 30 30"><use href="#doc-person"/></svg><span class="sk" style="--w: 24px"></span></span><span class="doc__person"><svg viewBox="0 0 30 30"><use href="#doc-person"/></svg><span class="sk" style="--w: 24px"></span></span><span class="doc__person"><svg viewBox="0 0 30 30"><use href="#doc-person"/></svg><span class="sk" style="--w: 24px"></span></span><span class="doc__person"><svg viewBox="0 0 30 30"><use href="#doc-person"/></svg><span class="sk" style="--w: 24px"></span></span></span></div>
+                <div class="doc__sec"><span class="doc__h">What changed</span><span class="doc__body doc__body--row"><svg class="doc__company" viewBox="0 0 46 46"><use href="#doc-company"/></svg><span class="doc__col"><span class="sk sk--h" style="--w: 52%"></span><span class="doc__item"><i></i><span class="sk" style="--w: 92%"></span></span><span class="doc__item"><i></i><span class="sk" style="--w: 74%"></span></span><span class="doc__item"><i></i><span class="sk" style="--w: 84%"></span></span></span></span></div>
+                <div class="doc__sec"><span class="doc__h">What it means</span><span class="doc__body doc__body--row"><svg class="doc__company" viewBox="0 0 46 46"><use href="#doc-company"/></svg><span class="doc__col"><span class="sk sk--h" style="--w: 40%"></span><span class="doc__item"><i></i><span class="sk" style="--w: 80%"></span></span><span class="doc__item"><i></i><span class="sk" style="--w: 94%"></span></span><span class="doc__item"><i></i><span class="sk" style="--w: 66%"></span></span></span></span></div>
+              </div>
+              <!-- Page 4. An analyst reviews it: a pie chart, bullets, a paragraph -->
+              <div class="doc__page">
+                <div class="doc__sec"><span class="doc__h">Market share</span><span class="doc__body doc__body--row"><span class="doc__pie"></span><span class="doc__col"><span class="doc__item"><i style="--c: #2f7df6"></i><span class="sk" style="--w: 88%"></span></span><span class="doc__item"><i style="--c: #6a3dff"></i><span class="sk" style="--w: 64%"></span></span><span class="doc__item"><i style="--c: #57c1ff"></i><span class="sk" style="--w: 76%"></span></span><span class="doc__item"><i style="--c: #e0457b"></i><span class="sk" style="--w: 52%"></span></span></span></span></div>
+                <div class="doc__sec"><span class="doc__h">Key findings</span><span class="doc__body"><span class="doc__item"><i></i><span class="sk" style="--w: 90%"></span></span><span class="doc__item"><i></i><span class="sk" style="--w: 72%"></span></span><span class="doc__item"><i></i><span class="sk" style="--w: 84%"></span></span><span class="doc__item"><i></i><span class="sk" style="--w: 58%"></span></span></span></div>
+                <div class="doc__sec"><span class="doc__h">Analyst summary</span><span class="doc__body"><span class="sk" style="--w: 100%"></span><span class="sk" style="--w: 96%"></span><span class="sk" style="--w: 90%"></span><span class="sk" style="--w: 54%"></span></span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
       </div>
     </section>
 
@@ -742,6 +943,7 @@
     });
   </script>
   <script type="module" src="assets/what-we-do.js"></script>
+  <script type="module" src="assets/how-it-works.js"></script>
   <script type="module" src="assets/hex-field.js"></script>
   <script type="module" src="assets/star-track.js"></script>
   <script src="docs/design-system/components/glass.js" defer></script>

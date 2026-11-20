@@ -4,7 +4,8 @@
 const { test, expect } = require('@playwright/test');
 
 // For each card: the gap from its top edge to its first child, and from its leading edge to that child
-const insets = (page) => page.evaluate(() => [...document.querySelectorAll('.cz-card')].map((card) => {
+// (the steps of "How it works" are plain text, not cards, while that section is pinned, so they are left out)
+const insets = (page) => page.evaluate(() => [...document.querySelectorAll('.cz-card')].filter((card) => !card.closest('.how:not(.is-static)')).map((card) => {
   const box = card.getBoundingClientRect();
   const first = card.firstElementChild.getBoundingClientRect();
   const section = card.closest('section');

@@ -2,6 +2,7 @@
 // replaces it with three points, one at a time, a progress bar shows how far the scroll is through each, while a constellation of three bodies opens up on the right
 // and brings the body of the current point forward. The constellation itself is drawn by
 // assets/what-we-do-sky.js, which is fetched only when the section comes near the screen. Without this script (or when the content cannot fit one window) the section is a plain list.
+import { holdMagnet } from './magnet.js';
 
 const clamp = (v, lo, hi) => Math.min(hi, Math.max(lo, v));
 
@@ -51,7 +52,8 @@ function init(root) {
   // The page's magnetic sections (scroll snap on <html>) would pull the scroll out of the pinned stretch,
   // so they are switched off while the scroll is inside it. They come back on only once the scroll rests
   // outside: switching them on in the middle of a gesture would cut the gesture short.
-  function setMagnet(on) { document.documentElement.style.scrollSnapType = on ? '' : 'none'; }
+  // Only switch them back on if this section switched them off, so it does not undo another pinned section.
+  const setMagnet = (on) => holdMagnet('what-we-do', !on);
 
   function show(step) {
     if (step !== active) setActive(step);

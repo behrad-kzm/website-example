@@ -17,6 +17,7 @@
 // Below Products the pane and the title stay in the window to the end of the page, so every later section
 // sits on Star Track's glass, under its name. The layout and the look are in index.html (.world, .st-*);
 // this file creates the two layers, decides when to open and close, and places things as the motion runs.
+import { holdMagnet } from './magnet.js';
 
 const world = document.querySelector('[data-star-world]');
 const products = world && world.querySelector('#products');
@@ -127,9 +128,9 @@ if (card && sticky) {
   };
   const hold = () => {
     holdUntil = Infinity; lastDelta = Infinity;
-    root.style.scrollSnapType = 'none';   // the magnetic sections must not pull against the page's own scroll
+    holdMagnet('star-track', true);   // the magnetic sections must not pull against the page's own scroll
   };
-  const release = () => { holdUntil = 0; magnetOff = false; root.style.scrollSnapType = ''; };
+  const release = () => { holdUntil = 0; magnetOff = false; holdMagnet('star-track', false); };
   // Getting ready ahead of time. A listener that may cancel wheel events, and elements that are about to
   // move, both cost the browser a moment of set-up the first time. Done at the instant the takeover
   // starts, that moment shows as a stutter in its first frames. So both are set up as Products comes
@@ -216,7 +217,7 @@ if (card && sticky) {
     // of the section and empty the progress bar under the visitor's fingers
     if (!holdUntil) {
       const inside = into > 0 && into < section.height;
-      if (inside !== magnetOff) { magnetOff = inside; root.style.scrollSnapType = inside ? 'none' : ''; }
+      if (inside !== magnetOff) { magnetOff = inside; holdMagnet('star-track', inside); }
     }
     // With Products out of the window there is nothing to watch: go straight to the end state
     if (section.bottom <= 0 || section.top >= innerHeight || reduceMotion.matches) { progress.p = open ? 1 : 0; progress.v = 0; }
