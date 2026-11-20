@@ -476,16 +476,25 @@
     .products .cz-card h3 { font-family: var(--font-headline); font-weight: 900; text-transform: uppercase; letter-spacing: .02em; }
 
     /* Results: a drawn report page beside the chapter list */
-    .results { display: grid; gap: var(--space-6); grid-template-columns: minmax(0, 320px) minmax(0, 1fr); align-items: center; }
-    @media (max-width: 860px) { .results { grid-template-columns: minmax(0, 1fr); } .report { max-width: 320px; } }
-    .report { aspect-ratio: 3 / 4; display: flex; flex-direction: column; gap: var(--space-2); padding: var(--space-3); border-radius: var(--radius-xl); }
-    .report__title { margin: 0; font: 600 20px/26px var(--font-sans); color: var(--fg); }
-    .report__chart { flex: 1; display: flex; align-items: flex-end; gap: var(--space-1); padding-top: var(--space-2); border-bottom: 1px solid var(--border); }
-    .report__chart span { flex: 1; border-radius: var(--radius-xs) var(--radius-xs) 0 0; background: var(--grey-400); }
-    .report__chart span.is-you { background: var(--blue); }
-    .report__lines { display: grid; gap: var(--space-1); }
-    .report__lines span { height: 6px; border-radius: var(--radius-full); background: var(--grey-500); }
-    .chapters { display: grid; gap: var(--space-3) var(--space-4); grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); margin: 0; padding: 0; list-style: none; }
+    /* Key factors on the left, the real sample PDF on the right */
+    .results { display: grid; gap: var(--space-8); grid-template-columns: minmax(0, 1fr) minmax(0, 380px); align-items: center; }
+    .results__text { display: flex; flex-direction: column; gap: var(--space-3); }
+    .results .chapters { row-gap: var(--space-1); }
+    .results .chapters li { padding-top: var(--space-1-5); }
+    @media (max-width: 860px) { .results { grid-template-columns: minmax(0, 1fr); gap: var(--space-6); } }
+    .chapters { display: grid; gap: var(--space-2) var(--space-4); grid-template-columns: repeat(2, minmax(0, 1fr)); margin: 0; padding: 0; list-style: none; }
+    @media (max-width: 560px) { .chapters { grid-template-columns: minmax(0, 1fr); } }
+    .sample { margin: 0; display: grid; justify-items: center; gap: var(--space-3); }
+    .sample__stack { position: relative; display: block; width: min(264px, 68vw); aspect-ratio: 635 / 898; margin-right: 28px; }
+    .sample__page { position: absolute; inset: 0; width: 100%; height: 100%; display: block; border-radius: 3px; box-shadow: 0 24px 60px #000000a6, 0 2px 6px #00000066; transition: transform .45s cubic-bezier(.34, 1.56, .64, 1); }
+    .sample__page--back { transform: translate(28px, -18px) rotate(4deg); filter: brightness(.82); }
+    .sample__page--front { transform: rotate(-1.5deg); }
+    .sample__stack:hover .sample__page--front, .sample__stack:focus-visible .sample__page--front { transform: rotate(-3deg) translate(-8px, 4px); }
+    .sample__stack:hover .sample__page--back, .sample__stack:focus-visible .sample__page--back { transform: translate(40px, -24px) rotate(6deg); }
+    .sample__stack:focus-visible { outline: none; box-shadow: var(--shadow-focus); border-radius: 3px; }
+    @media (prefers-reduced-motion: reduce) { .sample__page { transition: none; } }
+    .sample__caption { display: grid; justify-items: center; gap: var(--space-1-5); }
+    .sample__meta { font: 500 13px/20px var(--font-sans); letter-spacing: .1px; color: var(--fg-300); }
     .chapters li { padding-top: var(--space-2); border-top: 1px solid var(--border); }
     .chapters h3 { margin: 0 0 var(--space-0-5); font: 500 16px/24px var(--font-sans); color: var(--fg); }
     .chapters p { margin: 0; font: 400 14px/22px var(--font-sans); letter-spacing: .1px; color: var(--fg-300); }
@@ -740,17 +749,12 @@
     <!-- Star Track: what you get -->
     <section class="section block" id="results" aria-labelledby="results-title">
       <div class="block__inner">
-        <div class="block__head">
-          <p class="eyebrow">Star Track · What you get</p>
-          <h2 id="results-title">One document. The full picture.</h2>
-          <p class="block__lead">A PDF full of reports, charts, facts, and data on your competitors, your market, and your own company.</p>
-        </div>
         <div class="results">
-          <div class="cz-card report" role="img" aria-label="Illustration of a Star Track report page with a bar chart">
-            <p class="eyebrow">Star Track report</p>
-            <p class="report__title">Your market, this period</p>
-            <div class="report__chart"><span style="height:38%"></span><span style="height:62%"></span><span class="is-you" style="height:78%"></span><span style="height:54%"></span><span style="height:91%"></span><span style="height:47%"></span></div>
-            <div class="report__lines"><span style="width:92%"></span><span style="width:76%"></span><span style="width:84%"></span></div>
+          <div class="results__text">
+          <div class="block__head">
+            <p class="eyebrow">Star Track · What you get</p>
+            <h2 id="results-title">One document. The full picture.</h2>
+            <p class="block__lead">A PDF full of reports, charts, facts, and data on your competitors, your market, and your own company.</p>
           </div>
           <ul class="chapters">
             <li><h3>Products and pricing</h3><p>Prices, features, new products, and failed programs.</p></li>
@@ -760,6 +764,17 @@
             <li><h3>Your market</h3><p>Category trends, Google Trends, new and dead businesses, and platform trends.</p></li>
             <li><h3>Opportunities and threats</h3><p>Investor and grant programs, regulation updates, and active threats.</p></li>
           </ul>
+          </div>
+          <figure class="sample">
+            <a class="sample__stack" href="assets/star-track-colonaiz-2026-11.pdf" target="_blank" rel="noopener" aria-label="Open the sample Star Track report (PDF)">
+              <img class="sample__page sample__page--back" src="assets/report/pricing.jpg" width="635" height="899" alt="" loading="lazy" decoding="async">
+              <img class="sample__page sample__page--front" src="assets/report/cover.jpg" width="635" height="898" alt="Cover of a sample Star Track report: Competitor and Market Review" loading="lazy" decoding="async">
+            </a>
+            <figcaption class="sample__caption">
+              <span class="sample__meta">Sample report · PDF · 0.7 MB</span>
+              <a class="cz-btn cz-btn--primary cz-glass cz-glass--prominent cz-glass--interactive" href="assets/star-track-colonaiz-2026-11.pdf" download>Download sample report</a>
+            </figcaption>
+          </figure>
         </div>
       </div>
     </section>

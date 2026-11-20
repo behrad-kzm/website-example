@@ -11,6 +11,13 @@ What Colonaiz sells and why, as the founder described it on 14–15 November 202
 - The output is a PDF of about 15–20 pages, full of reports, charts, facts and data. It tells the client how their competitors are working, how they are growing and where they are investing more.
 - With the document, the client knows how to update their own business so competitors never get one step ahead.
 
+## How the PDF looks
+
+Stated by the founder on 20 November 2026, after seeing a first version styled like the website (dark pages, glowing planet, gradient headlines):
+
+- The client PDF must be formal, "like a business suit", and official: the kind of document a client expects to receive, with a normal (white) background.
+- The website's dark space look does not carry over to the PDF.
+
 ## What we do
 
 We do business insights. Our goal is to be BI as a service for small and mid-size companies.
