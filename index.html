@@ -8,7 +8,19 @@
   <link rel="icon" href="assets/brand/favicon.svg" type="image/svg+xml">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="preconnect" href="https://cdn.jsdelivr.net">
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+  <!-- The hero planet's pre-rendered still, the first thing drawn behind the hero (assets/planet-still.js): one for the window's shape -->
+  <link rel="preload" as="image" href="assets/planet-still/portrait.webp" type="image/webp" media="(orientation: portrait)" fetchpriority="high">
+  <link rel="preload" as="image" href="assets/planet-still/landscape.webp" type="image/webp" media="(orientation: landscape)" fetchpriority="high">
+  <!-- Before any module is loaded: the early planet loader in <body> already resolves "three" through it -->
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.min.js",
+        "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+      }
+    }
+  </script>
   <!-- Web fonts load without blocking first paint; text shows in the system fallback until they arrive -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@900&family=Inter+Tight:wght@400;500;600;700&display=swap" media="print" onload="this.media='all'">
   <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@900&family=Inter+Tight:wght@400;500;600;700&display=swap"></noscript>
@@ -17,12 +29,12 @@
   <link rel="stylesheet" href="docs/design-system/components/bundle.css">
   <style>
     /* Headline face: Druk Condensed Super (Commercial Type, a licensed font). The files are not in the
-       repository yet: put the licensed web fonts at the paths below. Until then headlines fall back to Inter. */
-    @font-face {
-      font-family: "Druk Condensed Super";
-      src: url("assets/fonts/DrukCondensed-Super.woff2") format("woff2"), url("assets/fonts/DrukCondensed-Super.woff") format("woff");
-      font-weight: 900; font-style: normal; font-display: swap;
-    }
+       repository yet, so headlines show in Inter (--font-headline falls back to it). The font is not
+       declared until its files exist: declared without them, every visit made two requests that failed
+       (404), which browsers log as errors. When the licensed files arrive, put them in assets/fonts/ and add:
+         @font-face { font-family: "Druk Condensed Super"; font-weight: 900; font-style: normal; font-display: swap;
+           src: url("assets/fonts/DrukCondensed-Super.woff2") format("woff2"), url("assets/fonts/DrukCondensed-Super.woff") format("woff"); }
+       (and the same in assets/legal.css, with the path fonts/…) */
     body { padding: 0; min-height: 100vh; overflow-x: hidden; background: #000; }
 
     /* Navbar: floating capsule, pinned with the navbar inset */
@@ -65,7 +77,7 @@
     }
 
     /* Cybernetic planet: fixed WebGL backdrop in a pure black void (assets/planet.js) */
-    .planet {
+    .planet, .planet-still {
       /* As tall as the window is with the phone's address bar hidden (lvh). The bar sliding in and out
          then never changes the canvas's size, so the scene is not rebuilt while the visitor scrolls. */
       position: fixed; inset: 0 0 auto; z-index: -1;
@@ -73,7 +85,9 @@
       background: #000; pointer-events: none;
       opacity: 0; transition: opacity 1.6s ease;
     }
-    .planet.is-ready { opacity: 1; }
+    /* The pre-rendered still (assets/planet-still.js) is shown first, behind the live planet, which fades in over it */
+    .planet-still { z-index: -2; transition-duration: 0.6s; }
+    .planet.is-ready, .planet-still.is-ready { opacity: 1; }
     /* A soft shadow behind the copy keeps it legible where the ring crosses it */
     .hero__text { position: relative; }
     .hero__text::before {
@@ -657,7 +671,7 @@
     .site-footer__brand { display: flex; align-items: center; gap: var(--space-1); font-weight: 600; color: var(--fg); }
     .site-footer small { font: 400 13px/20px var(--font-sans); color: var(--fg-300); }
 
-    @media (prefers-reduced-motion: reduce) { .planet { transition: none; } .scroll-cue svg { animation: none; } }
+    @media (prefers-reduced-motion: reduce) { .planet, .planet-still { transition: none; } .scroll-cue svg { animation: none; } }
     @media (prefers-reduced-motion: reduce) {
       .js .wwd:not(.is-static) .wwd__step, .js .wwd:not(.is-static) .wwd__step.is-before, .js .wwd:not(.is-static) .wwd__step.is-active { transform: none; filter: none; transition: opacity .2s ease; }
       .wwd__rail span, .wwd__star { transition: none; }
@@ -667,7 +681,38 @@
   </style>
 </head>
 <body>
+  <canvas class="planet-still" data-planet-still aria-hidden="true"></canvas>
   <canvas class="planet" data-planet aria-hidden="true"></canvas>
+  <script type="module" async>
+    // The hero planet, in two steps. At once, on every device: the pre-rendered still (assets/planet-still.js).
+    // With a graphics chip (assets/gpu.js), the live planet's code starts downloading now, alongside the
+    // page, but only runs once the page has loaded and the browser is idle; it then fades in over the still.
+    // Without one, the live canvas goes and Three.js is never fetched.
+    // `async`: runs as soon as it is fetched, without waiting for the rest of the page to be parsed.
+    import { hasGPU } from './assets/gpu.js';
+    import('./assets/planet-still.js');
+    if (!hasGPU) {
+      document.querySelector('[data-planet]').remove();
+    } else {
+      const three = 'https://cdn.jsdelivr.net/npm/three@0.160.0/';
+      const modules = [
+        './assets/planet.js', three + 'build/three.module.min.js',
+        ...['utils/BufferGeometryUtils', 'postprocessing/EffectComposer', 'postprocessing/RenderPass',
+          'postprocessing/UnrealBloomPass', 'postprocessing/OutputPass', 'postprocessing/Pass',
+          'postprocessing/ShaderPass', 'postprocessing/MaskPass', 'shaders/CopyShader', 'shaders/OutputShader',
+          'shaders/LuminosityHighPassShader'].map((path) => `${three}examples/jsm/${path}.js`),
+      ];
+      for (const href of modules) {
+        const link = document.createElement('link');
+        link.rel = 'modulepreload';
+        link.href = href;
+        document.head.append(link);
+      }
+      const start = () => import('./assets/planet.js');
+      const whenIdle = () => ('requestIdleCallback' in window ? requestIdleCallback(start, { timeout: 1500 }) : setTimeout(start, 200));
+      if (document.readyState === 'complete') whenIdle(); else addEventListener('load', whenIdle, { once: true });
+    }
+  </script>
 
   <header class="site-header">
     <nav class="cz-nav cz-glass" data-refract aria-label="Main">
@@ -988,6 +1033,39 @@
                 <circle cx="12" cy="12" r="12" fill="currentColor" mask="url(#deeplaunch-cut)"/>
               </svg>
               <span class="listing__text"><span class="listing__label">Featured on</span><span class="listing__name">DeepLaunch.io</span></span>
+            </a></li>
+            <li><a class="listing" href="https://lemonlaunch.dev/saas/colonaiz" target="_blank" rel="noopener">
+              <!-- LemonLaunch's lemon wedge with its juice drops, redrawn from their badge's raster logo -->
+              <svg class="listing__mark" viewBox="0 0 24 24" width="30" height="30" aria-hidden="true" focusable="false">
+                <mask id="lemonlaunch-cut">
+                  <rect x="-4" y="-4" width="32" height="32" fill="#fff"/>
+                  <g fill="none" stroke="#000" stroke-width="1.15" stroke-linecap="round">
+                    <path d="M4 11.4A7.4 7.4 0 0 0 18.8 11.4"/>
+                    <path d="M11.4 11.4L6.17 16.63M11.4 11.4V18.8M11.4 11.4L16.63 16.63"/>
+                  </g>
+                  <circle cx="11.4" cy="11.4" r=".9" fill="#000"/>
+                </mask>
+                <g fill="currentColor">
+                  <path transform="rotate(-24 11.4 11.4)" d="M1.8 11.4H21A9.6 9.6 0 0 1 1.8 11.4Z" mask="url(#lemonlaunch-cut)"/>
+                  <ellipse cx="19.2" cy="3.2" rx="1" ry="1.65" transform="rotate(30 19.2 3.2)"/>
+                  <ellipse cx="22" cy="6.3" rx=".85" ry="1.35" transform="rotate(62 22 6.3)"/>
+                  <circle cx="16.4" cy="2.6" r=".8"/>
+                </g>
+              </svg>
+              <span class="listing__text"><span class="listing__label">Featured on</span><span class="listing__name">LemonLaunch</span></span>
+            </a></li>
+            <li><a class="listing" href="https://launchstreak.dev/saas/colonaiz" target="_blank" rel="noopener">
+              <!-- Launch Streak's smiling flame, redrawn from their badge's raster mascot -->
+              <svg class="listing__mark" viewBox="0 0 24 24" width="30" height="30" aria-hidden="true" focusable="false">
+                <mask id="launchstreak-cut">
+                  <rect width="24" height="24" fill="#fff"/>
+                  <ellipse cx="9.3" cy="15.4" rx="1" ry="1.35" fill="#000"/>
+                  <ellipse cx="14.7" cy="15.4" rx="1" ry="1.35" fill="#000"/>
+                  <path d="M10.5 18.3Q12 19.6 13.5 18.3" fill="none" stroke="#000" stroke-width="1.1" stroke-linecap="round"/>
+                </mask>
+                <path fill="currentColor" mask="url(#launchstreak-cut)" d="M12 23C7.4 23 4.4 19.9 4.4 15.8C4.4 12.6 5.9 10.3 7.7 8.6C7.6 10 8 11 8.9 11.7C8.7 7.4 10.4 3.9 13.6 1.2C13.2 4.4 14.3 7.3 15.7 9C16 7.8 16.5 6.7 17.3 5.8C18.9 8.3 19.6 11.6 19.6 15.8C19.6 19.9 16.6 23 12 23Z"/>
+              </svg>
+              <span class="listing__text"><span class="listing__label">Launched on</span><span class="listing__name">Launch Streak</span></span>
             </a></li>
           </ul>
         </div>
@@ -1322,22 +1400,6 @@
   }
  ]
 }
-  </script>
-  <script type="importmap">
-    {
-      "imports": {
-        "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.min.js",
-        "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
-      }
-    }
-  </script>
-  <script type="module">
-    // The planet is decoration: fetch and start it only once the page itself has loaded and the browser is idle.
-    // Without a graphics chip it is shown as a still image instead, and Three.js is never fetched (assets/gpu.js).
-    import { hasGPU } from './assets/gpu.js';
-    const start = () => import(hasGPU ? './assets/planet.js' : './assets/planet-still.js');
-    const whenIdle = () => ('requestIdleCallback' in window ? requestIdleCallback(start, { timeout: 1500 }) : setTimeout(start, 200));
-    if (document.readyState === 'complete') whenIdle(); else addEventListener('load', whenIdle, { once: true });
   </script>
   <script>
     // Scroll cue: go to the section after the hero, or one screen down while the hero is the only section

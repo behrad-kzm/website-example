@@ -1,11 +1,8 @@
 /* Legal pages (terms.html, privacy.html): a quiet reading layout on the site's dark surface.
    Tokens and the navbar, button and glass components come from docs/design-system. */
 
-@font-face {
-  font-family: "Druk Condensed Super";
-  src: url("fonts/DrukCondensed-Super.woff2") format("woff2"), url("fonts/DrukCondensed-Super.woff") format("woff");
-  font-weight: 900; font-style: normal; font-display: swap;
-}
+/* Druk Condensed Super (the headline face) is not declared until its licensed files are in assets/fonts/:
+   see the note at the top of index.html's <style>. Headlines show in Inter until then. */
 
 html { scroll-behavior: smooth; scroll-padding-top: 104px; }
 body {

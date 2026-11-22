@@ -26,7 +26,7 @@ const RING_INNER = 1.3, RING_OUTER = 2.08; // ring radii, in planet radii
 const SCAN_SPEED = 0.14;   // rad per ring-second: the bright scanner line, and the satellite above it
 const SAT_HEIGHT = 0.25;    // how far above the ring plane the satellite flies
 
-function main() {
+async function main() {
   const canvas = document.querySelector('[data-planet]');
   if (!canvas) return;
 
@@ -254,6 +254,11 @@ function main() {
   };
   let wake = () => {};   // starts the animation loop again when the planet comes back into view
   addEventListener('scroll', checkCovered, { passive: true });
+
+  // Compile the scene's shaders before the first frame. Where the browser can compile them in the
+  // background (KHR_parallel_shader_compile) the page keeps scrolling meanwhile; the pre-rendered still
+  // (assets/planet-still.js) is on screen until then.
+  try { await renderer.compileAsync(scene, camera); } catch (e) { /* the first render compiles them */ }
 
   layout();
   render();

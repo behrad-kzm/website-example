@@ -32,6 +32,10 @@ jobs:
       - name: Inline the site's stylesheets into its pages
         # Faster first paint: no render-blocking CSS requests (scripts/inline-css.mjs). Only the uploaded copy changes.
         run: node scripts/inline-css.mjs
+      - name: Minify the site's scripts
+        # About half the bytes: comments and spacing out, local names shortened. Each file stays its own
+        # module with the same imports and exports. Only the uploaded copy changes.
+        run: npx --yes esbuild@0.25.0 assets/*.js --minify --format=esm --outdir=assets --allow-overwrite
       - name: Setup Pages
         uses: actions/configure-pages@v5
       - name: Upload artifact
