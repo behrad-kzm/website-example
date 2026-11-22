@@ -606,10 +606,18 @@
     .listing__label { font: 500 10px/12px var(--font-sans); letter-spacing: .08em; text-transform: uppercase; opacity: .8; }
     .listing__name { font: 600 15px/18px var(--font-sans); }
     /* Listings sit in even columns, so a wrapped row lines up under the one above instead of re-centring on its own:
-       four in a row when there is room, two by two on phones and tablets, one column on the narrowest phones. */
+       all five in a row when there is room, else two columns (an odd one out is centred under the pair above),
+       one column on the narrowest phones. */
     .trusted--listings { display: grid; grid-template-columns: repeat(2, max-content); justify-content: center; gap: var(--space-3) var(--space-4); }
-    @media (min-width: 760px) { .trusted--listings { grid-template-columns: repeat(4, max-content); gap: var(--space-3) var(--space-5); } }
-    @media (max-width: 359px) { .trusted--listings { grid-template-columns: max-content; } }
+    .trusted--listings > li:last-child:nth-child(odd) { grid-column: 1 / -1; justify-self: center; }
+    @media (min-width: 960px) {
+      .trusted--listings { grid-template-columns: repeat(5, max-content); gap: var(--space-3) var(--space-5); }
+      .trusted--listings > li:last-child:nth-child(odd) { grid-column: auto; }
+    }
+    @media (max-width: 359px) {
+      .trusted--listings { grid-template-columns: max-content; }
+      .trusted--listings > li:last-child:nth-child(odd) { justify-self: start; }
+    }
     .group { display: flex; flex-direction: column; gap: var(--space-2); }
     #trust .group h3 { text-align: center; }   /* the group titles and logos are centred; the section's headline stays on the left */
     .group h3 { margin: 0; font: 500 16px/24px var(--font-sans); color: var(--fg-200); }
@@ -1087,6 +1095,24 @@
                 </g>
               </svg>
               <span class="listing__text"><span class="listing__label">Featured on</span><span class="listing__name">ListBulb</span></span>
+            </a></li>
+            <li><a class="listing" href="https://nicklaunches.com/products/colonaiz/" target="_blank" rel="noopener">
+              <!-- Nick Launches' award rosette, drawn solid (their badge draws it in outline) to carry the same weight as the marks beside it -->
+              <svg class="listing__mark" viewBox="0 0 24 24" width="30" height="30" aria-hidden="true" focusable="false">
+                <mask id="nicklaunches-ring">
+                  <rect width="24" height="24" fill="#fff"/>
+                  <circle cx="12" cy="8.6" r="3.9" fill="none" stroke="#000" stroke-width="1.15"/>
+                </mask>
+                <mask id="nicklaunches-gap">
+                  <rect width="24" height="24" fill="#fff"/>
+                  <circle cx="12" cy="8.6" r="7.9" fill="#000"/>
+                </mask>
+                <g fill="currentColor">
+                  <circle cx="12" cy="8.6" r="6.8" mask="url(#nicklaunches-ring)"/>
+                  <path mask="url(#nicklaunches-gap)" d="M7.6 12L6.4 22.3L12 19L17.6 22.3L16.4 12Z" stroke="currentColor" stroke-width=".6" stroke-linejoin="round"/>
+                </g>
+              </svg>
+              <span class="listing__text"><span class="listing__label">Featured on</span><span class="listing__name">Nick Launches</span></span>
             </a></li>
           </ul>
         </div>
