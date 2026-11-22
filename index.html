@@ -3,6 +3,15 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <!-- Google Tag Manager (GTM-TL7MM2F3) behind Google Consent Mode v2: analytics storage stays "denied", so no
+       cookie is written, until the visitor accepts in the cookie banner (assets/consent.js). Ads storage is never granted. -->
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    var czConsent; try { czConsent = localStorage.getItem('cz-consent'); } catch (e) {}
+    gtag('consent', 'default', { analytics_storage: czConsent === 'granted' ? 'granted' : 'denied', ad_storage: 'denied', ad_user_data: 'denied', ad_personalization: 'denied' });
+    (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','GTM-TL7MM2F3');
+  </script>
   <title>colonAIz</title>
   <meta name="description" content="colonAIz is business intelligence as a service for small and mid-size companies. Our analysts track your competitors, market, and industry continuously and report what changed.">
   <link rel="icon" href="assets/brand/favicon.svg" type="image/svg+xml">
@@ -27,6 +36,7 @@
   <script>document.documentElement.classList.add('js');</script>
   <link rel="stylesheet" href="docs/design-system/tokens.css">
   <link rel="stylesheet" href="docs/design-system/components/bundle.css">
+  <link rel="stylesheet" href="assets/consent.css">
   <style>
     /* Headline face: Druk Condensed Super (Commercial Type, a licensed font). The files are not in the
        repository yet, so headlines show in Inter (--font-headline falls back to it). The font is not
@@ -605,18 +615,22 @@
     .listing__text { display: flex; flex-direction: column; text-align: left; }
     .listing__label { font: 500 10px/12px var(--font-sans); letter-spacing: .08em; text-transform: uppercase; opacity: .8; }
     .listing__name { font: 600 15px/18px var(--font-sans); }
-    /* Listings sit in even columns, so a wrapped row lines up under the one above instead of re-centring on its own:
-       all five in a row when there is room, else two columns (an odd one out is centred under the pair above),
-       one column on the narrowest phones. */
-    .trusted--listings { display: grid; grid-template-columns: repeat(2, max-content); justify-content: center; gap: var(--space-3) var(--space-4); }
-    .trusted--listings > li:last-child:nth-child(odd) { grid-column: 1 / -1; justify-self: center; }
-    @media (min-width: 960px) {
-      .trusted--listings { grid-template-columns: repeat(5, max-content); gap: var(--space-3) var(--space-5); }
-      .trusted--listings > li:last-child:nth-child(odd) { grid-column: auto; }
-    }
-    @media (max-width: 359px) {
-      .trusted--listings { grid-template-columns: max-content; }
-      .trusted--listings > li:last-child:nth-child(odd) { justify-self: start; }
+    /* Listings run on one line that scrolls by itself. The track holds the list twice (the copy is added by script),
+       so sliding it left by exactly one list's width (-50%) loops without a jump. Each list carries its own trailing gap
+       so the seam between the two copies is the same as the gap between items. Edges fade out instead of cutting. */
+    .marquee { overflow: hidden; -webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent); mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent); }
+    .marquee__track { display: flex; width: max-content; }
+    .trusted--listings { flex-wrap: nowrap; justify-content: flex-start; gap: var(--space-5); padding-right: var(--space-5); }
+    .trusted--listings > li { flex: none; }
+    .js .marquee__track { animation: marquee 40s linear infinite; }
+    .marquee:hover .marquee__track, .marquee:focus-within .marquee__track { animation-play-state: paused; }
+    @keyframes marquee { to { transform: translateX(-50%); } }
+    /* No script, or motion turned off: no loop, the one row can be scrolled sideways by hand instead. */
+    html:not(.js) .marquee { overflow-x: auto; }
+    @media (prefers-reduced-motion: reduce) {
+      .marquee { overflow-x: auto; }
+      .js .marquee__track { animation: none; }
+      .marquee__track > [aria-hidden="true"] { display: none; }
     }
     .group { display: flex; flex-direction: column; gap: var(--space-2); }
     #trust .group h3 { text-align: center; }   /* the group titles and logos are centred; the section's headline stays on the left */
@@ -668,18 +682,17 @@
     /* Book a call */
     .block--cta .cz-btn { height: 52px; padding: 0 var(--space-3); font-size: 16px; }
 
-    /* Footer */
-    /* Three times its first height (about 100px), with the content spread top to bottom */
+    /* Footer: sized to its content, everything on the centre line */
     .site-footer {
-      box-sizing: border-box; min-height: 304px; display: flex;
-      padding: var(--space-6) max(var(--space-3), env(safe-area-inset-right, 0px)) calc(var(--space-4) + env(safe-area-inset-bottom, 0px)) max(var(--space-3), env(safe-area-inset-left, 0px));
+      box-sizing: border-box; display: flex;
+      padding: var(--space-5) max(var(--space-2), env(safe-area-inset-right, 0px)) calc(var(--space-3) + env(safe-area-inset-bottom, 0px)) max(var(--space-2), env(safe-area-inset-left, 0px));
       background: var(--bg); border-top: 1px solid var(--border);
     }
-    .site-footer__inner { width: 100%; max-width: var(--container); margin: 0 auto; display: flex; flex-direction: column; justify-content: space-between; gap: var(--space-5); }
-    .site-footer__top { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--space-2) var(--space-4); }
-    .site-footer__bottom { padding-top: var(--space-3); border-top: 1px solid var(--border); }
-    .site-footer__links { display: flex; flex-wrap: wrap; gap: var(--space-0-5) var(--space-3); }
-    .site-footer a { font: 500 14px/20px var(--font-sans); color: var(--fg-200); text-decoration: none; }
+    .site-footer__inner { width: 100%; max-width: var(--container); margin: 0 auto; display: flex; flex-direction: column; align-items: center; gap: var(--space-3); text-align: center; }
+    .site-footer__top { display: flex; flex-direction: column; align-items: center; gap: var(--space-2-5); }
+    .site-footer__bottom { width: 100%; max-width: var(--container-xs); padding-top: var(--space-2-5); border-top: 1px solid var(--border); }
+    .site-footer__links { display: flex; flex-wrap: wrap; justify-content: center; gap: var(--space-0-5) var(--space-3); }
+    .site-footer a { display: inline-block; padding: var(--space-0-5) 0; font: 500 14px/20px var(--font-sans); color: var(--fg-200); text-decoration: none; }
     .site-footer a:hover { color: var(--fg); }
     .site-footer__brand { display: flex; align-items: center; gap: var(--space-1); font-weight: 600; color: var(--fg); }
     .site-footer small { font: 400 13px/20px var(--font-sans); color: var(--fg-300); }
@@ -1028,9 +1041,12 @@
             <li><a href="https://applymerkez.com/fa" target="_blank" rel="noopener"><img src="assets/trust/applymerkez.webp" width="394" height="60" alt="ApplyMerkez" loading="lazy" decoding="async"></a></li>
           </ul>
         </div>
-        <!-- Where we are listed. Each listing keeps its link back to the directory; the badge is redrawn in one colour (white) to match the logos above, instead of the directory's own white-box image. -->
+        <!-- As seen on: the directories we are listed on. Each listing keeps its link back to the directory; the badge is redrawn in one colour (white) to match the logos above, instead of the directory's own white-box image. -->
         <div class="group">
-          <h3>Where we are listed</h3>
+          <h3>As seen on</h3>
+          <!-- One line that scrolls on its own: the script below appends a hidden copy of the list so the loop has no seam.
+               It pauses on hover or keyboard focus; without JS, or with reduced motion, it is a plain row you can scroll sideways. -->
+          <div class="marquee"><div class="marquee__track">
           <ul class="trusted trusted--listings">
             <li><a class="listing" href="https://deeplaunch.io" target="_blank" rel="noopener">
               <svg class="listing__mark" viewBox="0 0 24 24" width="30" height="30" aria-hidden="true" focusable="false">
@@ -1114,7 +1130,28 @@
               </svg>
               <span class="listing__text"><span class="listing__label">Featured on</span><span class="listing__name">Nick Launches</span></span>
             </a></li>
+            <li><a class="listing" href="https://daniellaunches.com" target="_blank" rel="noopener">
+              <!-- DanielLaunches' raccoon mascot, redrawn as a solid head with its mask band, from their badge's raster portrait -->
+              <svg class="listing__mark" viewBox="0 0 24 24" width="30" height="30" aria-hidden="true" focusable="false">
+                <mask id="daniellaunches-cut">
+                  <rect width="24" height="24" fill="#fff"/>
+                  <g fill="#000">
+                    <path d="M5.5 5.2L6 8L8.1 6.8Z"/>
+                    <path d="M18.5 5.2L18 8L15.9 6.8Z"/>
+                    <path d="M3.4 12.2Q4.9 9.6 8.4 10.2Q10.9 10.7 12 12.3Q13.1 10.7 15.6 10.2Q19.1 9.6 20.6 12.2Q19.7 15.2 16.6 15.2Q13.6 15.2 12 13.7Q10.4 15.2 7.4 15.2Q4.3 15.2 3.4 12.2Z"/>
+                    <ellipse cx="12" cy="17.6" rx="1.4" ry="1"/>
+                  </g>
+                </mask>
+                <g fill="currentColor">
+                  <path mask="url(#daniellaunches-cut)" stroke="currentColor" stroke-width=".6" stroke-linejoin="round" d="M12 21.6C7.8 21.6 3.3 18.6 2.7 13.6C2.4 11.1 3.4 9.1 4.9 8L4 2.8L9 5.9Q12 5.1 15 5.9L20 2.8L19.1 8C20.6 9.1 21.6 11.1 21.3 13.6C20.7 18.6 16.2 21.6 12 21.6Z"/>
+                  <circle cx="8.1" cy="12.5" r="1.35"/>
+                  <circle cx="15.9" cy="12.5" r="1.35"/>
+                </g>
+              </svg>
+              <span class="listing__text"><span class="listing__label">Featured on</span><span class="listing__name">DanielLaunches</span></span>
+            </a></li>
           </ul>
+          </div></div>
         </div>
       </div>
     </section>
@@ -1298,10 +1335,11 @@
           <a href="#faq">FAQ</a>
           <a href="terms.html">Terms</a>
           <a href="privacy.html">Privacy</a>
+          <a href="#cookie-settings" data-cookie-settings>Cookie settings</a>
           <a href="https://calendly.com/colonaiz-sales/30min" target="_blank" rel="noopener">Book a call</a>
         </nav>
       </div>
-      <div class="site-footer__bottom"><small>© 2026 colonAIz</small></div>
+      <div class="site-footer__bottom"><small>© 2026 colonAIz. All rights reserved.</small></div>
     </div>
   </footer>
   <script type="application/ld+json">
@@ -1346,7 +1384,7 @@
    "name": "How does the money-back guarantee work?",
    "acceptedAnswer": {
     "@type": "Answer",
-    "text": "The 12-month plan comes with a 100% money-back guarantee for the first month of use. If the first month does not convince you, you ask for your money back and you get it. We only reduce the costs which are not related to our service, like the transfer fees and taxes. After the first month the guarantee doesn't apply anymore."
+    "text": "The 12-month plan comes with a 100% money-back guarantee for the first month of use. If the first month does not convince you, you ask for your money back and you get it. We only reduce the costs which are not related to our service, like the transfer fees and taxes. After the first month the guarantee doesn't apply anymore. The details are in our terms."
    }
   },
   {
@@ -1354,7 +1392,7 @@
    "name": "Am I locked in for 12 months?",
    "acceptedAnswer": {
     "@type": "Answer",
-    "text": "Not in the way a subscription locks you. The 12-month plan is paid once, in advance, and it ends after the twelfth report. It does not renew by itself and we don't charge you again unless you order again. You can stop at any time. In the first month you get your money back. After that the payment is not refunded, so please use the first month to decide. And if we are the ones who stop Star Track, we refund the reports you did not receive."
+    "text": "Not in the way a subscription locks you. The 12-month plan is paid once, in advance, and it ends after the twelfth report. It does not renew by itself and we don't charge you again unless you order again. You can stop at any time. In the first month you get your money back. After that the payment is not refunded, so please use the first month to decide. And if we are the ones who stop Star Track, we refund the reports you did not receive. The full rules are in our terms."
    }
   },
   {
@@ -1362,7 +1400,7 @@
    "name": "Is my company's information kept confidential?",
    "acceptedAnswer": {
     "@type": "Answer",
-    "text": "Yes. What you tell us about your business is used only for making your reports. We never tell the companies in your report who our client is, and we don't show your name or logo anywhere without asking you first. Your confidential information is also not used to train the AI models of our providers. One thing to know honestly: our findings come from public sources. So another client who works in your market can see some of the same public facts in their report."
+    "text": "Yes. What you tell us about your business is used only for making your reports. We never tell the companies in your report who our client is, and we don't show your name or logo anywhere without asking you first. Your confidential information is also not used to train the AI models of our providers. One thing to know honestly: our findings come from public sources. So another client who works in your market can see some of the same public facts in their report. More about it in our privacy policy."
    }
   },
   {
@@ -1426,7 +1464,7 @@
    "name": "What should a competitor analysis report include?",
    "acceptedAnswer": {
     "@type": "Answer",
-    "text": "Anything that can measure a business. At minimum we would look for: Hiring and the size of the team. Product changes and new features. Prices and plans. The market and the countries they work in. Social media engagement. Number of sales, when they report it. Blog posts and website updates. Website traffic and the number of backlinks. One number alone tells little. Hiring three engineers together with a new pricing page tells you a launch is coming. That is why a good report puts these factors next to each other and says what changed since the last time."
+    "text": "Anything that can measure a business. At minimum we would look for: Hiring and the size of the team; Product changes and new features; Prices and plans; The market and the countries they work in; Social media engagement; Number of sales, when they report it; Blog posts and website updates; Website traffic and the number of backlinks. One number alone tells little. Hiring three engineers together with a new pricing page tells you a launch is coming. That is why a good report puts these factors next to each other and says what changed since the last time."
    }
   },
   {
@@ -1457,6 +1495,18 @@
     });
   </script>
   <script>
+    // "As seen on": append a hidden, unfocusable copy of the listings so the scrolling line loops without a seam.
+    // The copy drops its ids (the mask ids stay unique); its marks still draw from the originals' masks.
+    document.querySelectorAll('.marquee__track').forEach((track) => {
+      const copy = track.firstElementChild.cloneNode(true);
+      copy.setAttribute('aria-hidden', 'true');
+      copy.inert = true;
+      copy.querySelectorAll('[id]').forEach((el) => el.removeAttribute('id'));
+      copy.querySelectorAll('a').forEach((a) => a.tabIndex = -1);
+      track.append(copy);
+    });
+  </script>
+  <script>
     // "Why it is worth it" and "Delivery": the blocks of each picture land once, when most of it is in view
     (() => {
       const pictures = [...document.querySelectorAll('.save')];
@@ -1477,5 +1527,6 @@
   <script type="module" src="assets/hex-field.js"></script>
   <script type="module" src="assets/star-track.js"></script>
   <script src="docs/design-system/components/glass.js" defer></script>
+  <script src="assets/consent.js" defer></script>
 </body>
 </html>

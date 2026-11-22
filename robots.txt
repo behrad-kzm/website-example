@@ -1,0 +1,12 @@
+# colonAIz: every page is public, crawlers welcome (AI crawlers included: see /llms.txt)
+User-agent: *
+Allow: /
+# Internal folders that are not part of the site
+Disallow: /tests/
+Disallow: /test-results/
+Disallow: /plans/
+Disallow: /tasks/
+Disallow: /scripts/
+Disallow: /node_modules/
+
+Sitemap: https://colonaiz.com/sitemap.xml

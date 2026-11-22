@@ -1,0 +1,17 @@
+/* Cookie consent banner (assets/consent.js). Glass, because it is a control, not content.
+   Inset rule: the same padding on every side, so the text starts as far from the top as from the leading edge.
+   Decline and Accept look the same: refusing must be as easy as accepting. */
+.cz-consent {
+  position: fixed; z-index: 20;
+  right: var(--space-2); bottom: calc(var(--space-2) + env(safe-area-inset-bottom, 0px));
+  box-sizing: border-box; width: min(400px, calc(100vw - 2 * var(--space-2)));
+  padding: var(--space-2-5);
+  border-radius: var(--radius-2xl);
+  display: flex; flex-direction: column; gap: var(--space-2);
+  color: var(--fg);
+}
+.cz-consent[hidden] { display: none; }
+.cz-consent__text { margin: 0; font: 400 14px/20px var(--font-sans); color: var(--fg-200); }
+.cz-consent__text a { color: var(--fg); text-decoration: underline; text-underline-offset: 2px; }
+.cz-consent__actions { display: flex; justify-content: flex-end; gap: var(--space-1); }
+.cz-consent__actions .cz-btn { flex: 1; }

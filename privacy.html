@@ -3,6 +3,15 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <!-- Google Tag Manager (GTM-TL7MM2F3) behind Google Consent Mode v2: analytics storage stays "denied", so no
+       cookie is written, until the visitor accepts in the cookie banner (assets/consent.js). Ads storage is never granted. -->
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    var czConsent; try { czConsent = localStorage.getItem('cz-consent'); } catch (e) {}
+    gtag('consent', 'default', { analytics_storage: czConsent === 'granted' ? 'granted' : 'denied', ad_storage: 'denied', ad_user_data: 'denied', ad_personalization: 'denied' });
+    (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','GTM-TL7MM2F3');
+  </script>
   <title>Privacy Policy | colonAIz</title>
   <meta name="description" content="How colonAIz handles personal data: what we collect from visitors and clients, the public information we use in Star Track reports, who we share it with, and your rights.">
   <link rel="icon" href="assets/brand/favicon.svg" type="image/svg+xml">
@@ -11,6 +20,7 @@
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@900&family=Inter+Tight:wght@400;500;600;700&display=swap">
   <link rel="stylesheet" href="docs/design-system/tokens.css">
   <link rel="stylesheet" href="docs/design-system/components/bundle.css">
+  <link rel="stylesheet" href="assets/consent.css">
   <link rel="stylesheet" href="assets/legal.css">
 </head>
 <body>
@@ -60,7 +70,7 @@
         <div class="legal__short">
           <h2>The short version</h2>
           <ul>
-            <li>This website does not use advertising or analytics cookies, and it has no tracking pixels.</li>
+            <li>This website uses no advertising cookies. It uses Google Analytics cookies only if you accept them, and you can change your choice at any time.</li>
             <li>We collect your details only when you give them to us: when you book a call, write to us or become a client.</li>
             <li>Our reports are about companies, not about private people. They are built from publicly available information.</li>
             <li>We do not sell personal data.</li>
@@ -77,14 +87,15 @@
 
         <section id="visitors">
           <h2>Visitors of this website</h2>
-          <p>You can read this website without telling us who you are. We do not ask you to create an account, and the website does not place advertising or analytics cookies in your browser.</p>
+          <p>You can read this website without telling us who you are. We do not ask you to create an account, and the website does not place advertising cookies in your browser.</p>
           <p>Some technical data is still processed when a page loads, because the internet cannot work without it:</p>
           <ul>
             <li><strong>Server logs.</strong> Our hosting provider receives your IP address, your browser type and the time of your visit, and keeps them for a short period for security and to fix errors.</li>
             <li><strong>Fonts and code libraries.</strong> The website loads its fonts from Google Fonts and a graphics library from the jsDelivr network. To deliver these files, those providers receive your IP address and browser details. They do not receive anything you type.</li>
             <li><strong>Booking a call.</strong> The "Book a call" buttons open Calendly, a separate service. What you enter there (your name, your email address, the time you choose and anything you write in the form) is collected by Calendly for us, and Calendly may use its own cookies on its pages. Calendly's privacy policy applies there.</li>
+            <li><strong>Analytics, only with your consent.</strong> We use Google Analytics, loaded through Google Tag Manager, to understand how visitors use the website: which pages they open, how they arrived, the type of device and browser, and their approximate location (country or city). When you first visit, a banner asks whether you accept analytics cookies. Until you accept, no analytics cookie is stored, and Google receives only basic signals without cookies that do not identify your browser. If you accept, Google Analytics stores cookies (named <code>_ga</code> and <code>_ga_</code> followed by an ID) that keep for up to two years. Google provides this service to us as our processor, and we have turned off its use for advertising.</li>
           </ul>
-          <p>If we add analytics or other cookies in the future, we will update this policy first and ask for your consent where the law requires it.</p>
+          <p>You can change your choice at any time with the "Cookie settings" link at the bottom of every page. If you decline after accepting, we delete the analytics cookies from your browser.</p>
         </section>
 
         <section id="clients">
@@ -134,6 +145,7 @@
                 <tr><td>Invoices, payments, refunds and accounting</td><td>Billing data</td><td>Contract; legal obligations (tax and accounting law)</td></tr>
                 <tr><td>Building our database and the contents of reports</td><td>Public information about people in their professional role</td><td>Our legitimate interest, and our clients' interest, in understanding a market from public business information</td></tr>
                 <tr><td>Keeping the website secure and working</td><td>Technical data</td><td>Our legitimate interest in a secure service</td></tr>
+                <tr><td>Measuring how the website is used (Google Analytics)</td><td>Usage data, device data, approximate location, cookie IDs</td><td>Your consent, which you can withdraw at any time</td></tr>
                 <tr><td>Telling clients about changes to the service</td><td>Contact details</td><td>Contract; legitimate interest</td></tr>
                 <tr><td>News and offers by email</td><td>Contact details</td><td>Your consent, or our legitimate interest where the law allows. You can unsubscribe at any time.</td></tr>
               </tbody>
@@ -152,7 +164,7 @@
           <h2>Who we share data with</h2>
           <p>We do not sell personal data, and we do not share it for advertising. We share it only with:</p>
           <ul>
-            <li><strong>Service providers who work for us</strong>, such as hosting, email, scheduling (Calendly), payments, accounting, and cloud and AI processing. They may use the data only to provide their service to us.</li>
+            <li><strong>Service providers who work for us</strong>, such as hosting, email, scheduling (Calendly), website analytics (Google Analytics, only with your consent), payments, accounting, and cloud and AI processing. They may use the data only to provide their service to us.</li>
             <li><strong>Our clients</strong>, who receive reports that can contain the public professional information described in <a href="#public">Public information in our reports</a>.</li>
             <li><strong>Professional advisers</strong>, such as our lawyers and accountants, when they need it.</li>
             <li><strong>Authorities</strong>, when a law or a valid legal order requires it.</li>
@@ -173,6 +185,7 @@
             <li><strong>Invoices and payment records:</strong> for the period tax and accounting law requires.</li>
             <li><strong>Public information in our database:</strong> while it stays relevant to describing a company and its market. We update it as the sources change, and we delete personal data from it when a valid request asks us to.</li>
             <li><strong>Server logs:</strong> for a short period, set by our hosting provider.</li>
+            <li><strong>Website analytics:</strong> cookies keep for up to two years in your browser, and Google Analytics keeps the data for the retention period we set in it, at most 14 months.</li>
           </ul>
           <p>When we no longer need data, we delete it or make it anonymous.</p>
         </section>
@@ -227,11 +240,13 @@
           <a href="./#faq">FAQ</a>
           <a href="terms.html">Terms</a>
           <a href="privacy.html" aria-current="page">Privacy</a>
+          <a href="#cookie-settings" data-cookie-settings>Cookie settings</a>
           <a href="https://calendly.com/colonaiz-sales/30min" target="_blank" rel="noopener">Book a call</a>
         </nav>
       </div>
-      <div class="site-footer__bottom"><small>© 2026 colonAIz</small></div>
+      <div class="site-footer__bottom"><small>© 2026 colonAIz. All rights reserved.</small></div>
     </div>
   </footer>
+  <script src="assets/consent.js" defer></script>
 </body>
 </html>

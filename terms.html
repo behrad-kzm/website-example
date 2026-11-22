@@ -3,6 +3,15 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <!-- Google Tag Manager (GTM-TL7MM2F3) behind Google Consent Mode v2: analytics storage stays "denied", so no
+       cookie is written, until the visitor accepts in the cookie banner (assets/consent.js). Ads storage is never granted. -->
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    var czConsent; try { czConsent = localStorage.getItem('cz-consent'); } catch (e) {}
+    gtag('consent', 'default', { analytics_storage: czConsent === 'granted' ? 'granted' : 'denied', ad_storage: 'denied', ad_user_data: 'denied', ad_personalization: 'denied' });
+    (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','GTM-TL7MM2F3');
+  </script>
   <title>Star Track Terms and Conditions | colonAIz</title>
   <meta name="description" content="The terms for buying and using Star Track reports from colonAIz: what we commit to, delivery, refunds, how you may use the reports, and the limits of our responsibility.">
   <link rel="icon" href="assets/brand/favicon.svg" type="image/svg+xml">
@@ -11,6 +20,7 @@
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@900&family=Inter+Tight:wght@400;500;600;700&display=swap">
   <link rel="stylesheet" href="docs/design-system/tokens.css">
   <link rel="stylesheet" href="docs/design-system/components/bundle.css">
+  <link rel="stylesheet" href="assets/consent.css">
   <link rel="stylesheet" href="assets/legal.css">
 </head>
 <body>
@@ -271,11 +281,13 @@
           <a href="./#faq">FAQ</a>
           <a href="terms.html" aria-current="page">Terms</a>
           <a href="privacy.html">Privacy</a>
+          <a href="#cookie-settings" data-cookie-settings>Cookie settings</a>
           <a href="https://calendly.com/colonaiz-sales/30min" target="_blank" rel="noopener">Book a call</a>
         </nav>
       </div>
-      <div class="site-footer__bottom"><small>© 2026 colonAIz</small></div>
+      <div class="site-footer__bottom"><small>© 2026 colonAIz. All rights reserved.</small></div>
     </div>
   </footer>
+  <script src="assets/consent.js" defer></script>
 </body>
 </html>

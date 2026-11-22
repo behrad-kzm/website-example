@@ -82,12 +82,12 @@ body {
 .legal__body th { font: 500 12px/16px var(--font-sans); letter-spacing: .06em; text-transform: uppercase; color: var(--fg-300); }
 .legal__body td:first-child { color: var(--fg); font-weight: 500; }
 
-.site-footer { box-sizing: border-box; padding: var(--space-5) var(--space-3); border-top: 1px solid var(--border); background: #000; }
-.site-footer__inner { width: 100%; max-width: var(--container); margin: 0 auto; display: flex; flex-direction: column; gap: var(--space-4); }
-.site-footer__top { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--space-2) var(--space-4); }
-.site-footer__bottom { padding-top: var(--space-3); border-top: 1px solid var(--border); }
-.site-footer__links { display: flex; flex-wrap: wrap; gap: var(--space-0-5) var(--space-3); }
-.site-footer a { font: 500 14px/20px var(--font-sans); color: var(--fg-200); text-decoration: none; }
+.site-footer { box-sizing: border-box; padding: var(--space-5) var(--space-2) calc(var(--space-3) + env(safe-area-inset-bottom, 0px)); border-top: 1px solid var(--border); background: #000; }
+.site-footer__inner { width: 100%; max-width: var(--container); margin: 0 auto; display: flex; flex-direction: column; align-items: center; gap: var(--space-3); text-align: center; }
+.site-footer__top { display: flex; flex-direction: column; align-items: center; gap: var(--space-2-5); }
+.site-footer__bottom { width: 100%; max-width: var(--container-xs); padding-top: var(--space-2-5); border-top: 1px solid var(--border); }
+.site-footer__links { display: flex; flex-wrap: wrap; justify-content: center; gap: var(--space-0-5) var(--space-3); }
+.site-footer a { display: inline-block; padding: var(--space-0-5) 0; font: 500 14px/20px var(--font-sans); color: var(--fg-200); text-decoration: none; }
 .site-footer a:hover, .site-footer a[aria-current="page"] { color: var(--fg); }
 .site-footer__brand { display: flex; align-items: center; gap: var(--space-1); font-weight: 600; color: var(--fg); }
 .site-footer small { font: 400 13px/20px var(--font-sans); color: var(--fg-300); }
