@@ -142,3 +142,13 @@ Asked for by the founder on 22 November 2026.
 - Two pages: one for the privacy policy (privacy.html) and one for the Star Track Terms and Conditions (terms.html). Both are linked from the footer.
 - How the agent built them (not yet confirmed by the founder): plain reading pages on the site's dark surface, with a short version at the top, a list of sections at the side, and the commitments we make set apart in green. They are written in plain formal English, not in the FAQ's voice.
 - There is no "Log in" link in the navbar: the founder had it removed on 22 November 2026 because there is nothing to log in to yet.
+
+## Small screens (2026-11-22)
+
+The founder reported that the page was wrong in the browser's responsive mode (the navbar and the text cut at the right edge) and that it sometimes froze, and asked for it to be tested hard at six sizes. What was found, and the rules that came out of it:
+
+- The page must never be wider than the window. Decoration that is wider than its text (the soft shadows behind the hero copy, a star's number in "What we do") is cut at the edge of its section. A page that is wider makes a phone zoom out, and everything is then cut at the right.
+- "What we do" pins on every screen where its text fits one window, phones included. It used to fall back to the plain list on phones and tablets by mistake (the fit was measured wrongly), and which layout a visitor got could change from one load to the next.
+- The magnetic sections are for the mouse and the trackpad only. On a touch screen a short swipe was pulled back to where it started, which reads as the page refusing to scroll. (This one was the agent's decision, not the founder's: say so if the founder wants the magnet back on phones.)
+- The hero planet keeps one size while a phone's address bar slides in and out, pauses while the rest of the page covers it, and is not stopped for good by one long pause.
+- The six sizes are tested in tests/responsive.spec.js: 320x568, 360x740, 390x844, 430x932, 768x1024, 1024x768.

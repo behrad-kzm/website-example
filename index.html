@@ -45,6 +45,9 @@
        rest of the way. "proximity" only acts as the scroll settles, so it never holds the page while the
        visitor is still scrolling, and a section taller than the window can still be read through. */
     html { scroll-snap-type: y proximity; }
+    /* Not on touch screens. There a short swipe (under about a third of the window) was pulled back to
+       where it started, which reads as the page refusing to scroll; a finger places the page well enough. */
+    @media (hover: none) and (pointer: coarse) { html { scroll-snap-type: none; } }
     .site-footer { scroll-snap-align: end; }
 
     /* The page ends at the footer: no elastic overscroll, so the planet never shows underneath it */
@@ -56,12 +59,17 @@
       display: flex; flex-direction: column; align-items: center;
       padding: clamp(120px, 28vh, 320px) max(var(--space-2), env(safe-area-inset-right, 0px)) calc(var(--space-5) + env(safe-area-inset-bottom, 0px)) max(var(--space-2), env(safe-area-inset-left, 0px));
       text-align: center;
+      /* The soft shadows behind the copy are wider than the copy. On a narrow window they would stick out
+         past the side of the page and make the whole page wider than the screen, so they are cut at the edge. */
+      overflow-x: clip;
     }
 
     /* Cybernetic planet: fixed WebGL backdrop in a pure black void (assets/planet.js) */
     .planet {
-      position: fixed; inset: 0; z-index: -1;
-      width: 100%; height: 100%; display: block;
+      /* As tall as the window is with the phone's address bar hidden (lvh). The bar sliding in and out
+         then never changes the canvas's size, so the scene is not rebuilt while the visitor scrolls. */
+      position: fixed; inset: 0 0 auto; z-index: -1;
+      width: 100%; height: 100vh; height: 100lvh; display: block;
       background: #000; pointer-events: none;
       opacity: 0; transition: opacity 1.6s ease;
     }
@@ -99,6 +107,8 @@
       border-radius: var(--radius-full); color: var(--fg);
     }
     .hero__text { margin-bottom: var(--space-5); }
+    /* A short window (a small phone, a phone on its side): less room above the headline, so the scroll cue still fits */
+    @media (max-height: 640px) { .hero { padding-top: 104px; padding-bottom: calc(var(--space-3) + env(safe-area-inset-bottom, 0px)); } .hero__text { gap: var(--space-3); margin-bottom: var(--space-3); } }
     .scroll-cue:focus-visible { outline: none; box-shadow: var(--shadow-focus), var(--shadow-glass); }
     .scroll-cue svg { animation: scroll-cue-bob 1.8s ease-in-out infinite; }
     @keyframes scroll-cue-bob {
@@ -154,6 +164,7 @@
 
     .js .wwd:not(.is-static) {
       display: block; position: relative; padding: 0;
+      overflow-x: clip;   /* a star's number near the side of the window must not make the page wider than the window */
       height: calc((var(--wwd-steps) * var(--wwd-dwell) + 1) * 100vh); height: calc((var(--wwd-steps) * var(--wwd-dwell) + 1) * 100svh);
     }
     .js .wwd:not(.is-static) .wwd__sticky {
@@ -189,6 +200,8 @@
       transition: opacity .28s ease, transform .45s cubic-bezier(.4, 0, .6, 1), filter .28s ease;
     }
     .js .wwd:not(.is-static) .wwd__step.is-before { transform: translate3d(0, -20px, 0); }
+    /* While the script measures whether the text fits one window, every step is in its place (assets/what-we-do.js) */
+    .js .wwd.is-measuring .wwd__step, .js .wwd.is-measuring .wwd__panel li { transform: none !important; transition: none !important; }
     .js .wwd:not(.is-static) .wwd__step.is-active {
       opacity: 1; transform: none; filter: none; pointer-events: auto;
       transition: opacity .7s cubic-bezier(.22, 1, .36, 1) .16s, transform .9s cubic-bezier(.22, 1, .36, 1) .16s, filter .6s ease .16s;

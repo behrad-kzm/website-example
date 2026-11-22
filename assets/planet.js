@@ -87,8 +87,14 @@ function main() {
   // Layout: planet diameter ≈ 48% of the viewport width, a little above centre
   const fovTan = Math.tan(THREE.MathUtils.degToRad(camera.fov / 2));
   let distance = 6;
+  // The size comes from the canvas's own box, which the page keeps steady (index.html, .planet): the
+  // window's size changes all the time on a phone, as the address bar slides in and out.
+  let laidW = 0, laidH = 0, laidRatio = 0;
   const layout = () => {
-    const w = innerWidth, h = innerHeight;
+    const w = canvas.clientWidth || innerWidth, h = canvas.clientHeight || innerHeight;
+    // Resizing throws away and rebuilds every buffer of the bloom: only when the size really changed
+    if (w === laidW && h === laidH && renderer.getPixelRatio() === laidRatio) return false;
+    laidW = w; laidH = h; laidRatio = renderer.getPixelRatio();
     renderer.setSize(w, h, false);
     composer.setSize(w, h);
     camera.aspect = w / h;
@@ -98,6 +104,7 @@ function main() {
     ring.uniforms.uScale.value = (h * renderer.getPixelRatio()) / (2 * fovTan);
     camera.updateProjectionMatrix();
     placeCamera();
+    return true;
   };
 
   // Gentle pointer parallax
@@ -243,7 +250,9 @@ function main() {
     covered = now;
     canvas.style.visibility = covered ? 'hidden' : '';
     if (!covered && frozen) render();
+    if (!covered) wake();
   };
+  let wake = () => {};   // starts the animation loop again when the planet comes back into view
   addEventListener('scroll', checkCovered, { passive: true });
 
   layout();
@@ -251,28 +260,55 @@ function main() {
   checkCovered();
   canvas.classList.add('is-ready');
   autoNext = clock.getElapsedTime() + AUTO_FIRST;
-  addEventListener('resize', () => { layout(); if (frozen) render(); });
+  // A window being dragged to a new size sends many resize events a second. They are answered once per
+  // frame at most, and the frames around a resize are not held against the device (see the governor below).
+  let resizeQueued = false, onResized = () => {};
+  addEventListener('resize', () => {
+    if (resizeQueued) return;
+    resizeQueued = true;
+    requestAnimationFrame(() => {
+      resizeQueued = false;
+      if (!layout()) return;
+      onResized();
+      if (frozen) render();
+    });
+  });
 
   if (!frozen) {
     // Quality governor: watch the real frame rate and shed work on devices that can't keep up.
     // Step 1 drops to 1x resolution, step 2 turns bloom off, step 3 stops animating and keeps a still.
-    const SLOW_MS = 40, HOPELESS_MS = 150, WARMUP = 2, WINDOW = 30;
-    let tier = 0, frames = -WARMUP, total = 0, prev = 0;
+    // "Hopeless" means several frames in a row each took that long: one long pause (another part of the
+    // page starting up, a resize, the tab coming back) is not the device being too slow, and must not
+    // stop the planet for good.
+    const SLOW_MS = 40, HOPELESS_MS = 150, HOPELESS_RUN = 4, WARMUP = 2, WINDOW = 30;
+    let tier = 0, frames = -WARMUP, total = 0, prev = 0, hopeless = 0;
+    onResized = () => { frames = -WARMUP; total = 0; hopeless = 0; };
+    document.addEventListener('visibilitychange', onResized);
     const degrade = (toStill) => {
       tier = toStill ? 3 : tier + 1;
       if (tier === 1) { renderer.setPixelRatio(1); composer.setPixelRatio(1); layout(); }
       else if (tier === 2) bloom.enabled = false;
       else { frozen = true; render(); }
-      frames = -2; total = 0;
+      frames = -2; total = 0; hopeless = 0;
+    };
+    // While the planet is covered by the rest of the page the loop is off: nothing is drawn, and the frame
+    // rate of the sections below (which is their business, not the planet's) is not held against it.
+    let looping = true;
+    wake = () => {
+      if (looping || frozen) return;
+      looping = true; prev = 0; onResized();
+      requestAnimationFrame(loop);
     };
     const loop = (now) => {
       if (frozen) return;
-      const delta = now - prev; prev = now;
-      if (!covered) render();
+      if (covered) { looping = false; return; }
+      const delta = prev ? now - prev : 0; prev = now;
+      render();
       if (delta > 0 && delta < 1000) {  // skip the first frame and gaps from a hidden tab
         if (frames >= 0) total += delta;
         frames++;
-        if (frames >= 2 && total / frames > HOPELESS_MS) degrade(true);
+        hopeless = delta > HOPELESS_MS ? hopeless + 1 : 0;
+        if (hopeless >= HOPELESS_RUN) degrade(true);
         else if (frames >= WINDOW) {
           if (total / frames > SLOW_MS) degrade(false);
           else { frames = 0; total = 0; }

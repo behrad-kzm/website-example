@@ -98,7 +98,13 @@ function init(root) {
   // Pin the section only if its content fits one window; otherwise show the plain list
   function configure() {
     root.classList.remove('is-static');
+    // The steps that are not on screen sit 20px off their place, ready to slide in. A browser counts that
+    // offset as content sticking out, so with it the text would seem not to fit when it does (and the answer
+    // would change with whichever step happened to be showing). .is-measuring puts every step in its place
+    // for the measurement (index.html).
+    root.classList.add('is-measuring');
     const overflows = inner.scrollHeight > inner.clientHeight + 1 || copy.scrollHeight > copy.clientHeight + 1;
+    root.classList.remove('is-measuring');
     root.classList.toggle('is-static', overflows);
     active = -1;
     setMagnet(true);
