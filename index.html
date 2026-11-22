@@ -605,6 +605,11 @@
     .listing__text { display: flex; flex-direction: column; text-align: left; }
     .listing__label { font: 500 10px/12px var(--font-sans); letter-spacing: .08em; text-transform: uppercase; opacity: .8; }
     .listing__name { font: 600 15px/18px var(--font-sans); }
+    /* Listings sit in even columns, so a wrapped row lines up under the one above instead of re-centring on its own:
+       four in a row when there is room, two by two on phones and tablets, one column on the narrowest phones. */
+    .trusted--listings { display: grid; grid-template-columns: repeat(2, max-content); justify-content: center; gap: var(--space-3) var(--space-4); }
+    @media (min-width: 760px) { .trusted--listings { grid-template-columns: repeat(4, max-content); gap: var(--space-3) var(--space-5); } }
+    @media (max-width: 359px) { .trusted--listings { grid-template-columns: max-content; } }
     .group { display: flex; flex-direction: column; gap: var(--space-2); }
     #trust .group h3 { text-align: center; }   /* the group titles and logos are centred; the section's headline stays on the left */
     .group h3 { margin: 0; font: 500 16px/24px var(--font-sans); color: var(--fg-200); }
@@ -1018,7 +1023,7 @@
         <!-- Where we are listed. Each listing keeps its link back to the directory; the badge is redrawn in one colour (white) to match the logos above, instead of the directory's own white-box image. -->
         <div class="group">
           <h3>Where we are listed</h3>
-          <ul class="trusted">
+          <ul class="trusted trusted--listings">
             <li><a class="listing" href="https://deeplaunch.io" target="_blank" rel="noopener">
               <svg class="listing__mark" viewBox="0 0 24 24" width="30" height="30" aria-hidden="true" focusable="false">
                 <mask id="deeplaunch-cut">
@@ -1066,6 +1071,22 @@
                 <path fill="currentColor" mask="url(#launchstreak-cut)" d="M12 23C7.4 23 4.4 19.9 4.4 15.8C4.4 12.6 5.9 10.3 7.7 8.6C7.6 10 8 11 8.9 11.7C8.7 7.4 10.4 3.9 13.6 1.2C13.2 4.4 14.3 7.3 15.7 9C16 7.8 16.5 6.7 17.3 5.8C18.9 8.3 19.6 11.6 19.6 15.8C19.6 19.9 16.6 23 12 23Z"/>
               </svg>
               <span class="listing__text"><span class="listing__label">Launched on</span><span class="listing__name">Launch Streak</span></span>
+            </a></li>
+            <li><a class="listing" href="https://www.listbulb.com/tools/colonaiz" target="_blank" rel="noopener">
+              <!-- ListBulb's light bulb (the "U" of their LIST BULB wordmark), redrawn on its own since the wordmark can't be read at this size -->
+              <svg class="listing__mark" viewBox="0 0 24 24" width="30" height="30" aria-hidden="true" focusable="false">
+                <mask id="listbulb-cut">
+                  <rect width="24" height="24" fill="#fff"/>
+                  <path d="M10.2 16.6V12.2L11.1 10.6L12 12.2L12.9 10.6L13.8 12.2V16.6" fill="none" stroke="#000" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round"/>
+                </mask>
+                <g fill="currentColor">
+                  <path mask="url(#listbulb-cut)" d="M8.5 17.2C8.5 15 4.8 13.4 4.8 9.2A7.2 7.2 0 0 1 19.2 9.2C19.2 13.4 15.5 15 15.5 17.2Z"/>
+                  <rect x="8.5" y="18.2" width="7" height="1.5" rx=".75"/>
+                  <rect x="9" y="20.4" width="6" height="1.5" rx=".75"/>
+                  <path d="M10.6 22.4H13.4Q12.9 23.6 12 23.6Q11.1 23.6 10.6 22.4Z"/>
+                </g>
+              </svg>
+              <span class="listing__text"><span class="listing__label">Featured on</span><span class="listing__name">ListBulb</span></span>
             </a></li>
           </ul>
         </div>
