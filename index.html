@@ -967,7 +967,7 @@
           <h3>Who trusts us</h3>
           <ul class="trusted">
             <li><a href="https://sendbypass.com/" target="_blank" rel="noopener"><img src="assets/trust/sendbypass.svg" width="167" height="26" alt="Sendbypass" loading="lazy" decoding="async"></a></li>
-            <li><a href="https://applymerkez.com/fa" target="_blank" rel="noopener"><img src="assets/trust/applymerkez.png" width="480" height="73" alt="ApplyMerkez" loading="lazy" decoding="async"></a></li>
+            <li><a href="https://applymerkez.com/fa" target="_blank" rel="noopener"><img src="assets/trust/applymerkez.webp" width="394" height="60" alt="ApplyMerkez" loading="lazy" decoding="async"></a></li>
           </ul>
         </div>
         <!-- Where we are listed. Each listing keeps its link back to the directory; the badge is redrawn in one colour (white) to match the logos above, instead of the directory's own white-box image. -->
@@ -1332,8 +1332,10 @@
     }
   </script>
   <script type="module">
-    // The planet is decoration: fetch and start it only once the page itself has loaded and the browser is idle
-    const start = () => import('./assets/planet.js');
+    // The planet is decoration: fetch and start it only once the page itself has loaded and the browser is idle.
+    // Without a graphics chip it is shown as a still image instead, and Three.js is never fetched (assets/gpu.js).
+    import { hasGPU } from './assets/gpu.js';
+    const start = () => import(hasGPU ? './assets/planet.js' : './assets/planet-still.js');
     const whenIdle = () => ('requestIdleCallback' in window ? requestIdleCallback(start, { timeout: 1500 }) : setTimeout(start, 200));
     if (document.readyState === 'complete') whenIdle(); else addEventListener('load', whenIdle, { once: true });
   </script>

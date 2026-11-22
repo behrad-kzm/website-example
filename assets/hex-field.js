@@ -4,7 +4,9 @@
 // way: the ones under the pointer light up, and a click sends a wave out across the field.
 // Plain WebGL, one small fragment shader per field; without WebGL the element keeps its own background.
 
-const HEX_PX = 66;       // width of one panel, in CSS pixels
+import { hasGPU } from './gpu.js';
+
+const HEX_PX = 66;      // width of one panel, in CSS pixels
 const HOVER_PX = 210;    // how far the pointer's light reaches
 const WAVE_SPEED = 620;  // CSS pixels per second
 const VERTEX = `
@@ -187,7 +189,9 @@ function createField(host, reduceMotion, index) {
   const resize = () => {
     const w = canvas.clientWidth, h = canvas.clientHeight;  // the canvas, not the host: it may be a window-sized layer in a taller host
     if (!w || !h) return;
-    ratio = Math.min(devicePixelRatio || 1, w * h > 600000 ? 1.5 : 2);  // a large field is drawn a little coarser
+    // A large field is drawn a little coarser, and so is a phone's: its small GPU fills every pixel of a
+    // dense screen on each frame, and a 1.5x field is still sharper than the eye can tell on panels this soft
+    ratio = Math.min(devicePixelRatio || 1, w * h > 600000 || Math.min(w, h) < 700 ? 1.5 : 2);
     canvas.width = Math.round(w * ratio);
     canvas.height = Math.round(h * ratio);
     gl.viewport(0, 0, canvas.width, canvas.height);
@@ -216,5 +220,15 @@ function createField(host, reduceMotion, index) {
   new IntersectionObserver(([entry]) => { visible = entry.isIntersecting; kick(); }, { rootMargin: '100px' }).observe(canvas);
 }
 
-const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)');
-document.querySelectorAll('[data-hexfield]').forEach((host, index) => createField(host, reduceMotion, index));
+// The field is decoration under content that is already readable: it starts once the page has loaded and
+// the browser is idle, and only on a real graphics chip. In software WebGL the shader runs on the CPU and
+// one frame of a window-sized field held the main thread for over a second (assets/gpu.js); there the
+// elements keep their own dark background.
+const start = () => {
+  const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)');
+  document.querySelectorAll('[data-hexfield]').forEach((host, index) => createField(host, reduceMotion, index));
+};
+if (hasGPU) {
+  const whenIdle = () => ('requestIdleCallback' in window ? requestIdleCallback(start, { timeout: 2000 }) : setTimeout(start, 300));
+  if (document.readyState === 'complete') whenIdle(); else addEventListener('load', whenIdle, { once: true });
+}

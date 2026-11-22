@@ -29,6 +29,9 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+      - name: Inline the site's stylesheets into its pages
+        # Faster first paint: no render-blocking CSS requests (scripts/inline-css.mjs). Only the uploaded copy changes.
+        run: node scripts/inline-css.mjs
       - name: Setup Pages
         uses: actions/configure-pages@v5
       - name: Upload artifact

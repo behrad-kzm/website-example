@@ -3,6 +3,7 @@
 // and brings the body of the current point forward. The constellation itself is drawn by
 // assets/what-we-do-sky.js, which is fetched only when the section comes near the screen. Without this script (or when the content cannot fit one window) the section is a plain list.
 import { holdMagnet } from './magnet.js';
+import { hasGPU } from './gpu.js';
 
 const clamp = (v, lo, hi) => Math.min(hi, Math.max(lo, v));
 
@@ -141,7 +142,8 @@ function init(root) {
     const near = entries[entries.length - 1].isIntersecting;
     if (near && !skyRequested) {
       skyRequested = true;
-      import('./what-we-do-sky.js')
+      // Without a graphics chip the sky would cost the main thread seconds: the section's layout without it
+      (hasGPU ? import('./what-we-do-sky.js') : Promise.reject(new Error('no GPU')))
         .then((module) => {
           sky = module.createSky(root.querySelector('.wwd__sky'), buttons, focus, reduceMotion);
           if (!sky) throw new Error('no WebGL');
