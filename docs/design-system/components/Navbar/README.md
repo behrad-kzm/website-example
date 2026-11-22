@@ -9,4 +9,4 @@ The navbar is one floating Liquid Glass capsule; the brand, links and the downlo
   - `data-cz-lens` adds a glass lens that slides and stretches on a spring to the hovered or focused link, and rests on the `aria-current="page"` link.
 - Links: 44px capsules, 14/500 `fg-200`, `fg` on hover. The download button is a prominent glass capsule; inside the nav it shares the nav's glass rather than stacking a second blur.
 - Corners are concentric: a 60px capsule with 8px inset holds 44px capsules.
-- The mark is `assets/Logos/favicon.svg` at 24px, left of the wordmark.
+- The mark is `assets/Logos/mark.svg` at 40 x 21px, left of the wordmark.

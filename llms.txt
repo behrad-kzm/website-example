@@ -5,3 +5,5 @@
 ## Pages
 
 - [Home](https://colonaiz.com/): what we do, products, how Star Track reports are made, pricing, FAQ, and booking a call
+- [Star Track Terms and Conditions](https://colonaiz.com/terms.html): delivery, the evidence commitment, limits of coverage, refunds, and how the reports may be used
+- [Privacy Policy](https://colonaiz.com/privacy.html): what personal data colonAIz handles, the public information used in reports, and your rights

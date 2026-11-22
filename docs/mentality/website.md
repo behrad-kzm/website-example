@@ -15,6 +15,7 @@ Stated by the founder on 16 November 2026, for the "What we do" section.
 - Prefer one point on screen at a time over several boxes side by side: the headline stays in place and the points change as the visitor scrolls.
 - The section opens with only the description; the points follow one at a time.
 - The visitor controls the pace: the points follow the scroll position, and a progress bar shows how much scrolling is left before the text changes and before the section ends. An earlier rule (one scroll gesture always jumps to the next point) was dropped by the founder on 16 November 2026 in favour of the progress bar.
+- Each step of "What we do" (the description and each point) takes 1.6 windows of scrolling. The founder asked on 22 November 2026 for the amount to be reduced to 80% of what it was (2 windows).
 - The visual language is space: stars should look natural, alive, and flaming, the way NASA shows them.
 
 ## Hero satellite
@@ -58,7 +59,7 @@ Described by the founder on 18 November 2026. (On 15 November he had noted that 
 - At the same time the name "Star Track" turns into a headline, moves up, and stays at the top as the title for the rest of the website, down to the bottom of the page.
 - The blurred glass and the hexagon background stay for the rest of the website too: every section after Products sits on Star Track's glass.
 - At the same time the other product, Flight Check, moves to the right and fades out.
-- Before the animation starts there is a progress bar around the Star Track box, like the one in "What we do": it fills as the visitor scrolls and takes half as much scrolling as one point of "What we do" (one window). The animation starts when the bar is full. (Asked for on 18 November 2026; before that, the animation started on the first few pixels of scroll.)
+- Before the animation starts there is a progress bar around the Star Track box, like the one in "What we do": it fills as the visitor scrolls and takes one window of scrolling (half of a "What we do" point when that was set; a point has taken 1.6 windows since 22 November 2026). The animation starts when the bar is full. (Asked for on 18 November 2026; before that, the animation started on the first few pixels of scroll.)
 - The animation always runs to its end and follows the direction of the scroll: scrolling down opens Star Track fully to the whole screen, scrolling up collapses it fully back to the normal state. It must never stop halfway. (The first version moved with the scroll position and could be left half open; the founder corrected that the same day.)
 - While it opens, the section below scrolls up by itself until it sits under the Star Track title, so the visitor is not left looking at an empty pane.
 - The scrolling through it must be smooth. The founder reported it was not (18 November 2026); a recording of the scroll position frame by frame showed the page being pushed about 100px past its landing point by leftover trackpad momentum and then creeping back for two to three seconds. The rule now, checked by tests/scroll-smoothness.spec.js: while the page scrolls itself it does not step backwards, and once it lands it stays exactly there.
@@ -77,6 +78,53 @@ Asked for by the founder on 18 November 2026.
 - The glass must be dark enough that the text on it reads easily; the founder asked for it 2.5 times darker than the first glass version. He then asked for it darker again. And again: it should be like sunglasses that block UV light, dark and smoked, with a stronger frosted blur. That went slightly too far: the founder wants to still see a little of what is behind the glass, with the blur kept. Later he asked for slightly less blur, about a fifth less. Then about a third less again.
 - Product names on the cards are bold and in capital letters.
 
+## Sections under Star Track look alike
+
+Stated by the founder on 22 November 2026.
+
+- The three boxes in "Why it is worth it" ("Don't hire an analyst team. Use ours.") did not match the UI of the sections above them, and the founder asked for them to be updated.
+- The sections above ("How it works", "What you get") have no solid cards: their text sits open on Star Track's glass, and lists are separated by a thin rule above each item. "Why it is worth it" now uses that same ruled list, in one column beside its picture (it was three columns across until the picture was added the same day). (Reading the mismatch as "solid cards against open text" is the agent's interpretation; the founder did not name the difference.)
+
+## "Why it is worth it": the saving picture
+
+Asked for by the founder on 22 November 2026, with a screenshot of the report illustration from "How it works" as the style to follow.
+
+- The section "Don't hire an analyst team. Use ours." needs art of its own, in that style, showing that clients save money by having our subscription.
+- It must be new art, not the report illustration again. The agent first redrew step 4's page of the report as a review page; the founder rejected that, and step 4's page is back as it was.
+- What is there now: on the same glowing floor, a tall pile of dark blocks ("An analyst team of your own": salaries, hiring, tools, data, time) next to one glowing blue block ("Star Track"), with the gap between their heights marked "You save this". It sits to the right of the headline and the three points. (The blocks, their five labels and the wording are the agent's design; not yet confirmed by the founder.)
+- It shows no amounts, because the price of Star Track is not set yet.
+
+## "Delivery": the arriving reports picture
+
+Asked for by the founder on 22 November 2026: "do the same art" for "Reports that keep arriving." as was made for "Why it is worth it".
+
+- What is there now: on the same glowing floor, reports sit along a dashed track at even steps. The first is tagged "First report"; the two after it are tagged "What changed" and each has one line marked in blue; the newest glows; a dashed outline tagged "Next" stands at the end of the track. (The agent's design; not yet confirmed by the founder.)
+- It has a repeating animation, asked for by the founder the same day: each step in turn lifts up a little and its text shows bolder, then the next step, round and round.
+- On hover, asked for by the founder the same day: the block under the mouse comes out and gets bigger, its text gets bigger so it is readable, and the repeating animation stops until the mouse leaves the picture. (The other steps standing back while one is pointed at is the agent's addition, so the bigger tag does not collide with its neighbours.)
+- It shows no dates or intervals, because the schedule is not decided and the copy must not promise a fixed rhythm.
+- The section took the same layout as "Why it is worth it": headline and the three numbered steps as a ruled list on the left, the picture on the right. Its solid cards are gone.
+
+## Who trusts us
+
+- The founder named the websites that trust us on 22 November 2026: Sendbypass (https://sendbypass.com/) and ApplyMerkez (https://applymerkez.com/fa). They are shown under "Who trusts us" in the Trust section, each logo linking to its site.
+- The logos were taken from those two sites and are drawn in white so they sit together on the dark page. (Drawing them in one colour is the agent's choice; the founder has not confirmed it.)
+- The founder asked for it to be centred the same day: the two group titles and the logos sit in the middle. The eyebrow "Trust" and the headline "Trusted and listed." must not be centred; they stay on the left like the other section headlines. (The agent first centred the headline too, and the founder corrected it.)
+- "Where we are listed" has its first real listing (2026-11-22): DeepLaunch.io. The founder gave the directory's badge snippet and asked for the image to be made consistent with our UI while keeping the link. So a listing badge is redrawn in one colour (white, same as the trust logos) and the link to the directory stays exactly as given. Future listings follow the same rule.
+
+## Book a call
+
+- The team's booking page is https://calendly.com/colonaiz-sales/30min (given by the founder on 22 November 2026). Every "Book a call" button and link on the website goes there, opening in a new tab.
+
+## Pricing cards must be easy to read
+
+- The founder saw the first pricing cards on 22 November 2026 and said they were too dark and clients could not read the text well.
+- The plan cards are now lighter than the page's other dark surfaces, with brighter borders, larger text and nearly white text. Text that clients must read to decide (prices, what a plan includes) must not be set in dim grey on a near-black card.
+
+## The 12-month plan card
+
+- Asked for by the founder on 22 November 2026: the background of the $999 card must be similar to the hexagonal view that has a liquid glass on top.
+- The card has its own field of lit hexagons. The founder then set the layers (same day): the liquid glass must sit on top of a darker layer with opacity 0.4, and must fill the whole container. The founder then asked for the dark layer to be darker, 0.6. So, from the bottom: hexagons, a black layer at 60%, the liquid glass, the text; every layer fills the card edge to edge. (The agent's first version had the glass stop short of the edge with a rim of hexagons around it; the founder did not want that.) The single-report card stays plain, so the 12-month plan is the one that stands out.
+
 ## Typography
 
 Stated by the founder on 16 November 2026.
@@ -86,3 +134,11 @@ Stated by the founder on 16 November 2026.
 - On 18 November 2026 the founder chose Druk Condensed Super for titles and headlines, replacing Inter there. It is a licensed font from Commercial Type and its files have not been supplied yet, so headlines still show in Inter; sizes and letter spacing will need retuning once it is in, because it is far narrower than Inter.
 - Reference for headlines: ethereum.org, which sets them in Inter at its heaviest weight with tight line spacing. The site follows that.
 - Headlines use a radial gradient: white at the centre, slightly silver toward the edges.
+
+## Legal pages
+
+Asked for by the founder on 22 November 2026.
+
+- Two pages: one for the privacy policy (privacy.html) and one for the Star Track Terms and Conditions (terms.html). Both are linked from the footer.
+- How the agent built them (not yet confirmed by the founder): plain reading pages on the site's dark surface, with a short version at the top, a list of sections at the side, and the commitments we make set apart in green. They are written in plain formal English, not in the FAQ's voice.
+- There is no "Log in" link in the navbar: the founder had it removed on 22 November 2026 because there is nothing to log in to yet.

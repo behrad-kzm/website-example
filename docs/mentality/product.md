@@ -25,6 +25,8 @@ We do business insights. Our goal is to be BI as a service for small and mid-siz
 - We help businesses have all the analysis documents they must have, delivered to them as products.
 - This lets startups focus more on their vision and their products.
 - We have a technology that monitors a huge database of startups all over the world, and we provide insights based on that monitoring system.
+- The database holds 300k startups all over the world, gathered from G2, Product Hunt, AlternativeTo and more than 100 startup listings. The founder says that is more than any other by far (22 November 2026), and wants the website to mention it.
+- Beside the listing websites, we also check the VCs, accelerators, angel investors and incubators of the 50 top countries: USA, Canada, Australia, UK, Netherlands, Germany, UAE, Türkiye, China and 40 more (founder, 22 November 2026, for the "Where does your data come from?" answer).
 
 What it gives the client: a better understanding of the market they work in. They need to know which direction to go, whether that is adding a new feature or being conservative about adding features. They save time and money, become more productive and improve their performance. They can lead their company better and make better decisions.
 
@@ -40,6 +42,7 @@ Monitoring competitors and producing regular reports is what one product, Star T
 ## What we monitor
 
 We monitor the client's competitors, their market, and everything that can affect their business.
+- We monitor changes in our clients' competitors' websites periodically (prices, products, hiring, websites, social media, and the market around them) and record every tiny movement for the client (founder, 22 November 2026).
 
 ## Metrics the regular document can include
 
@@ -90,3 +93,38 @@ We are like a planet of businesses, gathered from all over the internet: a world
 ## Who does the work
 
 Human business analysts, who review the reports and use cutting-edge technology to do the work. The people lead; the technology is their tool.
+
+## Pricing
+
+Given by the founder on 22 November 2026.
+
+- Two plans.
+- Single document: $99. One report. The client does not get the monthly updates, and does not get the urgent updates.
+- 12-month plan: saves $189 and has 2 months free (the founder first said 1 month free, then corrected it to 2 the same day). It has a 100% money-back guarantee, which applies only to the first month of use (the founder added this limit the same day). The client can explore our product and gets all the hot reports.
+- Urgent updates ("hot reports"): new reports we may send when something pops up, for example a pivot in the client's competitors, a failure, or a product launch. They are delivered sooner than the monthly updates.
+- The regular reports are monthly ("monthly updates").
+- The price of the 12-month plan is $999. It began as the agent's arithmetic (12 x $99 = $1,188, minus the $189 saving); the founder used the figure himself on 22 November 2026 when explaining the refund rule.
+
+## Terms for Star Track
+
+The founder's points for the Terms and Conditions, 22 November 2026:
+
+- We have no commitment to cover all the pivots and changes. Some of them may be missed.
+- We have no commitment to send the documents exactly on the date. We keep a one-week tolerance. But we do commit to send the 12 documents per year if the client has the yearly plan.
+- A refund applies only within the first month. The money is returned after reducing all the costs for transfer, tax, or things that are not related to our service.
+- We commit that everything included in the client's document is backed by true evidence. Nothing is generated without reference, observation or evidence.
+- Star Track documents are not for resale. The client can use the document only for their own decisions and their company's use.
+- The founder asked for the terms of similar businesses to be read, and for what they include beyond his list to be added. Read on 22 November 2026: Crayon, Klue, Similarweb, Semrush, Visualping and IBISWorld.
+
+Confirmed by the founder on 22 November 2026:
+
+- The 12-month plan does not renew by itself.
+- A single $99 report is not refundable after delivery.
+- If fewer than 12 reports arrive within the twelve months, we keep delivering until all 12 are sent.
+- A first-month refund deducts nothing for a report already delivered: the first report counts as free for that client.
+- A refunded client loses the licence to use the reports they received.
+- If we stop Star Track, we count the months we delivered and refund the rest. The founder's example: 3 documents sent, so we divide the $999 by 12 and 9/12 of the money is the refund, returned after excluding tax and other costs that are not from our side.
+
+Added by the agent from reading similar businesses, not yet confirmed by the founder: liability is capped at what the client paid in the last twelve months; the client may share a report with employees, board and advisers; we do not use a client's name or logo without their agreement; a 14-day period to fix a breach.
+
+The company is not registered yet (founder, 22 November 2026). So the legal pages name colonAIz only as the business that operates colonaiz.com, with no registration number or address, and say the governing law is that of the country where colonAIz is based (the agent's wording, to be replaced with the real company details and country after registration). The contact address on both pages is sales@colonaiz.com, given by the founder.

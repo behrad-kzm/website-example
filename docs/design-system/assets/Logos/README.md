@@ -1,10 +1,11 @@
 # Logos
 
-The colonAIz mark is a blue star jailed inside the hexagon planet from the hero: a white-hot core (`#ffffff` → `#2f6bff`) pours light through the gaps between matte black panels, the panels nearest the core are forced slightly apart, and their edges are backlit. No ring.
+The colonAIz mark is a white hexagon with a ring orbiting it, supplied by the founder on 22 November 2026. It replaced the blue star inside the hexagon planet.
 
-- `logo.svg`: the detailed mark (92-cell sphere, 512px) with a soft halo and beams escaping past the silhouette. Use it at 48px and up.
-- `favicon.svg`: simplified for 16–64px (42-cell sphere, wider gaps, the core glow but no halo or beams). Use it for the favicon and the navbar.
+- `logo.svg`: the mark as supplied, white on a transparent 1024px square with its own clear space.
+- `mark.svg`: the same mark cropped to its own bounds (about 1.9 : 1). Use it in the navbar (40 x 21px) and the footer.
+- `favicon.svg`: the white mark on a dark rounded tile (`#111214`), so it shows on light and dark browser tabs.
 
-Both read on dark and light grounds because the blue gaps outline the sphere. Do not recolour the panels, add the ring, or place the mark on a busy blue background where the gaps disappear.
+The mark is white, so place `logo.svg` and `mark.svg` on dark grounds only.
 
-Regenerate both from `assets/brand/make_logo.py` in the site repo.
+The same three files live in `assets/brand/` in the site repo. `assets/brand/make_logo.py` generated the old mark and no longer matches these files.

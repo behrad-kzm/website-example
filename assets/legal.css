@@ -1,0 +1,122 @@
+/* Legal pages (terms.html, privacy.html): a quiet reading layout on the site's dark surface.
+   Tokens and the navbar, button and glass components come from docs/design-system. */
+
+@font-face {
+  font-family: "Druk Condensed Super";
+  src: url("fonts/DrukCondensed-Super.woff2") format("woff2"), url("fonts/DrukCondensed-Super.woff") format("woff");
+  font-weight: 900; font-style: normal; font-display: swap;
+}
+
+html { scroll-behavior: smooth; scroll-padding-top: 104px; }
+body {
+  margin: 0; padding: 0; min-height: 100vh; overflow-x: hidden;
+  background: radial-gradient(120% 60% at 50% -10%, #2a1d4a 0%, rgba(42, 29, 74, 0) 60%), var(--bg);
+  background-repeat: no-repeat;
+  color: var(--fg-200);
+  font: 400 16px/26px var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+.site-header {
+  position: fixed; z-index: 10; inset: 0 0 auto;
+  padding: calc(var(--space-2) + env(safe-area-inset-top, 0px)) max(var(--space-2), env(safe-area-inset-right, 0px)) 0 max(var(--space-2), env(safe-area-inset-left, 0px));
+}
+.site-header .cz-nav { max-width: var(--container); margin: 0 auto; background-color: rgba(12, 13, 15, .72); }
+@media (max-width: 719px) { .cz-nav__links { display: none; } .cz-nav { justify-content: space-between; } }
+
+.legal {
+  box-sizing: border-box; max-width: var(--container); margin: 0 auto;
+  padding: 148px var(--space-3) var(--space-7);
+}
+.legal__head { max-width: 760px; margin-bottom: var(--space-6); }
+.legal__eyebrow { margin: 0 0 var(--space-1-5); font: 500 13px/20px var(--font-sans); letter-spacing: .08em; text-transform: uppercase; color: var(--purple); }
+.legal__head h1 { margin: 0; font: 900 clamp(40px, 7vw, 64px)/1.05 var(--font-headline); color: var(--fg); text-wrap: balance; }
+.legal__lead { margin: var(--space-2-5) 0 0; font-size: 18px; line-height: 28px; color: var(--fg-200); }
+.legal__meta { margin: var(--space-2) 0 0; font: 500 13px/20px var(--font-sans); color: var(--fg-300); }
+
+.legal__grid { display: grid; grid-template-columns: 240px minmax(0, 720px); gap: var(--space-7); align-items: start; }
+
+.legal__toc { position: sticky; top: 104px; max-height: calc(100vh - 128px); overflow-y: auto; }
+.legal__toc h2 { margin: 0 0 var(--space-1-5); font: 500 12px/16px var(--font-sans); letter-spacing: .08em; text-transform: uppercase; color: var(--fg-300); }
+.legal__toc ol { margin: 0; padding: 0; list-style: none; counter-reset: toc; border-left: 1px solid var(--border); }
+.legal__toc li { counter-increment: toc; }
+.legal__toc a {
+  display: block; padding: 6px 0 6px var(--space-2); margin-left: -1px; border-left: 1px solid transparent;
+  font: 500 14px/20px var(--font-sans); color: var(--fg-300); text-decoration: none;
+}
+.legal__toc a::before { content: counter(toc) ". "; }
+.legal__toc a:hover { color: var(--fg); border-left-color: var(--purple); }
+
+.legal__body { min-width: 0; counter-reset: sec; }
+.legal__body section { counter-increment: sec; padding-top: var(--space-5); margin-top: var(--space-5); border-top: 1px solid var(--border); }
+.legal__body section:first-of-type { margin-top: var(--space-5); }
+.legal__body h2 { margin: 0 0 var(--space-2); font: 600 24px/32px var(--font-sans); color: var(--fg); text-wrap: balance; }
+.legal__body h2::before { content: counter(sec) ". "; color: var(--purple); font-variant-numeric: tabular-nums; }
+.legal__body h3 { margin: var(--space-3) 0 var(--space-1); font: 600 17px/26px var(--font-sans); color: var(--fg); }
+.legal__body p { margin: 0 0 var(--space-2); }
+.legal__body ul { margin: 0 0 var(--space-2); padding-left: var(--space-2-5); }
+.legal__body li { margin-bottom: var(--space-1); }
+.legal__body li::marker { color: var(--fg-400); }
+.legal__body strong { color: var(--fg); font-weight: 600; }
+.legal__body a { color: var(--purple); text-underline-offset: 3px; }
+.legal__body a:hover { color: var(--fg); }
+
+/* The short version, before the full text */
+.legal__short {
+  padding: var(--space-3); border: 1px solid #ffffff1f; border-radius: var(--radius-xl);
+  background: linear-gradient(137deg, #2b2e37, #1c1e25);
+}
+.legal__short h2 { margin: 0 0 var(--space-1-5); font: 600 18px/28px var(--font-sans); color: var(--fg); }
+.legal__short h2::before { content: none; }
+.legal__short ul { margin: 0; padding-left: var(--space-2-5); color: var(--fg); }
+.legal__short li:last-child { margin-bottom: 0; }
+.legal__short p { margin: var(--space-2) 0 0; font-size: 14px; line-height: 22px; color: var(--fg-200); }
+
+/* A commitment we make, set apart from the limits around it */
+.legal__promise { padding: var(--space-2) var(--space-2-5); margin: 0 0 var(--space-2); border-left: 2px solid var(--green); background: var(--green-subtle); border-radius: 0 var(--radius-md) var(--radius-md) 0; color: var(--fg); }
+.legal__promise p:last-child { margin-bottom: 0; }
+
+/* A detail the company still has to fill in before the page goes live */
+.legal__todo { padding: 1px 6px; border-radius: var(--radius-xs); background: var(--yellow-subtle); color: var(--yellow); font-weight: 500; }
+
+.legal__table-wrap { overflow-x: auto; margin: 0 0 var(--space-2); }
+.legal__body table { width: 100%; min-width: 520px; border-collapse: collapse; font-size: 15px; line-height: 22px; }
+.legal__body th, .legal__body td { padding: var(--space-1-5) var(--space-2) var(--space-1-5) 0; text-align: left; vertical-align: top; border-bottom: 1px solid var(--border); }
+.legal__body th { font: 500 12px/16px var(--font-sans); letter-spacing: .06em; text-transform: uppercase; color: var(--fg-300); }
+.legal__body td:first-child { color: var(--fg); font-weight: 500; }
+
+.site-footer { box-sizing: border-box; padding: var(--space-5) var(--space-3); border-top: 1px solid var(--border); background: #000; }
+.site-footer__inner { width: 100%; max-width: var(--container); margin: 0 auto; display: flex; flex-direction: column; gap: var(--space-4); }
+.site-footer__top { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--space-2) var(--space-4); }
+.site-footer__bottom { padding-top: var(--space-3); border-top: 1px solid var(--border); }
+.site-footer__links { display: flex; flex-wrap: wrap; gap: var(--space-0-5) var(--space-3); }
+.site-footer a { font: 500 14px/20px var(--font-sans); color: var(--fg-200); text-decoration: none; }
+.site-footer a:hover, .site-footer a[aria-current="page"] { color: var(--fg); }
+.site-footer__brand { display: flex; align-items: center; gap: var(--space-1); font-weight: 600; color: var(--fg); }
+.site-footer small { font: 400 13px/20px var(--font-sans); color: var(--fg-300); }
+
+@media (max-width: 959px) {
+  .legal { padding-top: 124px; padding-left: var(--space-2); padding-right: var(--space-2); }
+  .legal__grid { grid-template-columns: minmax(0, 1fr); gap: var(--space-4); }
+  .legal__toc { position: static; max-height: none; padding: var(--space-2-5); border: 1px solid var(--border); border-radius: var(--radius-xl); }
+  .legal__toc ol { columns: 2; column-gap: var(--space-3); border-left: 0; }
+  .legal__toc a { padding-left: 0; border-left: 0; break-inside: avoid; }
+}
+@media (max-width: 519px) { .legal__toc ol { columns: 1; } }
+/* On a phone the table becomes a list of stacked rows, so nothing scrolls sideways */
+@media (max-width: 639px) {
+  .legal__body table { min-width: 0; }
+  .legal__body thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+  .legal__body tr { display: block; padding: var(--space-1-5) 0; border-bottom: 1px solid var(--border); }
+  .legal__body td { display: block; padding: 0 0 var(--space-0-5); border: 0; }
+  .legal__body td:last-child { color: var(--fg-300); font-size: 14px; }
+}
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+@media print {
+  body { background: #fff; color: #111; }
+  .site-header, .site-footer, .legal__toc { display: none; }
+  .legal { padding: 0; }
+  .legal__grid { display: block; }
+  .legal__head h1, .legal__body h2, .legal__body h3, .legal__body strong, .legal__short h2, .legal__short ul, .legal__promise, .legal__body td:first-child { color: #111; }
+  .legal__short, .legal__promise { background: none; border-color: #999; }
+}
