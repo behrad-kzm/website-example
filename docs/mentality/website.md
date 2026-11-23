@@ -152,3 +152,10 @@ The founder reported that the page was wrong in the browser's responsive mode (t
 - The magnetic sections are for the mouse and the trackpad only. On a touch screen a short swipe was pulled back to where it started, which reads as the page refusing to scroll. (This one was the agent's decision, not the founder's: say so if the founder wants the magnet back on phones.)
 - The hero planet keeps one size while a phone's address bar slides in and out, pauses while the rest of the page covers it, and is not stopped for good by one long pause.
 - The six sizes are tested in tests/responsive.spec.js: 320x568, 360x740, 390x844, 430x932, 768x1024, 1024x768.
+
+## Analytics
+
+Asked for by the founder on 22 November 2026.
+
+- The website uses Google Analytics (through Google Tag Manager), and we want the maximum benefit from it: track everything we can track.
+- What is tracked, and how to set it up, is listed in docs/analytics/README.md.

@@ -27,7 +27,7 @@
   const choose = (value) => {
     try { localStorage.setItem(KEY, value); } catch (e) { /* the choice holds for this page view only */ }
     gtag('consent', 'update', { analytics_storage: value });
-    window.dataLayer.push({ event: 'cz_consent_update', analytics_storage: value });   // a trigger for GTM, if a tag needs one
+    window.dataLayer.push({ event: 'consent_choice', method: value });   // reported like the events of assets/analytics.js
     if (value === 'denied') clearAnalyticsCookies();
     hide();
   };
