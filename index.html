@@ -338,10 +338,10 @@
 
     /* How it works (assets/how-it-works.js): pinned like "What we do". The section is taller than the
        window; its content sticks while the scroll crosses one band per step, and only the current step
-       shows. Under the headline the four steps sit in a row, each with a bar that fills as the scroll
+       shows. Under the headline the five steps sit in a row, each with a bar that fills as the scroll
        crosses its band; each scrolls to its step. On the right a report builds up, one part per step.
        --how-dwell: windows of scrolling per step. Without the script, or when it cannot fit, a grid of cards. */
-    .how { --how-steps: 4; --how-dwell: 1.25; }
+    .how { --how-steps: 5; --how-dwell: 1.25; }
     .how__index, .how__doc { display: none; }
     .js #how.how:not(.is-static) {
       display: block; padding: 0;
@@ -355,7 +355,7 @@
     .js .how:not(.is-static) .how__copy { display: grid; grid-template-columns: minmax(0, 1fr); gap: clamp(14px, 2.6svh, 24px); min-height: 0; }
     .js .how:not(.is-static) .block__head { margin: 0; }
     /* The row of steps: the current one lit, the ones done half lit, the ones ahead dim */
-    .js .how:not(.is-static) .how__index { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; margin: 0; padding: 0; list-style: none; max-width: 640px; }
+    .js .how:not(.is-static) .how__index { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 10px; margin: 0; padding: 0; list-style: none; max-width: 720px; }
     .how__go {
       display: grid; gap: 6px; align-content: start; width: 100%; padding: 0 0 6px; border: 0; border-radius: var(--radius-sm, 6px);
       background: none; cursor: pointer; text-align: left; font: 500 14px/1.35 var(--font-sans); color: var(--fg-300); opacity: .5;
@@ -407,27 +407,27 @@
     .doc__panel { position: absolute; right: -18px; top: 0; width: 200px; height: 350px; border-radius: 28px;
       background: linear-gradient(165deg, #d9f1ff, #8fd4ff 30%, #57c1ff 60%, #6a3dff);
       box-shadow: inset 0 0 0 3px #ffffff8c, 0 0 50px #57c1ff8c, 0 0 140px #6a3dff80; }
-    /* The report has four pages, one per step, in a pile. The script gives each its place in the pile
-       (--pos: 0 in front, 3 at the back). Going to the next step, the front page slides out and goes to
+    /* The report has five pages, one per step, in a pile. The script gives each its place in the pile
+       (--pos: 0 in front, 4 at the back). Going to the next step, the front page slides out and goes to
        the back (.to-back); going to the previous one, the back page comes round to the front (.to-front). */
     .doc__page { position: absolute; left: -14px; top: 26px; box-sizing: border-box; width: 214px; height: 292px; padding: 16px;
       border-radius: 6px; background: linear-gradient(180deg, #ffffff, #eef2fa); color: #1b2233;
       box-shadow: 0 0 0 1px #ffffff, 0 0 0 1.5px #1b223326;
       display: grid; grid-template-rows: repeat(3, minmax(0, 1fr)); gap: 14px;
-      --pos: 0; z-index: calc(4 - var(--pos)); transform: translate(calc(var(--pos) * 10px), calc(var(--pos) * -10px));
+      --pos: 0; z-index: calc(5 - var(--pos)); transform: translate(calc(var(--pos) * 10px), calc(var(--pos) * -10px));
       transition: transform .7s cubic-bezier(.22, 1, .36, 1); }
     /* Pages further back are darker: a shade over the page (cheaper to draw than a filter) */
     .doc__page::after { content: ""; position: absolute; inset: 0; border-radius: inherit; background: #1b2233; pointer-events: none;
-      opacity: calc(var(--pos) * .09); transition: opacity .7s ease; }
+      opacity: calc(var(--pos) * .075); transition: opacity .7s ease; }
     /* One shadow for the whole pile, under the pages */
     .doc__shadow { position: absolute; left: -14px; top: 26px; width: 214px; height: 292px; border-radius: 6px; box-shadow: 0 24px 50px -12px #000000b3; }
     .doc__page.to-back { animation: doc-shuffle .85s cubic-bezier(.45, 0, .3, 1) both; }
     .doc__page.to-front { animation: doc-shuffle .85s cubic-bezier(.45, 0, .3, 1) reverse both; }
     @keyframes doc-shuffle {
-      0% { transform: translate(0, 0); z-index: 5; }
-      45% { transform: translate(-112%, -4%) rotate(-9deg); z-index: 5; }
+      0% { transform: translate(0, 0); z-index: 6; }
+      45% { transform: translate(-112%, -4%) rotate(-9deg); z-index: 6; }
       55% { transform: translate(-112%, -4%) rotate(-9deg); z-index: 0; }
-      100% { transform: translate(30px, -30px); z-index: 0; }
+      100% { transform: translate(40px, -40px); z-index: 0; }
     }
     /* Each page has three parts, top to bottom. They fill in one by one as the scroll crosses the step's
        band (the script sets .is-on). Each part has a small title saying what it holds; everything else
@@ -438,7 +438,7 @@
     .doc__h { font: 700 7px/1 var(--font-sans); letter-spacing: .1em; text-transform: uppercase; white-space: nowrap; color: #55617a; }
     .doc__body { min-height: 0; display: grid; align-content: space-between; gap: 5px; }
     .doc__body--row { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
-    .doc__body:has(> .doc__bars, > .doc__lines, > .doc__table) { align-content: stretch; }   /* a chart or a table takes all the room under its title */
+    .doc__body:has(> .doc__bars, > .doc__lines, > .doc__table, > .doc__net) { align-content: stretch; }   /* a chart or a table takes all the room under its title */
     .doc__body > .doc__lines, .doc__body > .doc__bars { min-height: 0; }
     .doc__col { flex: 1; min-width: 0; display: grid; gap: 6px; }
     .sk { display: block; height: 4px; border-radius: 2px; background: #c3cbda; width: var(--w, 100%);
@@ -461,6 +461,10 @@
       stroke-dasharray: 1; stroke-dashoffset: 1; transition: stroke-dashoffset 1.1s ease; }
     .doc__lines polyline:nth-of-type(2) { transition-delay: .1s; } .doc__lines polyline:nth-of-type(3) { transition-delay: .2s; } .doc__lines polyline:nth-of-type(4) { transition-delay: .3s; }
     .doc__sec.is-on .doc__lines polyline { stroke-dashoffset: 0; }
+    /* How the companies relate: dots joined by lines. The lines draw themselves when the part fills in */
+    .doc__net { display: block; width: 100%; height: 100%; min-height: 0; overflow: visible; }
+    .doc__net line { stroke: #aab3c5; stroke-width: 1.2; vector-effect: non-scaling-stroke; stroke-dasharray: 1; stroke-dashoffset: 1; transition: stroke-dashoffset .9s ease; }
+    .doc__sec.is-on .doc__net line { stroke-dashoffset: 0; }
     .doc__table { display: grid; grid-template-columns: 1.5fr 1fr 1fr; align-content: space-between; height: 100%; }
     .doc__table i { display: flex; align-items: center; height: 14px; border-bottom: 1px solid #dfe4ee; }
     .doc__table i::before { content: ""; width: 68%; height: 4px; border-radius: 2px; background: #c3cbda; }
@@ -483,7 +487,7 @@
     @media (max-width: 640px) { .how__go { font-size: 12px; } }
     @media (prefers-reduced-motion: reduce) {
       .js .how:not(.is-static) .how__step, .js .how:not(.is-static) .how__step.is-before, .js .how:not(.is-static) .how__step.is-active { transform: none; filter: none; transition: opacity .2s ease; }
-      .how__go, .doc__tile, .doc__tile .doc__beam, .doc__page, .doc__page::after, .doc__sec, .sk, .doc__bars i, .doc__lines polyline, .doc__pie { transition: none; }
+      .how__go, .doc__tile, .doc__tile .doc__beam, .doc__page, .doc__page::after, .doc__sec, .sk, .doc__bars i, .doc__lines polyline, .doc__net line, .doc__pie { transition: none; }
       .doc__stack, .doc__page.to-back, .doc__page.to-front { animation: none; }
     }
 
@@ -774,7 +778,7 @@
               <p class="eyebrow">What we do</p>
               <h2 id="what-title">Is market data orbiting your product, or drifting?</h2>
             </div>
-            <p class="block__lead wwd__lead wwd__step is-active">We do it for you. We provide continuous market research and business intelligence as a service, delivering actionable insights and ready-to-use reports. Your team stays focused on building your product while we keep you informed, one step ahead of the market.</p>
+            <p class="block__lead wwd__lead wwd__step is-active">We do it for you. We keep discovering the opportunities in your market, and deliver them as actionable insights and ready-to-use reports. It is business intelligence as a service. Your team stays focused on building your product while we keep you informed, one step ahead of the market.</p>
             <div class="wwd__rail" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
             <div class="wwd__panels">
               <article class="wwd__panel wwd__step">
@@ -849,7 +853,7 @@
       </div>
     </section>
 
-    <!-- Star Track: how we make the reports. Pinned while the visitor scrolls through the four steps, one at
+    <!-- Star Track: how we make the reports. Pinned while the visitor scrolls through the five steps, one at
          a time, like "What we do" (assets/how-it-works.js). Without the script, or when the content cannot
          fit one window, the steps are a plain grid of cards. -->
     <section class="section block how" id="how" aria-labelledby="how-title" data-how>
@@ -862,9 +866,10 @@
         </div>
         <ol class="how__index">
           <li><button class="how__go" type="button" aria-label="Show step 1: We find your competitors"><span class="how__bar"></span><span class="step__num">01</span><span>We find your competitors</span></button></li>
-          <li><button class="how__go" type="button" aria-label="Show step 2: We monitor them"><span class="how__bar"></span><span class="step__num">02</span><span>We monitor them</span></button></li>
-          <li><button class="how__go" type="button" aria-label="Show step 3: We investigate"><span class="how__bar"></span><span class="step__num">03</span><span>We investigate</span></button></li>
-          <li><button class="how__go" type="button" aria-label="Show step 4: An analyst reviews it"><span class="how__bar"></span><span class="step__num">04</span><span>An analyst reviews it</span></button></li>
+          <li><button class="how__go" type="button" aria-label="Show step 2: We evaluate each company"><span class="how__bar"></span><span class="step__num">02</span><span>We evaluate each company</span></button></li>
+          <li><button class="how__go" type="button" aria-label="Show step 3: We monitor them"><span class="how__bar"></span><span class="step__num">03</span><span>We monitor them</span></button></li>
+          <li><button class="how__go" type="button" aria-label="Show step 4: We investigate"><span class="how__bar"></span><span class="step__num">04</span><span>We investigate</span></button></li>
+          <li><button class="how__go" type="button" aria-label="Show step 5: An analyst reviews it"><span class="how__bar"></span><span class="step__num">05</span><span>An analyst reviews it</span></button></li>
         </ol>
         <div class="grid how__steps">
           <article class="cz-card how__step">
@@ -874,28 +879,33 @@
           </article>
           <article class="cz-card how__step">
             <div class="cz-card__icon step__num">02</div>
+            <h3>We evaluate each company</h3>
+            <p class="cz-card__body">It starts as soon as you sign up, before any analysis. We understand each company's products, map how the companies relate to each other, and assess the gaps in the market. Then we explain why they are opportunities for you.</p>
+          </article>
+          <article class="cz-card how__step">
+            <div class="cz-card__icon step__num">03</div>
             <h3>We monitor them</h3>
             <p class="cz-card__body">We check your competitors' websites at regular intervals: prices, products, hiring, social media, and the market around them. Every tiny movement is recorded for you.</p>
           </article>
           <article class="cz-card how__step">
-            <div class="cz-card__icon step__num">03</div>
+            <div class="cz-card__icon step__num">04</div>
             <h3>We investigate</h3>
             <p class="cz-card__body">Our analysts use cutting-edge technology to turn the gathered data into analytics and analysis for you. You navigate your startup with more confidence and price your products better.</p>
           </article>
           <article class="cz-card how__step">
-            <div class="cz-card__icon step__num">04</div>
+            <div class="cz-card__icon step__num">05</div>
             <h3>An analyst reviews it</h3>
             <p class="cz-card__body">We build an agentic system and a RAG from everything we gathered. A specialist always checks the final result to make sure it is the best for you. No AI slop in your documents.</p>
           </article>
         </div>
         </div>
-        <!-- The report the four steps produce, drawn in CSS and SVG: four pages, one per step. Each part of a page has a title; the rest of its "text" is grey bars -->
+        <!-- The report the five steps produce, drawn in CSS and SVG: five pages, one per step. Each part of a page has a title; the rest of its "text" is grey bars -->
         <div class="how__doc" aria-hidden="true">
           <div class="doc">
             <svg class="doc__floor" viewBox="0 0 420 190">
               <defs><symbol id="doc-person" viewBox="0 0 30 30"><circle cx="15" cy="15" r="15" fill="#dfe4ee"/><circle cx="15" cy="11.5" r="5" fill="#aab3c5"/><path d="M5.5 26.6c1.3-5.2 5-7.6 9.5-7.6s8.2 2.4 9.5 7.6a15 15 0 0 1-19 0z" fill="#aab3c5"/></symbol><symbol id="doc-company" viewBox="0 0 46 46"><rect width="46" height="46" rx="9" fill="#dfe4ee"/><path d="M13 35V15l11-5v25zM24 35V19h9v16z" fill="#aab3c5"/><path d="M16.5 17h4v3h-4zM16.5 23h4v3h-4zM16.5 29h4v3h-4zM26.5 22.500h4v3h-4zM26.5 28.500h4v3h-4z" fill="#f4f6fb"/></symbol><linearGradient id="doc-beam" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#57c1ff" stop-opacity=".55"/><stop offset="1" stop-color="#57c1ff" stop-opacity="0"/></linearGradient></defs>
-              <path class="doc__wire" d="M50 105 L210 45 L370 105 L210 165 Z"/>
-              <g class="doc__tile" data-step="1"><polygon class="doc__beam" points="182,45 238,45 250,-45 170,-45" fill="url(#doc-beam)"/><polygon points="180,51 210,63 240,51 210,39" fill="#1c6fd6"/><polygon points="180,45 210,57 240,45 210,33" fill="#8fd4ff"/></g><g class="doc__tile" data-step="0"><polygon class="doc__beam" points="22,105 78,105 90,15 10,15" fill="url(#doc-beam)"/><polygon points="20,111 50,123 80,111 50,99" fill="#1c6fd6"/><polygon points="20,105 50,117 80,105 50,93" fill="#8fd4ff"/></g><g class="doc__tile" data-step="2"><polygon class="doc__beam" points="342,105 398,105 410,15 330,15" fill="url(#doc-beam)"/><polygon points="340,111 370,123 400,111 370,99" fill="#1c6fd6"/><polygon points="340,105 370,117 400,105 370,93" fill="#8fd4ff"/></g><g class="doc__tile" data-step="3"><polygon class="doc__beam" points="182,165 238,165 250,75 170,75" fill="url(#doc-beam)"/><polygon points="180,171 210,183 240,171 210,159" fill="#1c6fd6"/><polygon points="180,165 210,177 240,165 210,153" fill="#8fd4ff"/></g>
+              <path class="doc__wire" d="M50 105 L161 48 L339 70 L339 140 L161 162 Z"/>
+              <g class="doc__tile" data-step="1"><polygon class="doc__beam" points="133,48 189,48 201,-42 121,-42" fill="url(#doc-beam)"/><polygon points="131,54 161,66 191,54 161,42" fill="#1c6fd6"/><polygon points="131,48 161,60 191,48 161,36" fill="#8fd4ff"/></g><g class="doc__tile" data-step="2"><polygon class="doc__beam" points="311,70 367,70 379,-20 299,-20" fill="url(#doc-beam)"/><polygon points="309,76 339,88 369,76 339,64" fill="#1c6fd6"/><polygon points="309,70 339,82 369,70 339,58" fill="#8fd4ff"/></g><g class="doc__tile" data-step="0"><polygon class="doc__beam" points="22,105 78,105 90,15 10,15" fill="url(#doc-beam)"/><polygon points="20,111 50,123 80,111 50,99" fill="#1c6fd6"/><polygon points="20,105 50,117 80,105 50,93" fill="#8fd4ff"/></g><g class="doc__tile" data-step="3"><polygon class="doc__beam" points="311,140 367,140 379,50 299,50" fill="url(#doc-beam)"/><polygon points="309,146 339,158 369,146 339,134" fill="#1c6fd6"/><polygon points="309,140 339,152 369,140 339,128" fill="#8fd4ff"/></g><g class="doc__tile" data-step="4"><polygon class="doc__beam" points="133,162 189,162 201,72 121,72" fill="url(#doc-beam)"/><polygon points="131,168 161,180 191,168 161,156" fill="#1c6fd6"/><polygon points="131,162 161,174 191,162 161,150" fill="#8fd4ff"/></g>
             </svg>
             <div class="doc__stack">
               <div class="doc__panel"></div>
@@ -906,19 +916,25 @@
                 <div class="doc__sec"><span class="doc__h">Competitors by region</span><span class="doc__body"><span class="doc__bars"><i style="--h: 35%"></i><i style="--h: 52%"></i><i style="--h: 44%"></i><i style="--h: 68%"></i><i style="--h: 58%"></i><i style="--h: 82%"></i><i style="--h: 100%"></i></span></span></div>
                 <div class="doc__sec"><span class="doc__h">Market overview</span><span class="doc__body"><span class="sk" style="--w: 100%"></span><span class="sk" style="--w: 94%"></span><span class="sk" style="--w: 98%"></span><span class="sk" style="--w: 60%"></span></span></div>
               </div>
-              <!-- Page 2. We monitor them: a line chart, bullets, a table -->
+              <!-- Page 2. We evaluate each company: a company with its products, a map of relationships, a list of gaps -->
+              <div class="doc__page">
+                <div class="doc__sec"><span class="doc__h">Their products</span><span class="doc__body doc__body--row"><svg class="doc__company" viewBox="0 0 46 46"><use href="#doc-company"/></svg><span class="doc__col"><span class="sk sk--h" style="--w: 46%"></span><span class="doc__item"><i></i><span class="sk" style="--w: 88%"></span></span><span class="doc__item"><i></i><span class="sk" style="--w: 70%"></span></span><span class="doc__item"><i></i><span class="sk" style="--w: 80%"></span></span></span></span></div>
+                <div class="doc__sec"><span class="doc__h">Relationships</span><span class="doc__body"><svg class="doc__net" viewBox="0 0 182 62"><line pathLength="1" x1="91" y1="31" x2="26" y2="12"/><line pathLength="1" x1="91" y1="31" x2="34" y2="52"/><line pathLength="1" x1="91" y1="31" x2="150" y2="10"/><line pathLength="1" x1="91" y1="31" x2="158" y2="50"/><line pathLength="1" x1="26" y1="12" x2="34" y2="52"/><line pathLength="1" x1="150" y1="10" x2="158" y2="50"/><line pathLength="1" x1="91" y1="31" x2="96" y2="58"/><circle cx="91" cy="31" r="7" fill="#2f7df6"/><circle cx="26" cy="12" r="5" fill="#6a3dff"/><circle cx="34" cy="52" r="5" fill="#57c1ff"/><circle cx="150" cy="10" r="5" fill="#57c1ff"/><circle cx="158" cy="50" r="5" fill="#6a3dff"/><circle cx="96" cy="58" r="3.5" fill="#aab3c5"/></svg></span></div>
+                <div class="doc__sec"><span class="doc__h">Gaps &amp; opportunities</span><span class="doc__body"><span class="doc__item doc__item--box"><i style="--c: #2f7df6"></i><span class="sk" style="--w: 78%"></span></span><span class="doc__item doc__item--box"><i style="--c: #6a3dff"></i><span class="sk" style="--w: 60%"></span></span><span class="doc__item doc__item--box"><i style="--c: #e0457b"></i><span class="sk" style="--w: 68%"></span></span></span></div>
+              </div>
+              <!-- Page 3. We monitor them: a line chart, bullets, a table -->
               <div class="doc__page">
                 <div class="doc__sec"><span class="doc__h">Price changes</span><span class="doc__body"><svg class="doc__lines" viewBox="0 0 182 76" preserveAspectRatio="none"><line x1="0" y1="19" x2="182" y2="19"/><line x1="0" y1="38" x2="182" y2="38"/><line x1="0" y1="57" x2="182" y2="57"/><line x1="0" y1="75.5" x2="182" y2="75.5" style="stroke: #c3cbda"/><polyline pathLength="1" stroke="#2f7df6" points="0,62 26,50 52,54 78,36 104,40 130,22 156,26 182,8"/><polyline pathLength="1" stroke="#6a3dff" points="0,40 26,44 52,30 78,48 104,28 130,36 156,18 182,24"/><polyline pathLength="1" stroke="#57c1ff" points="0,70 26,64 52,66 78,58 104,60 130,50 156,46 182,40"/><polyline pathLength="1" stroke="#e0457b" points="0,24 26,30 52,44 78,26 104,52 130,58 156,62 182,56"/></svg></span></div>
                 <div class="doc__sec"><span class="doc__h">Products &amp; hiring</span><span class="doc__body"><span class="doc__item"><i></i><span class="sk" style="--w: 86%"></span></span><span class="doc__item"><i></i><span class="sk" style="--w: 70%"></span></span><span class="doc__item"><i></i><span class="sk" style="--w: 92%"></span></span><span class="doc__item"><i></i><span class="sk" style="--w: 60%"></span></span></span></div>
                 <div class="doc__sec"><span class="doc__h">Websites &amp; social media</span><span class="doc__body"><span class="doc__table"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span></span></div>
               </div>
-              <!-- Page 3. We investigate: four people, then two companies -->
+              <!-- Page 4. We investigate: four people, then two companies -->
               <div class="doc__page">
                 <div class="doc__sec"><span class="doc__h">Key people</span><span class="doc__body doc__body--row"><span class="doc__person"><svg viewBox="0 0 30 30"><use href="#doc-person"/></svg><span class="sk" style="--w: 24px"></span></span><span class="doc__person"><svg viewBox="0 0 30 30"><use href="#doc-person"/></svg><span class="sk" style="--w: 24px"></span></span><span class="doc__person"><svg viewBox="0 0 30 30"><use href="#doc-person"/></svg><span class="sk" style="--w: 24px"></span></span><span class="doc__person"><svg viewBox="0 0 30 30"><use href="#doc-person"/></svg><span class="sk" style="--w: 24px"></span></span></span></div>
                 <div class="doc__sec"><span class="doc__h">What changed</span><span class="doc__body doc__body--row"><svg class="doc__company" viewBox="0 0 46 46"><use href="#doc-company"/></svg><span class="doc__col"><span class="sk sk--h" style="--w: 52%"></span><span class="doc__item"><i></i><span class="sk" style="--w: 92%"></span></span><span class="doc__item"><i></i><span class="sk" style="--w: 74%"></span></span><span class="doc__item"><i></i><span class="sk" style="--w: 84%"></span></span></span></span></div>
                 <div class="doc__sec"><span class="doc__h">What it means</span><span class="doc__body doc__body--row"><svg class="doc__company" viewBox="0 0 46 46"><use href="#doc-company"/></svg><span class="doc__col"><span class="sk sk--h" style="--w: 40%"></span><span class="doc__item"><i></i><span class="sk" style="--w: 80%"></span></span><span class="doc__item"><i></i><span class="sk" style="--w: 94%"></span></span><span class="doc__item"><i></i><span class="sk" style="--w: 66%"></span></span></span></span></div>
               </div>
-              <!-- Page 4. An analyst reviews it: a pie chart, bullets, a paragraph -->
+              <!-- Page 5. An analyst reviews it: a pie chart, bullets, a paragraph -->
               <div class="doc__page">
                 <div class="doc__sec"><span class="doc__h">Market share</span><span class="doc__body doc__body--row"><span class="doc__pie"></span><span class="doc__col"><span class="doc__item"><i style="--c: #2f7df6"></i><span class="sk" style="--w: 88%"></span></span><span class="doc__item"><i style="--c: #6a3dff"></i><span class="sk" style="--w: 64%"></span></span><span class="doc__item"><i style="--c: #57c1ff"></i><span class="sk" style="--w: 76%"></span></span><span class="doc__item"><i style="--c: #e0457b"></i><span class="sk" style="--w: 52%"></span></span></span></span></div>
                 <div class="doc__sec"><span class="doc__h">Key findings</span><span class="doc__body"><span class="doc__item"><i></i><span class="sk" style="--w: 90%"></span></span><span class="doc__item"><i></i><span class="sk" style="--w: 72%"></span></span><span class="doc__item"><i></i><span class="sk" style="--w: 84%"></span></span><span class="doc__item"><i></i><span class="sk" style="--w: 58%"></span></span></span></div>
@@ -1008,7 +1024,7 @@
             <p class="block__lead">Star Track is not a one-off. A new report arrives every month, and each one shows what changed since the last.</p>
           </div>
           <ul class="chapters chapters--wide">
-            <li><span class="step__num">01</span><h3>You start</h3><p>Tell us about your business. We find your competitors and begin monitoring.</p></li>
+            <li><span class="step__num">01</span><h3>You start</h3><p>Tell us about your business. We find your competitors, evaluate each one, and begin monitoring.</p></li>
             <li><span class="step__num">02</span><h3>Your first report</h3><p>The full picture of your competitors, your market, and where you stand.</p></li>
             <li><span class="step__num">03</span><h3>Every report after</h3><p>What changed since the last report, so nothing reaches your business unnoticed.</p></li>
           </ul>

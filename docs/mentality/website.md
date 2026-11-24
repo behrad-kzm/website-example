@@ -90,7 +90,7 @@ Stated by the founder on 22 November 2026.
 Asked for by the founder on 22 November 2026, with a screenshot of the report illustration from "How it works" as the style to follow.
 
 - The section "Don't hire an analyst team. Use ours." needs art of its own, in that style, showing that clients save money by having our subscription.
-- It must be new art, not the report illustration again. The agent first redrew step 4's page of the report as a review page; the founder rejected that, and step 4's page is back as it was.
+- It must be new art, not the report illustration again. The agent first redrew the last step's page of the report ("An analyst reviews it", step 4 then, step 5 since 23 November 2026) as a review page; the founder rejected that, and that page is back as it was.
 - What is there now: on the same glowing floor, a tall pile of dark blocks ("An analyst team of your own": salaries, hiring, tools, data, time) next to one glowing blue block ("Star Track"), with the gap between their heights marked "You save this". It sits to the right of the headline and the three points. (The blocks, their five labels and the wording are the agent's design; not yet confirmed by the founder.)
 - It shows no amounts, because the price of Star Track is not set yet.
 

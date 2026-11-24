@@ -18,4 +18,5 @@ How we think about this business. These files are written for agents (and people
 
 - [Product](product.md): what we sell, the vision, why a business needs it, and who does the work.
 - [Messaging](messaging.md): tone, accepted copy, wording rules, and the questions the page must answer.
+- [Investor view](investor-view.md): an outside VC-style evaluation the founder shared: the three weakest areas (differentiation, defensibility, commercial validation) and what would answer them.
 - [Website](website.md): what the website is for: leading clients to buy and gaining their trust.

@@ -34,10 +34,28 @@ Who it is for: small and mid-size companies. The founder also said (15 November 
 
 Monitoring competitors and producing regular reports is what one product, Star Track, does. It is not the description of the whole company.
 
+## How we position it
+
+Added on 23 November 2026, when the founder shared an outside investor evaluation (see [investor-view.md](investor-view.md)) and asked for the conflict between it and these docs to be fixed.
+
+- What sets us apart is continuous discovery of business opportunities for the client, not one-off market research.
+- The product is built around our own discovery and intelligence: the database, the crawling, the evaluation of each company, and the history we keep. It is not built around AI-generated reports.
+- This does not replace "BI as a service for small and mid-size companies". That is still what we are and who we serve. The report is how the intelligence reaches the client; the discovery and intelligence behind it are what the client cannot get elsewhere.
+- (How the two fit together, in the last point, is the agent's reading. The founder said only to fix the conflict; not yet confirmed.)
+
 ## Products
 
 - **Star Track**: the regular reports on a business's competitors and market. The landing page after the products section is about Star Track.
 - **Flight Check**: coming soon.
+
+## Company evaluation and processing
+
+Added to the process by the founder on 23 November 2026.
+
+- It is a step of its own, and it comes before any analysis.
+- It happens when a user registers to receive the Star Track updates.
+- In it we discover relevant companies, understand their products, identify relationships, assess market gaps, and explain why they represent opportunities.
+- On the website it is step 2 of "How it works", after finding the competitors and before monitoring. (The position is the agent's choice: the founder said only "before any analysis". The founder also listed discovering the companies as part of this step, while the page keeps discovery as its own step 1; not yet confirmed.)
 
 ## What we monitor
 

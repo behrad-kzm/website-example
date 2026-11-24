@@ -1,6 +1,6 @@
 // "How it works": a pinned section, like "What we do". The headline stays in place while the scroll
 // crosses one band per step; only the current step shows, a progress bar fills as the scroll crosses each
-// band in the row of steps under the headline. On the right is a report of four pages, one per step:
+// band in the row of steps under the headline. On the right is a report of five pages, one per step:
 // changing step sends the front page to the back of the pile, and within a step the three parts of its
 // page fill in one by one as the scroll crosses the step's band. Without this script (or when the
 // content cannot fit one window) the section is a plain grid of cards.
@@ -52,7 +52,7 @@ function init(root) {
     });
   }
 
-  // Each page's place in the pile: 0 in front, then 1, 2, 3 behind. One step forward, the page that was
+  // Each page's place in the pile: 0 in front, then 1, 2, 3, 4 behind. One step forward, the page that was
   // in front slides out and goes to the back; one step back, the page at the back comes round to the front.
   // Any other change (the first set-up, a jump of several steps) just moves the pages to their places.
   function turnPages(from, to) {
